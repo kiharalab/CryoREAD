@@ -1,10 +1,11 @@
 
 import os
 import numpy as np
-from graph.Points import Points
-from data_processing.map_utils import permute_ns_coord_to_pdb,permute_map_coord_to_pdb
+from structure.Points import  Points
+from data_processing.map_utils import permute_ns_coord_to_pdb,permute_map_coord_to_pdb,permute_pdb_coord_to_map
 from graph.io_utils import save_LDP_map
 from graph.visualize_utils import Show_Graph_Connect,Show_Bfactor_cif
+from scipy.spatial.distance import cdist
 def Extract_LDP_coord(merged_cd_dens, mapc, mapr, maps, origin, nxstart, nystart, nzstart):
     #1st filter out all the coordinates in this cluster
     nstart = [nxstart,nystart,nzstart]
@@ -97,9 +98,88 @@ def build_LDP(input_mrc,sugar_density, sugar_Nact,origin_map_path,save_path,ext_
     Show_Bfactor_cif(ext_name+"_dens",All_location,ldp_prob_path,sugar_point.merged_cd_dens[:,3])
     #turns out density showed very good results its correlation with real phosphate positions
     return sugar_point
+from ops.os_operation import mkdir
+def Build_Base_LDP(input_mrc,chain_prob,base_prob_threshold,origin_map_path,params,map_info_list,save_path,filter_type=0):
+    mkdir(save_path)
+    base_name_list=['A','UT','C','G']
+    base_region_detection = chain_prob[-1]
+    no_base_region = base_region_detection<base_prob_threshold
+    base_detection = np.argmax(chain_prob[2:6],axis=0)
+    Base_LDP_List =[]
+    local_names= locals()
+    for k in range(len(base_name_list)):
+        current_prob = chain_prob[2+k]
+
+        if filter_type==0:
+            current_prob[no_base_region==1]=0
+            current_mask_base = base_detection!=k
+            current_unconfident_region = current_prob<0.5
+            current_mask_region = current_mask_base&current_unconfident_region
+            current_prob[current_mask_region==1]=0
+        elif filter_type==1:
+            current_prob[no_base_region==1]=0
+            current_mask_region = base_detection!=k
+            current_prob[current_mask_region==1]=0
+        elif filter_type==2:
+            pass#directly use base LDP to self cluster
+        elif filter_type==3:
+            current_prob[current_prob<=base_prob_threshold]=0
+
+        input_mrc.upsampling_specify_prob(base_name_list[k],current_prob,filter_array=None)
+        local_names["%s_point"%base_name_list[k]] = build_LDP(input_mrc,input_mrc.__dict__['%s_dens'%base_name_list[k]],
+                                                             input_mrc.__dict__['%s_Nact'%base_name_list[k]],
+                                                origin_map_path,save_path,"base_"+base_name_list[k],params,map_info_list,relax_LDP=False)#both works same with relax_LDP=True/False
+        Base_LDP_List.append(local_names["%s_point"%base_name_list[k]])
+    return Base_LDP_List
+
+def Build_Baseall_LDP(input_mrc,chain_prob,base_prob_threshold,origin_map_path,params,map_info_list,save_path):
+    mkdir(save_path)
+    base_prob = chain_prob[-1]
+    keyword='base'
+    base_prob[base_prob<=base_prob_threshold]=0
+    input_mrc.upsampling_specify_prob(keyword,base_prob,filter_array=None)
+    base_point = build_LDP(input_mrc,input_mrc.__dict__['%s_dens'%keyword], input_mrc.__dict__['%s_Nact'%keyword],
+                                                origin_map_path,save_path,"base_%s"%keyword,params,
+                                                map_info_list,relax_LDP=False)#both works same with relax_LDP=True/False
+    return base_point
 
 
 
 
+def permute_point_coord_to_global_coord(location,map_info_list):
+    mapc, mapr, maps, origin, nxstart, nystart, nzstart = map_info_list
+    nstart = [nxstart,nystart,nzstart]
+    nstart = permute_ns_coord_to_pdb(nstart,mapc,mapr,maps)
+    new_origin = [origin[k]+nstart[k] for k in range(3)]
+    location = permute_map_coord_to_pdb(location,mapc,mapr,maps)
+    global_location = [location[k]+new_origin[k] for k in range(3)]
+    return global_location
 
 
+def permute_global_coord_to_point_coord(location,map_info_list):
+    mapc, mapr, maps, origin, nxstart, nystart, nzstart = map_info_list
+    nstart = [nxstart,nystart,nzstart]
+    nstart = permute_ns_coord_to_pdb(nstart,mapc,mapr,maps)
+    new_origin = [origin[k]+nstart[k] for k in range(3)]
+    revise_location = [location[k]-new_origin[k] for k in range(3)]
+    local_location = permute_pdb_coord_to_map(revise_location,mapc,mapr,maps)
+    return local_location
+
+def prepare_all_sugar_location(All_Path_List,sugar_point,map_info_list):
+    all_sugar_location=[]
+    merged_cd_dens= sugar_point.merged_cd_dens[:,:3]
+    for k,cur_path_list in enumerate(All_Path_List):
+
+        current_location_list = [merged_cd_dens[int(kk)] for kk in cur_path_list]
+        coordinate_list= Convert_LDPcoord_To_Reallocation(current_location_list, map_info_list)
+        all_sugar_location.append(coordinate_list)
+    #check all the locations that did not have overlap
+    #sanity check step
+    all_sugar_location_check = np.concatenate(all_sugar_location,axis=0)
+    dist_array =cdist(all_sugar_location_check,all_sugar_location_check)
+    close_indexes = np.argwhere(dist_array<=0.01)
+    if len(close_indexes)!=len(dist_array):
+        print("we found overlapped sugar position in path assignment! Please have a check!")
+        exit()
+
+    return all_sugar_location

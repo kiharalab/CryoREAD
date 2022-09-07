@@ -69,7 +69,7 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
     print("in 2nd stage, in total we have %d boxes"%len(Coord_Voxel))
     return Coord_Voxel
 
-from unet.Small_Unet_3Plus_DeepSup import Small_UNet_3Plus_DeepSup
+from model.Small_Unet_3Plus_DeepSup import Small_UNet_3Plus_DeepSup
 def make_predictions(test_loader,model,Coord_Voxel,voxel_size,overall_shape,num_classes,run_type=0):
     avg_meters = {'data_time': AverageMeter('data_time'),
                   'train_time': AverageMeter('train_time')}

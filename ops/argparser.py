@@ -24,6 +24,8 @@ def argparser():
     parser.add_argument('-g', type=float, default=3.0, help="Bandwidth of the Gaussian filter")  # gaussian filter
     parser.add_argument('-k', type=float, default=0.5, help="keep edges where d<k parameter")
     parser.add_argument('-R', type=float, default=10.0, help="radius of local MST")
+    parser.add_argument("--rule_soft",type=int,default=0,help="Use strict/soft rules to assemble collected fragments in DP step")
+    parser.add_argument("--resolution",type=int,default=2.5,help="resolution of maps, used for final structure refinement")
     args = parser.parse_args()
     params = vars(args)
     return params

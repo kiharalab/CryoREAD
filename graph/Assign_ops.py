@@ -1,6 +1,7 @@
 
 from scipy.spatial.distance import cdist
 from ops.math_calcuation import calculate_distance,calculate_cosine_value
+import numpy as np
 def Assign_PhoLDP_Sugarpath(Path_ID_List,sugar_point,pho_point,cut_off_length=7):
     sugar_coodinate = sugar_point.merged_cd_dens[:,:3]
     pho_coordinate = pho_point.merged_cd_dens[:,:3]
@@ -116,3 +117,82 @@ def Assign_PhoLDP_Sugarpath(Path_ID_List,sugar_point,pho_point,cut_off_length=7)
         Path_P_align_list.append(cur_align_list1)
         Path_P_reverse_align_list.append(cur_reverse_align_list)
     return Path_P_align_list,Path_P_reverse_align_list,Path_Pho_ID_List
+def Assign_Base_Main_Path_sugar(Path_ID_List,pho_coordinate,Base_LDP_List,base_prob_array,cut_off_length=10):
+
+    Base_Coord_List = []
+    for base_ldp in Base_LDP_List:
+        base_coord = base_ldp.merged_cd_dens[:,:3]
+        Base_Coord_List.append(base_coord)
+    Base_Coord_List = np.concatenate(Base_Coord_List,axis=0)
+
+    distance_array = cdist(pho_coordinate,Base_Coord_List)
+    All_Base_Assign_List =[]#list of list: where probability of specific base will be put here.
+    count_out =0
+    count_total=0
+    for cur_path_list in Path_ID_List:
+        current_length = len(cur_path_list)
+        count_total+=current_length
+        tmp_list = []
+        for k in range(current_length):
+            node_id1 = int(cur_path_list[k])
+            distance_node1 = distance_array[node_id1]
+            nearby_index = np.argmin(distance_node1)
+            minimum_distance_now = distance_node1[nearby_index]
+            cur_base_coord = Base_Coord_List[int(nearby_index)]
+            current_tmp_prob = base_prob_array[:,int(cur_base_coord[0]),int(cur_base_coord[1]),int(cur_base_coord[2])]
+            if minimum_distance_now>cut_off_length:
+                count_out+=1
+                tmp_list.append(current_tmp_prob*0.5)
+                continue
+            else:
+                tmp_list.append(current_tmp_prob)
+        All_Base_Assign_List.append(tmp_list)
+    print("we have %d/%d base assignment outside safe range: %.3f"%(count_out,count_total,count_out/count_total))
+    return All_Base_Assign_List
+
+
+def Assign_Base_Main_Path(Path_ID_List,pho_coordinate,Base_LDP_List,base_prob_array,cut_off_length=10,reverse_flag=False,return_dict=False):
+
+    Base_Coord_List = []
+    for base_ldp in Base_LDP_List:
+        base_coord = base_ldp.merged_cd_dens[:,:3]
+        Base_Coord_List.append(base_coord)
+    Base_Coord_List = np.concatenate(Base_Coord_List,axis=0)
+
+    distance_array = cdist(pho_coordinate,Base_Coord_List)
+    All_Base_Assign_List =[]#list of list: where probability of specific base will be put here.
+    Assign_Refer_Dict = {}#[node_id]:[prob]
+    count_out =0
+    count_total=0
+    for cur_path_list in Path_ID_List:
+        current_length = len(cur_path_list)
+        count_total+=current_length
+        if reverse_flag is True:
+            cur_path_list = cur_path_list[::-1]
+        tmp_list = []
+        for k in range(current_length-1):
+            node_id1 = int(cur_path_list[k])
+            node_id2 = int(cur_path_list[k+1])
+            distance_node1 = distance_array[node_id1]
+            distance_node2 = distance_array[node_id2]
+            combine_distance = distance_node1+distance_node2
+            nearby_index = np.argmin(combine_distance)
+            minimum_distance_now = combine_distance[nearby_index]
+            cur_base_coord = Base_Coord_List[int(nearby_index)]
+            current_tmp_prob = base_prob_array[:,int(cur_base_coord[0]),int(cur_base_coord[1]),int(cur_base_coord[2])]
+            if minimum_distance_now>cut_off_length*2:
+                count_out+=1
+                tmp_list.append(current_tmp_prob*0.5)
+                Assign_Refer_Dict[node_id1]=current_tmp_prob*0.5
+                continue
+            else:
+                tmp_list.append(current_tmp_prob)
+                Assign_Refer_Dict[node_id1]=current_tmp_prob
+        if reverse_flag:
+            tmp_list = tmp_list[::-1]
+        All_Base_Assign_List.append(tmp_list)
+    print("we have %d/%d base assignment outside safe range: %.3f"%(count_out,count_total,count_out/count_total))
+    if return_dict:
+        return All_Base_Assign_List,Assign_Refer_Dict
+    else:
+        return All_Base_Assign_List

@@ -55,10 +55,7 @@ def Predict_2nd_Stage(input_map_path,prob_dir,model_path,save_path,
                                                 voxel_size,stride,batch_size,
                                                     train_save_path,contour,params)
 
-        if params['type']==0:
-            chain_label_list = ["sugar", "phosphate","A","UT","C","G","protein",]
-        elif params['type']==1:
-            chain_label_list = ["sugar", "phosphate","A","UT","C","G","protein","base"]
+        chain_label_list = ["sugar", "phosphate","A","UT","C","G","protein","base"]
         for k,chain_name in enumerate(chain_label_list):
             cur_map_path = os.path.join(save_path, "chain_" + str(chain_name) + "_prob.mrc")
             save_predict_specific_map(cur_map_path, k , detection_all, input_map_path,label_only=False)

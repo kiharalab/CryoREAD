@@ -46,3 +46,15 @@ def save_LDP_map(save_map_path,LDP_array,origin_map_path):
         mrc_new.print_header()
         mrc_new.close()
         del data_new
+
+
+def append_cif_info(cur_entry_id,cur_frag_path,fragment_all_path):
+    with open(fragment_all_path,'a+') as wfile:
+        with open(cur_frag_path,'r') as rfile:
+            wfile.write("#\n")
+            wfile.write("data_"+str(cur_entry_id)+"\n")
+            wfile.write("_entry.id "+str(cur_entry_id)+"\n")
+            wfile.write("#\n")
+            for j,line in enumerate(rfile):
+                if j>=2:
+                    wfile.write(line)

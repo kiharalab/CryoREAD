@@ -1,0 +1,7 @@
+biopython
+numpy
+numba
+scipy
+ortools
+sklearn
+mrcfile
