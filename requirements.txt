@@ -5,3 +5,4 @@ scipy
 ortools
 sklearn
 mrcfile
+torch==1.6.0

@@ -40,6 +40,9 @@ if __name__ == "__main__":
         mkdir(save_path_2nd_stage)
         Predict_2nd_Stage(cur_map_path,save_path_1st_stage,model_2nd_stage_path,save_path_2nd_stage,
                        params['box_size'],params['stride'],params['batch_size'],params['contour'],params)
+        if params['prediction_only']:
+            print("Our prediction results are saved in %s with mrc format for visualization check."%save_path_2nd_stage)
+            exit()
         #graph based atomic structure modeling
         gaussian_bandwidth = params['g'] #use 3
         dcut = params['m']#after meanshifting merge points distance<[float]
