@@ -1,6 +1,6 @@
 import numpy as np
 from ops.os_operation import mkdir
-from graph.LDP_ops import Convert_LDPcoord_To_Reallocation
+
 
 def Show_Graph_Connect(coord_list,edge_list,save_path):
     Natm =1
@@ -111,6 +111,7 @@ def visualize_base(save_path,ext_name,coordinate_list,base_prediction):
 
 def Visualize_Path_Base(tmp_save_path,Path_ID_List,All_Base_Assign_List,merged_cd_dens,
                         map_info_list,DNA_Label,sugar_visual=False):
+    from graph.LDP_ops import Convert_LDPcoord_To_Reallocation
     mkdir(tmp_save_path)
     All_Info_List=[]
     for k,cur_path_list in enumerate(Path_ID_List):
@@ -170,6 +171,7 @@ def Visualize_Path_Base(tmp_save_path,Path_ID_List,All_Base_Assign_List,merged_c
 
 
 def Visualize_LDP_Path(save_path,ext_name,Path_ID_List,merged_cd_dens,map_info_list):
+    from graph.LDP_ops import Convert_LDPcoord_To_Reallocation
     current_location_list = [merged_cd_dens[int(kk)] for kk in Path_ID_List]
     current_coord_list = Convert_LDPcoord_To_Reallocation(current_location_list, map_info_list)
     Show_Coord_cif(ext_name,current_coord_list,save_path)
@@ -177,6 +179,7 @@ def Visualize_LDP_Path(save_path,ext_name,Path_ID_List,merged_cd_dens,map_info_l
 
 def Visualize_assign_DPbase(save_dir,ext_name,path_node_id_list,base_assign_list,
                path_base_prob_list, merged_cd_dens,map_info_list):
+    from graph.LDP_ops import Convert_LDPcoord_To_Reallocation#to avoid circular import
     current_location_list = [merged_cd_dens[int(kk)] for kk in path_node_id_list]
     coordinate_list= Convert_LDPcoord_To_Reallocation(current_location_list, map_info_list)
     new_coord_list=[]

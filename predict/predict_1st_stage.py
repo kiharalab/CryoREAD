@@ -11,7 +11,12 @@ from predict.unet_detect_map_cascad import unet_detect_map_cascad
 
 def Predict_1st_Stage(input_map_path,model_path,save_path,
                                  voxel_size,stride,batch_size,contour,params):
-
+    #check if prediction exists, if it exists, then skip
+    cur_predict_path = os.path.join(save_path,"Input")
+    chain_predict_path = os.path.join(cur_predict_path,"chain_predictprob.npy")
+    if os.path.exists(chain_predict_path) and os.path.getsize(chain_predict_path)>=1000:
+        print("stage 1 prediction has been generated and saved in %s"%chain_predict_path)
+        return
     with mrcfile.open(input_map_path, permissive=True) as map_mrc:
          #normalize data
         map_data = np.array(map_mrc.data)

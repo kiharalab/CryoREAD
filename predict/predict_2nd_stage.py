@@ -6,6 +6,13 @@ from data_processing.map_utils import permute_ns_coord_to_pdb,save_predict_speci
 from predict.unet_detect_map_refine import unet_detect_map_refine
 def Predict_2nd_Stage(input_map_path,prob_dir,model_path,save_path,
                       voxel_size,stride,batch_size,contour,params):
+    #check if prediction exists, if it exists, then skip
+    cur_predict_path = os.path.join(save_path,"Input")
+    chain_predict_path = os.path.join(cur_predict_path,"chain_predictprob.npy")
+    if os.path.exists(chain_predict_path) and os.path.getsize(chain_predict_path)>=1000:
+        print("stage 2 prediction has been generated and saved in %s"%chain_predict_path)
+        return
+
     #prob_dir: cascad 1st stage output directory
     cur_predict_path = os.path.join(prob_dir,"Input")
     chain_predict_path = os.path.join(cur_predict_path,"chain_predictprob.npy")

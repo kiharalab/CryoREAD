@@ -47,7 +47,10 @@ if __name__ == "__main__":
         from graph.Build_Unet_Graph import Build_Unet_Graph
         graph_save_path = os.path.join(save_path,"graph_atomic_modeling")
         mkdir(graph_save_path)
-        Build_Unet_Graph(cur_map_path,save_path_2nd_stage,fasta_path,graph_save_path,
+
+        cur_predict_path = os.path.join(save_path_2nd_stage,"Input")
+        chain_predict_path = os.path.join(cur_predict_path,"chain_predictprob.npy")
+        Build_Unet_Graph(cur_map_path,chain_predict_path,fasta_path,graph_save_path,
                 gaussian_bandwidth,dcut, rdcut,params)
 
 
