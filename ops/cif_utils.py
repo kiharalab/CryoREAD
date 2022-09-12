@@ -26,11 +26,11 @@ def Extract_CIF_coord(input_cif_path,filter_list=None):
                         float(split_result[11]),
                             float(split_result[12]),]
                 atom_name = split_result[3]
-                nuc_type = split_result[5]
-                chain_id = split_result[6]
-                nuc_id = int(split_result[8])
-                pred_label = map_dict[nuc_type]
-                current_score= float(split_result[14])
+                # nuc_type = split_result[5]
+                # chain_id = split_result[6]
+                # nuc_id = int(split_result[8])
+                # pred_label = map_dict[nuc_type]
+                # current_score= float(split_result[14])
                 if filter_list is not None and atom_name not in filter_list:
                     continue
                 Coordinate_List.append(coordinates)
