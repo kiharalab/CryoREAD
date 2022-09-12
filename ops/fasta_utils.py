@@ -10,6 +10,11 @@ def read_fasta(input_fasta_path):
             if line[0]==">":
                 current_id = line.strip("\n")
                 current_id = current_id.replace(">","")
+                if "|" in current_id:
+                    current_id = current_id.split("|")[0]
+                if "_" in current_id:
+                    current_id = current_id.split("_")[1]
+
             else:
                 line=line.strip("\n")
                 chain_dict[current_id]=line

@@ -139,8 +139,6 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
         overall_dict,frag_location_dict=greedy_assign_PS(All_Base_Path_List_sugar,All_Path_List,
         Path_P_align_list,Path_P_reverse_align_list,Pho_Prob_Refer_Dict,Pho_Prob_Refer_Reverse_Dict,
         chain_prob,ldp_size,sugar_point,map_info_list,chain_dict,greedy_save_path,top_select,checking_stride)
-
-
     else:
         print("only apply geometry constraints for dynamic programming")
 
@@ -192,7 +190,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
 
     # 5.3 build final atomic structure with phenix.real_space_refine
     init_pdb_path = os.path.join(frag_save_path,"Final_Assemble_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
-    refined_pdb_path = os.path.join(frag_save_path,"Final_Refined_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
+    refined_pdb_path = os.path.join(save_path,"Final_Refined_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
     os.system('phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(init_pdb_path,origin_map_path,params['resolution']))
     gen_pdb_path = os.path.join(frag_save_path,"Final_Assemble_%d_%d_%dphenix_refine.pdb"%(ldp_size,checking_stride,top_select))
     if os.path.exists(gen_pdb_path):
