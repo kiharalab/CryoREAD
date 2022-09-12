@@ -14,7 +14,7 @@ def argparser():
     parser.add_argument("-P",type=str,help="optional fasta sequence file path")
     parser.add_argument('--mode',type=int,required=True,help='control mode')
     parser.add_argument("--contour",type=float,default=0,help="contour level for input map, suggested 0.5*[author_contour]")
-    parser.add_argument("--stride",type=int,default=8,help="stride for scanning of deep learning model")
+    parser.add_argument("--stride",type=int,default=16,help="stride for scanning of deep learning model")
     parser.add_argument("--box_size",type=int,default=64,help="input box size for deep learning model")
     parser.add_argument("--gpu",type=str,default=None,help="specify the gpu we will use")
     parser.add_argument('--batch_size', type=int, default=8, help='batch size for inference')
@@ -25,7 +25,7 @@ def argparser():
     parser.add_argument('-k', type=float, default=0.5, help="keep edges where d<k parameter")
     parser.add_argument('-R', type=float, default=10.0, help="radius of local MST")
     parser.add_argument("--rule_soft",type=int,default=0,help="Use strict/soft rules to assemble collected fragments in DP step")
-    parser.add_argument("--resolution",type=int,default=2.5,help="resolution of maps, used for final structure refinement")
+    parser.add_argument("--resolution",type=float,default=2.5,help="resolution of maps, used for final structure refinement")
     args = parser.parse_args()
     params = vars(args)
     return params
