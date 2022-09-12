@@ -26,6 +26,7 @@ def argparser():
     parser.add_argument('-R', type=float, default=10.0, help="radius of local MST")
     parser.add_argument("--rule_soft",type=int,default=0,help="Use strict/soft rules to assemble collected fragments in DP step")
     parser.add_argument("--resolution",type=float,default=2.5,help="resolution of maps, used for final structure refinement")
+    parser.add_argument("--num_workers",type=int,default=4,help="number of workers to fetch data")
     args = parser.parse_args()
     params = vars(args)
     return params
