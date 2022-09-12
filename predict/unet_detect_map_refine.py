@@ -148,7 +148,7 @@ def unet_detect_map_refine(map_data,chain_prob,base_prob,resume_model_path,voxel
         drop_last=False)
     chain_class = len(chain_prob)
     base_class = len(base_prob)
-    output_classes = chain_class+base_class-1
+    output_classes = chain_class+base_class
     model = Small_UNet_3Plus_DeepSup(in_channels=chain_class+base_class,
                                      n_classes=output_classes,
                                      feature_scale=4,
