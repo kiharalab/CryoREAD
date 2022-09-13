@@ -15,6 +15,93 @@ def Calculate_Distance_array(fragment_ldp_location):
             distance_array[i,j] = calculate_distance(fragment_ldp_location[i],fragment_ldp_location[j])
             distance_array[j,i]= distance_array[i,j]
     return distance_array
+from numba import jit
+@jit(nogil=True,nopython=True)
+def global_align_score(ldp_gap,seq_gap, matrix, ldp_list,
+seq_list, pointer, scratch,seq_gap_count,ldp_gap_count,
+ldp_distance_array,ldp_prev_connect):
+    low_cut_off_distance=4
+    high_cut_off_distance=10
+    mean_distance=7
+    for i in range(1,len(ldp_list)+1):
+        for j in range(1,len(seq_list)+1):
+            reasonable_skip_ldp=0
+            if i==1:
+                current_best= scratch[i-1,j-1]+matrix[i,j]
+            else:
+                prev_neighbor = int(ldp_prev_connect[i-1,j-1]) if ldp_prev_connect[i-1,j-1]!=-1 else i-1
+                cur_distance = ldp_distance_array[prev_neighbor,i]
+
+                if cur_distance<=low_cut_off_distance or cur_distance>=high_cut_off_distance:
+                    #current_best=-999999
+                #elif cur_distance>=high_cut_off_distance:
+                    current_best= scratch[i-1,j-1]+matrix[i,j]-ldp_gap*abs(cur_distance-mean_distance)**2#ldp_gap
+                else:
+                    current_best= scratch[i-1,j-1]+matrix[i,j]
+
+            #left_best= 0
+            #left_best_step=0
+            if i==1:
+               left_cur = scratch[i-1,j]
+            else:
+                prev_neighbor = int(ldp_prev_connect[i-1,j]) if ldp_prev_connect[i-1,j]!=-1 else i-1
+                cur_distance = ldp_distance_array[prev_neighbor,i]
+                if i!=len(seq_list) and cur_distance+ldp_distance_array[i,i+1]<high_cut_off_distance:
+                    reasonable_skip_ldp=1
+                if  cur_distance<=low_cut_off_distance:
+                    reasonable_skip_ldp=1
+                #if it's too far, do not encourage skip the ldp
+                # if cur_distance>=high_cut_off_distance:
+                # #     #left_cur = -999999 #do not allow skip this ldp point any more #scratch[i-1,j]-abs(cur_distance-mean_distance)*ldp_gap#-ldp_gap#-ldp_gap*max(ldp_gap_count[i-1,j]-1,0)
+                #      left_cur = scratch[i-1,j]-100*abs(cur_distance-mean_distance)#ldp_gap
+                # # else:
+                # #elif ldp_gap_count[i-1,j]>=2:
+                # #    left_cur = -999999
+                # else:
+                #     left_cur = scratch[i-1,j]
+                    #else:
+                    #    left_cur = scratch[i-1,j]-ldp_gap*(ldp_gap_count[i-1,j]+1)
+                if reasonable_skip_ldp:
+                    left_cur = scratch[i-1,j]
+                else:
+                    left_cur = scratch[i-1,j]-ldp_gap*abs(cur_distance-mean_distance)**2#ldp_gap
+            left_best_step=1
+            # up_best =0
+            # up_best_step=0
+            if seq_gap_count[i,j-1]<=2:
+                up_cur = scratch[i,j-1]-seq_gap#-seq_gap*(seq_gap_count[i,j-1]+1)#include the penalty for adding this
+            else:
+                up_cur = scratch[i,j-1]-seq_gap*(seq_gap_count[i,j-1]+1)#keep all possible combinations
+            #up_cur = scratch[i,j-1]-seq_gap
+            #up_cur=0#do not allow any skip for the sequences
+            up_best_step=1
+            #must take some operations
+            final_best = max(current_best,left_cur,up_cur)#max(0,current_best,left_cur,up_cur)
+            scratch[i,j]=final_best
+            if final_best==up_cur:
+                pointer[i,j]=up_best_step
+                seq_gap_count[i,j] = 1+seq_gap_count[i,j-1]
+                ldp_prev_connect[i,j] = ldp_prev_connect[i,j-1]
+                ldp_gap_count[i,j]= ldp_gap_count[i,j-1]
+
+            elif final_best==left_cur:
+                pointer[i,j]=-left_best_step
+                seq_gap_count[i,j] = seq_gap_count[i-1,j]
+                if ldp_prev_connect[i-1,j]!=-1:
+                    ldp_prev_connect[i,j] = ldp_prev_connect[i-1,j]
+                else:
+                    ldp_prev_connect[i,j] = i-1
+                if reasonable_skip_ldp:
+                    ldp_gap_count[i,j]=ldp_gap_count[i-1,j]
+                else:
+                    ldp_gap_count[i,j]=ldp_gap_count[i-1,j]+1
+
+            else:
+                pointer[i,j]=999999#indicates directly go diagnol
+                seq_gap_count[i,j] = seq_gap_count[i-1,j-1]
+                ldp_gap_count[i,j]= ldp_gap_count[i-1,j-1]
+
+    return scratch,pointer,seq_gap_count,ldp_prev_connect,ldp_gap_count
 
 
 def dynamic_assign_multi(updated_base_list,current_chain,
