@@ -67,14 +67,14 @@ def read_refer_dict(pdb_path):
     p1_to_base_direction = base_center_location- phosphate_location
     return all_location_dict, backbone_location_list,orthognal_ratio,p1p2_to_base_direction,p1_to_base_direction
 standard_location_dict={}
-standard_location_dict['A']=read_refer_dict("base_info/A.pdb")
-standard_location_dict['C']=read_refer_dict("base_info/C.pdb")
-standard_location_dict['G']=read_refer_dict("base_info/G.pdb")
-standard_location_dict['U']=read_refer_dict("base_info/U.pdb")
-standard_location_dict['DA']=read_refer_dict("base_info/DA.pdb")
-standard_location_dict['DC']=read_refer_dict("base_info/DC.pdb")
-standard_location_dict['DG']=read_refer_dict("base_info/DG.pdb")
-standard_location_dict['DT']=read_refer_dict("base_info/DT.pdb")
+standard_location_dict['A']=read_refer_dict("atomic/A.pdb")
+standard_location_dict['C']=read_refer_dict("atomic/C.pdb")
+standard_location_dict['G']=read_refer_dict("atomic/G.pdb")
+standard_location_dict['U']=read_refer_dict("atomic/U.pdb")
+standard_location_dict['DA']=read_refer_dict("atomic/DA.pdb")
+standard_location_dict['DC']=read_refer_dict("atomic/DC.pdb")
+standard_location_dict['DG']=read_refer_dict("atomic/DG.pdb")
+standard_location_dict['DT']=read_refer_dict("atomic/DT.pdb")
 
 
 def read_refer_dict_sugar(pdb_path):
@@ -129,14 +129,14 @@ def read_refer_dict_sugar(pdb_path):
 
 
 sugar_standard_location_dict={}
-sugar_standard_location_dict['A']=read_refer_dict_sugar("base_info/A.pdb")
-sugar_standard_location_dict['C']=read_refer_dict_sugar("base_info/C.pdb")
-sugar_standard_location_dict['G']=read_refer_dict_sugar("base_info/G.pdb")
-sugar_standard_location_dict['U']=read_refer_dict_sugar("base_info/U.pdb")
-sugar_standard_location_dict['DA']=read_refer_dict_sugar("base_info/DA.pdb")
-sugar_standard_location_dict['DC']=read_refer_dict_sugar("base_info/DC.pdb")
-sugar_standard_location_dict['DG']=read_refer_dict_sugar("base_info/DG.pdb")
-sugar_standard_location_dict['DT']=read_refer_dict_sugar("base_info/DT.pdb")
+sugar_standard_location_dict['A']=read_refer_dict_sugar("atomic/A.pdb")
+sugar_standard_location_dict['C']=read_refer_dict_sugar("atomic/C.pdb")
+sugar_standard_location_dict['G']=read_refer_dict_sugar("atomic/G.pdb")
+sugar_standard_location_dict['U']=read_refer_dict_sugar("atomic/U.pdb")
+sugar_standard_location_dict['DA']=read_refer_dict_sugar("atomic/DA.pdb")
+sugar_standard_location_dict['DC']=read_refer_dict_sugar("atomic/DC.pdb")
+sugar_standard_location_dict['DG']=read_refer_dict_sugar("atomic/DG.pdb")
+sugar_standard_location_dict['DT']=read_refer_dict_sugar("atomic/DT.pdb")
 
 
 
