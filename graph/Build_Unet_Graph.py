@@ -196,10 +196,12 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
     # 5.4 build final atomic structure with phenix.real_space_refine
     refined_pdb_path = os.path.join(save_path,"Final_Refined_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
     os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(frag_collect_dir,format_pdb_path,origin_map_path,params['resolution']))
-    gen_pdb_path = os.path.join(frag_save_path,"Final_Assemble_%d_%d_%dphenix_refine.pdb"%(ldp_size,checking_stride,top_select))
+    gen_pdb_path = os.path.join(frag_save_path,"Final_Assemble_%d_%d_%d_formated_phenix_refine_000.pdb"%(ldp_size,checking_stride,top_select))
     if os.path.exists(gen_pdb_path):
         shutil.copy(gen_pdb_path,refined_pdb_path)
-    print("please check final refined atomic structure in %s"%refined_pdb_path)
+        print("please check final refined atomic structure in %s"%refined_pdb_path)
+    else:
+        print("please check final refined atomic structure in this directory %s"%frag_collect_dir)
 
 
 
