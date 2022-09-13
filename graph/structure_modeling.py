@@ -7,7 +7,7 @@ from graph.io_utils import append_cif_info
 
 from graph.structure_utils import build_noclusters_extra,build_clusters,\
     build_clusters_advanced,merge_cluster_cif_PS,clean_pho_assign_info_list
-
+from atomic.io_utils import Write_Atomic_Fraginfo_cif
 
 
 def build_atomic_fragment_cluster_cif_SP(Path_Assign_Dict,all_sugar_location,Path_P_align_list,Path_P_reverse_align_list,
