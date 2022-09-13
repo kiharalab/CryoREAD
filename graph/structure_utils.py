@@ -5,6 +5,8 @@ from graph.LDP_ops import Convert_LDPcoord_To_Reallocation
 from ops.os_operation import mkdir
 from scipy.spatial.distance import cdist
 from ops.math_calcuation import calculate_distance
+import random
+
 
 
 def build_clusters(all_starting_index_keys,ldp_size):
