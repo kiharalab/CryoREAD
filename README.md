@@ -45,10 +45,10 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. Cryo-READ: DNA/RNA dE novo Atomic str
 
 
 ## Pre-required software
-Python 3 : https://www.python.org/downloads/    
-Phenix: https://phenix-online.org/documentation/install-setup-run.html
-Pymol (for structure visualization): https://pymol.org/2/  
-Chimera (for map visualization):https://www.cgl.ucsf.edu/chimera/download.html
+Python 3 : https://www.python.org/downloads/     
+Phenix: https://phenix-online.org/documentation/install-setup-run.html   
+Pymol (for structure visualization): https://pymol.org/2/    
+Chimera (for map visualization):https://www.cgl.ucsf.edu/chimera/download.html  
 
 ## Installation  
 ### 1. [`Install git`](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) 
@@ -90,6 +90,19 @@ Each time when you want to run this software, simply activate the environment by
 conda activate cryo_READ
 conda deactivate(If you want to exit) 
 ```
+
+#### 4 Verify the pre-installed software
+To verify phenix is correctly installed for final refinement step, please run
+```
+phenix.real_space_refine -h
+```
+If it can print out the help information of this function, then the refinemnt step of our program can be supported.
+
+To verify pymol is correctly installed for preparing input pdb for phenix, please run
+```
+pymol -cq -h
+```
+If it can run without errors, then pymol is installed correctly.
 
 
 ## Usage
@@ -175,13 +188,11 @@ The automatically build atomic structure is saved in [Predict_Result/(map-name)/
 
 
 ## Example
-
-
 ### Input File
 Cryo-EM map with mrc format. 
 (Optional) Sequence information with fasta format.
 
 ### Output File 
-1 *.mrc: a mrc file saved our detected probabilites by our deep learning model.
+1 *.mrc: a mrc file saved our detected probabilites by our deep learning model.    
 2 *.pdb: a PDB file that stores the atomic DNA/RNA structure by our method.
 
