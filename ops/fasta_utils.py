@@ -1,10 +1,11 @@
 
-
+from collections import  defaultdict
 def read_fasta(input_fasta_path):
     #format should be
     #>chain_id
     #sequence
-    chain_dict={}#key: chain, value: nuc sequence
+    dna_rna_set = {"A":0, "U":1, "T":1, "C":2, "G":3}
+    chain_dict=defaultdict(list)#key: chain, value: nuc sequence
     with open(input_fasta_path,'r') as file:
         for line in file:
             if line[0]==">":
@@ -17,7 +18,8 @@ def read_fasta(input_fasta_path):
 
             else:
                 line=line.strip("\n")
-                chain_dict[current_id]=line
+                for item in line:
+                    chain_dict[current_id].append(dna_rna_set[item])
     return chain_dict
 
 def read_dna_label(chain_dict):
