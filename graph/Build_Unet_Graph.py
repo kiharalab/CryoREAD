@@ -189,7 +189,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
 
 
     # 5.3 build final atomic structure with phenix.real_space_refine
-    init_pdb_path = os.path.join(frag_save_path,"Final_Assemble_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
+    init_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
     refined_pdb_path = os.path.join(save_path,"Final_Refined_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
     os.system('phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(init_pdb_path,origin_map_path,params['resolution']))
     gen_pdb_path = os.path.join(frag_save_path,"Final_Assemble_%d_%d_%dphenix_refine.pdb"%(ldp_size,checking_stride,top_select))
