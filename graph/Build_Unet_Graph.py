@@ -31,7 +31,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
     chain_class =8
     #["sugar", "phosphate","A","UT","C","G","protein","base"]
     #0.2 read sequence information
-    if os.path.exists(fasta_path) and os.path.getsize(fasta_path)>0:
+    if fasta_path is not None and os.path.exists(fasta_path) and os.path.getsize(fasta_path)>0:
         chain_dict = read_fasta(input_fasta_path=fasta_path)
         DNA_Label = read_dna_label(chain_dict)
         print("we have %d chains in provided fasta files"%(len(chain_dict)))
