@@ -178,7 +178,9 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
         Extra_Added_Assign_Dict=Extend_Solve_Assignment_SP_support(frag_save_path,All_Path_List,solve_frag_combine_list,
         order_key_index,order_chain_index,overall_dict,define_ldp_size=ldp_size)
         print("We added %d assignment that have collision to fill those gaps"%(len(Extra_Added_Assign_Dict)))
-
+    else:
+        frag_save_path = os.path.join(save_path,"AssembleFactory_geo")
+        mkdir(frag_save_path)
 
     # 5 Final Atomic Structure Modeling
 
