@@ -22,7 +22,10 @@ if __name__ == "__main__":
             os.environ["CUDA_VISIBLE_DEVICES"] = gpu_id
         cur_map_path = os.path.abspath(params['F'])
         model_dir = os.path.abspath(params['M'])
-        fasta_path = os.path.abspath(params['P'])
+        if params['prediction_only'] or params['no_seqinfo']:
+            fasta_path = None
+        else:
+            fasta_path = os.path.abspath(params['P'])
         save_path,map_name = init_save_path(cur_map_path)
         from data_processing.Resize_Map import Resize_Map
         cur_map_path = Resize_Map(cur_map_path,os.path.join(save_path,map_name+".mrc"))

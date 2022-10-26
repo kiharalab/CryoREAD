@@ -18,7 +18,7 @@ from graph.DP_ops import greedy_assign_PS
 from graph.assemble_ops import  build_collision_table,solve_assignment
 from graph.assignment_ext import Extend_Solve_Assignment_SP_support
 
-from graph.structure_modeling import  Build_Atomic_Structure
+
 
 def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
                      gaussian_bandwidth,dcut,rdcut, params):
@@ -141,35 +141,43 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
         chain_prob,ldp_size,sugar_point,map_info_list,chain_dict,greedy_save_path,top_select,checking_stride)
     else:
         print("only apply geometry constraints for dynamic programming")
+        greedy_save_path = os.path.join(save_path,"DP_geo_match")
+        mkdir(greedy_save_path)
+        from graph.DP_geo_ops import greedy_assign_geo
+        overall_dict,frag_location_dict=greedy_assign_geo(All_Base_Path_List_sugar,All_Path_List,
+        Path_P_align_list,Path_P_reverse_align_list,Pho_Prob_Refer_Dict,Pho_Prob_Refer_Reverse_Dict,
+        sugar_point,map_info_list,greedy_save_path)
 
     #4.4 build collision table for assemble overlapped fragments
-    if params['rule_soft']==1:
-        frag_save_path = os.path.join(save_path,"AssembleFactory_"+str(ldp_size)+"_"+str(checking_stride)+"_"+str(top_select))
-    else:
-        #pose strict rules for assembling
-        frag_save_path = os.path.join(save_path,"AssembleFactory_strict_"+str(ldp_size)+"_"+str(checking_stride)+"_"+str(top_select))
-    mkdir(frag_save_path)
-    cur_final_assemble_path = os.path.join(frag_save_path,"assemble_frag_%d_%d_%d_soft%d.txt"%(ldp_size,checking_stride,top_select,params['rule_soft']))
+    if not params['no_seqinfo']:
 
-    cur_collision_path = os.path.join(frag_save_path,"Collision_Table_%d_%d_%d_soft_%d.npy"%(ldp_size,checking_stride,top_select,params['rule_soft']))
-    collision_table,order_key_index,order_chain_index,key_order_index=build_collision_table(All_Base_Path_List_sugar, checking_stride,
-                        ldp_size,overall_dict,cur_collision_path,params['rule_soft'])
+        if params['rule_soft']==1:
+            frag_save_path = os.path.join(save_path,"AssembleFactory_"+str(ldp_size)+"_"+str(checking_stride)+"_"+str(top_select))
+        else:
+            #pose strict rules for assembling
+            frag_save_path = os.path.join(save_path,"AssembleFactory_strict_"+str(ldp_size)+"_"+str(checking_stride)+"_"+str(top_select))
+        mkdir(frag_save_path)
+        cur_final_assemble_path = os.path.join(frag_save_path,"assemble_frag_%d_%d_%d_soft%d.txt"%(ldp_size,checking_stride,top_select,params['rule_soft']))
 
-    #4.5 build assemble from pre-defined collision table
+        cur_collision_path = os.path.join(frag_save_path,"Collision_Table_%d_%d_%d_soft_%d.npy"%(ldp_size,checking_stride,top_select,params['rule_soft']))
+        collision_table,order_key_index,order_chain_index,key_order_index=build_collision_table(All_Base_Path_List_sugar, checking_stride,
+                            ldp_size,overall_dict,cur_collision_path,params['rule_soft'])
 
-    if not os.path.exists(cur_final_assemble_path):
+        #4.5 build assemble from pre-defined collision table
 
-        solve_frag_combine_list = solve_assignment(collision_table,order_key_index,order_chain_index,overall_dict)
-        np.savetxt(cur_final_assemble_path,np.array(solve_frag_combine_list))
-    else:
-        solve_frag_combine_list = np.loadtxt(cur_final_assemble_path)
-    print("loading solved possible fragment combination finished")
+        if not os.path.exists(cur_final_assemble_path):
+
+            solve_frag_combine_list = solve_assignment(collision_table,order_key_index,order_chain_index,overall_dict)
+            np.savetxt(cur_final_assemble_path,np.array(solve_frag_combine_list))
+        else:
+            solve_frag_combine_list = np.loadtxt(cur_final_assemble_path)
+        print("loading solved possible fragment combination finished")
 
 
-    # 4.6 extend fragment assignment for regions without acceptable assignment
-    Extra_Added_Assign_Dict=Extend_Solve_Assignment_SP_support(frag_save_path,All_Path_List,solve_frag_combine_list,
-    order_key_index,order_chain_index,overall_dict,define_ldp_size=ldp_size)
-    print("We added %d assignment that have collision to fill those gaps"%(len(Extra_Added_Assign_Dict)))
+        # 4.6 extend fragment assignment for regions without acceptable assignment
+        Extra_Added_Assign_Dict=Extend_Solve_Assignment_SP_support(frag_save_path,All_Path_List,solve_frag_combine_list,
+        order_key_index,order_chain_index,overall_dict,define_ldp_size=ldp_size)
+        print("We added %d assignment that have collision to fill those gaps"%(len(Extra_Added_Assign_Dict)))
 
 
     # 5 Final Atomic Structure Modeling
@@ -179,24 +187,35 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
 
 
     # 5.2 build initial atomic structure
-    frag_collect_dir = os.path.join(frag_save_path,"atomic_assemble_frag_%d_%d_%d"%(ldp_size,checking_stride,top_select))
-    mkdir(frag_collect_dir)
-
-    Build_Atomic_Structure(solve_frag_combine_list,order_key_index,order_chain_index,overall_dict,
-    sugar_path_based_location, ldp_size,frag_collect_dir,checking_stride,top_select,
-    Path_P_align_list,Path_P_reverse_align_list,pho_point,map_info_list,Extra_Added_Assign_Dict,
-                           sugar_base_match_dict,DNA_Label)
-
-
+    if params['no_seqinfo']:
+        frag_collect_dir = os.path.join(frag_save_path,"atomic_geo")
+        mkdir(frag_collect_dir)
+        from graph.geo_structure_modeling import Build_Atomic_Structure
+        Build_Atomic_Structure(overall_dict,
+        sugar_path_based_location, frag_collect_dir,
+        Path_P_align_list,Path_P_reverse_align_list,pho_point,map_info_list,sugar_base_match_dict)
+        init_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_geo.pdb")
+        format_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_geo_formated.pdb")
+        refined_pdb_path = os.path.join(save_path,"Final_Refinedgeo.pdb")
+    else:
+        from graph.structure_modeling import Build_Atomic_Structure
+        frag_collect_dir = os.path.join(frag_save_path,"atomic_assemble_frag_%d_%d_%d"%(ldp_size,checking_stride,top_select))
+        mkdir(frag_collect_dir)
+        Build_Atomic_Structure(solve_frag_combine_list,order_key_index,order_chain_index,overall_dict,
+        sugar_path_based_location, ldp_size,frag_collect_dir,checking_stride,top_select,
+        Path_P_align_list,Path_P_reverse_align_list,pho_point,map_info_list,Extra_Added_Assign_Dict,
+                               sugar_base_match_dict,DNA_Label)
+        init_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
+        format_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_%d_%d_%d_formated.pdb"%(ldp_size,checking_stride,top_select))
+        refined_pdb_path = os.path.join(save_path,"Final_Refined_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
     # 5.3 reformat pdb for phenix to do refinement (including the last column in pdb file indicate atom type)
-    init_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
-    format_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_%d_%d_%d_formated.pdb"%(ldp_size,checking_stride,top_select))
+
     os.system("pymol -cq ops/save_formated_pdb.py "+str(init_pdb_path)+" "+str(format_pdb_path))
 
     # 5.4 build final atomic structure with phenix.real_space_refine
-    refined_pdb_path = os.path.join(save_path,"Final_Refined_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
+
     os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(frag_collect_dir,format_pdb_path,origin_map_path,params['resolution']))
-    gen_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_%d_%d_%d_formated_phenix_refine_000.pdb"%(ldp_size,checking_stride,top_select))
+    gen_pdb_path = format_pdb_path+"_phenix_refine_000.pdb"
     #Final_Assemble_20_2_20_formated_phenix_refine_000.pdb
     if os.path.exists(gen_pdb_path):
         shutil.copy(gen_pdb_path,refined_pdb_path)
