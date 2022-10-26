@@ -4,12 +4,12 @@
 from collections import defaultdict
 from turtle import screensize
 import numpy as np
-from Data_Processing.Assign_Label_DRNA_map import permute_ns_coord_to_pdb,process_map_data,permute_pdb_coord_to_map,permute_map_coord_to_pdb
+from data_processing.map_utils import permute_ns_coord_to_pdb,process_map_data,permute_pdb_coord_to_map,permute_map_coord_to_pdb
 from ops.math_calcuation import calculate_distance
 import os
 from ops.os_operation import mkdir
 import pickle
-from Graph.LDP_ops import Convert_LDPcoord_To_Reallocation
+from graph.LDP_ops import Convert_LDPcoord_To_Reallocation
 from numba import jit
 
 def Calculate_Distance_array(fragment_ldp_location):
