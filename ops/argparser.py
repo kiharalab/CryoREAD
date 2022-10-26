@@ -3,8 +3,6 @@
 # Email:xiaowang20140001@gmail.com wang3702@purdue.edu
 #
 
-from collections import defaultdict
-import parser
 import argparse
 
 def argparser():
@@ -30,8 +28,8 @@ def argparser():
     parser.add_argument("--top_select",type=int,default=20,help="Select top fragment candidate here. (Integer), Default value: 20")
     parser.add_argument("--resolution",type=float,default=2.5,help="resolution of maps, used for final structure refinement. (Float), Default value: 2.5")
     parser.add_argument("--num_workers",type=int,default=4,help="number of workers to fetch data for GPU inference. (Integer), Default value: 4")
-    parser.add_argument('--prediction_only', type=bool, default=False, help="Optional input. Only run the deep learning prediction step. (True/False) Default value: False")
-    parser.add_argument('--no_seqinfo', type=bool, default=False, help="Optional input. Build structures when no sequence information is available. (True/False) Default value: False")
+    parser.add_argument('--prediction_only',  action='store_true', help="Optional input. Only run the deep learning prediction step. (True/False) Default value: False")
+    parser.add_argument('--no_seqinfo',  action='store_true', help="Optional input. Build structures when no sequence information is available. (True/False) Default value: False")
     args = parser.parse_args()
     params = vars(args)
     return params
