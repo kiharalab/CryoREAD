@@ -83,9 +83,9 @@ def format_pdb(input_pdb_path,output_pdb_path):
                             format_coord=current_atom_info[atom_name]
                             line=""
                             line += "ATOM%7d %-4s %3s%2s%4d    " % (atomid, atom_name,res_name, chain_id,nucid)
-                            line = line + "%8.3f%8.3f%8.3f%6.2f%6.2f\n" % (format_coord[0],format_coord[1],format_coord[2], 1.0, 0)
+                            line = line + "%8.3f%8.3f%8.3f%6.2f%6.2f" % (format_coord[0],format_coord[1],format_coord[2], 1.0, 0)
                             line+=" "*11
-                            line+=map_dict[atom_name]
+                            line+=map_dict[atom_name]+"\n"
                             wfile.write(line)
                             atomid+=1
                     nucid+=1
