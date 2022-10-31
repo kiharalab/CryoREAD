@@ -97,12 +97,12 @@ def format_pdb(input_pdb_path,output_pdb_path):
             for read_line in rfile:
                 if (read_line.startswith('ATOM')):
                     chain_name = read_line[21]
-                    atom_name = read_line[12:16]
+                    atom_name = read_line[12:16].replace(" ","")
                     x=float(read_line[30:38])
                     y=float(read_line[38:46])
                     z=float(read_line[46:55])
                     resi=int(read_line[22:26])
-                    res_name = read_line[17:20]
+                    res_name = read_line[17:20].replace(" ","")
                     if resi!=prev_resid:
                         if len(keep_info_dict)>0:
                             atomid,nucid =write_res_info(wfile,keep_info_dict,atomid,nucid)
