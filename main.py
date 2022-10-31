@@ -21,6 +21,10 @@ if __name__ == "__main__":
         if gpu_id is not None:
             os.environ["CUDA_VISIBLE_DEVICES"] = gpu_id
         cur_map_path = os.path.abspath(params['F'])
+        #process the map path if it's ending with .gz
+        if ".gz"==cur_map_path[-3:]:
+            from ops.os_operation import unzip_gz
+            cur_map_path = unzip_gz(cur_map_path)
         model_dir = os.path.abspath(params['M'])
         if params['prediction_only'] or params['no_seqinfo']:
             fasta_path = None

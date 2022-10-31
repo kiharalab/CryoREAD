@@ -15,3 +15,12 @@ def execCmd(cmd):
     text = r.read()
     r.close()
     return text
+
+import gzip
+def unzip_gz(file_path):
+    new_path = file_path.replace(".gz","")
+    g_file = gzip.GzipFile(file_path)
+    with open(new_path,"wb+") as file:
+        file.write(g_file.read())
+    g_file.close()
+    return new_path
