@@ -12,7 +12,7 @@ residue_atoms_order = {
     'C': ["N1", "C2", "O2", "N3", "C4", "N4", "C5", "C6"],
     'U': ["N1", "C2", "O2", "N3", "C4", "O4", "C5", "C6"],
     'T': ["N1", "C2", "O2", "N3", "C4", "O4", "C5", "C6",'C7'],
-    'DA': ["N1", "C2", "N3", "C4","C5","C6", "N6",  "N7", "C8","N9"  ],
+    'DA': ["N1", "C2", "N3", "C4","C5","C6", "N6",  "N7", "C8","N9"],
     'DG':  ["N1", "C2", "N2", "N3", "C4","C5", "C6", "O6","N7", "C8","N9"],
     'DC': ["N1", "C2", "O2", "N3", "C4", "N4", "C5", "C6"],
     'DT':["N1", "C2", "O2", "N3", "C4", "O4", "C5", "C6",'C7'],
@@ -20,7 +20,7 @@ residue_atoms_order = {
 _base_atoms_end = ["OP1","OP2","OP3"]
 map_dict={"P":"P","C5'":"C","O5'":"O","C4'":"C","O4'":"O","C3'":"C","O3'":"O","C2'":"C","O2'":"O","C1'":"C",
           "N1":"N","C2":"C","O2":"O","N3":"N","C4":"C","N4":"N","C5":"C","C6":"C","O4":"O","N9":"N","C8":"C",
-          "N7":"N","N6":"N","O6":"O","OP1":"O","OP2":"O1-","OP3":"O","C7":"C"}
+          "N7":"N","N6":"N","O6":"O","OP1":"O","OP2":"O1-","OP3":"O","C7":"C","N2":"N"}
 def format_pdb(input_pdb_path,output_pdb_path):
     parser = PDBParser()
     structure = parser.get_structure("input",input_pdb_path)
