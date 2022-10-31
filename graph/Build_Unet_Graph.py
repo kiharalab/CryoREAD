@@ -17,7 +17,7 @@ from graph.geo_utils import Match_Sugar_Base_Location
 from graph.DP_ops import greedy_assign_PS
 from graph.assemble_ops import  build_collision_table,solve_assignment
 from graph.assignment_ext import Extend_Solve_Assignment_SP_support
-
+from data_processing.format_pdb import format_pdb
 
 
 def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
@@ -215,7 +215,9 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
     # 5.3 reformat pdb for phenix to do refinement (including the last column in pdb file indicate atom type)
     if params['refine']:
         try:
-            os.system("pymol -cq ops/save_formated_pdb.py "+str(init_pdb_path)+" "+str(format_pdb_path))
+            #remove this to remove dependencies of pymol
+            #os.system("pymol -cq ops/save_formated_pdb.py "+str(init_pdb_path)+" "+str(format_pdb_path))
+            format_pdb(init_pdb_path,format_pdb_path)
 
             # 5.4 build final atomic structure with phenix.real_space_refine
 
