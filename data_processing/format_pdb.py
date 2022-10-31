@@ -93,7 +93,7 @@ def format_pdb(input_pdb_path,output_pdb_path):
         nucid=1
         prev_resid=0
         keep_info_dict={}
-        with open(output_pdb_path,'r') as rfile:
+        with open(input_pdb_path,'r') as rfile:
             for read_line in rfile:
                 if (read_line.startswith('ATOM')):
                     chain_name = read_line[21]
