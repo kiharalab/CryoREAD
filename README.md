@@ -14,7 +14,7 @@ Copyright (C) 2022 Xiao Wang, Genki Terashi, Daisuke Kihara, and Purdue Universi
 
 License: GPL v3. (If you are interested in a different license, for example, for commercial use, please contact us.) 
 
-Contact: Daisuke Kihara (dkihara@purdue.edu)
+Contact: Daisuke Kihara (dkihara@purdue.edu), Xiao Wang (wang3702@purdue.edu)
 
 ## Citation:
 
@@ -45,10 +45,12 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. Cryo-READ: DNA/RNA dE novo Atomic str
 
 
 ## Pre-required software
+### Required 
 Python 3 : https://www.python.org/downloads/     
 Phenix: https://phenix-online.org/documentation/install-setup-run.html   
-Pymol (for structure visualization): https://pymol.org/2/    
-Chimera (for map visualization):https://www.cgl.ucsf.edu/chimera/download.html  
+### Optional
+Pymol (for map visualization): https://pymol.org/2/    
+Chimera (for map visualization): https://www.cgl.ucsf.edu/chimera/download.html  
 
 ## Installation  
 ### 1. [`Install git`](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) 
@@ -97,12 +99,7 @@ To verify phenix is correctly installed for final refinement step, please run
 phenix.real_space_refine -h
 ```
 If it can print out the help information of this function, then the refinemnt step of our program can be supported.
-
-To verify pymol is correctly installed for preparing input pdb for phenix, please run
-```
-pymol -cq -h
-```
-If it can run without errors, then pymol is installed correctly.
+**If not, please always remove --refine command line in all the command, then cryoREAD should output structure without refinement.**
 
 
 ## Usage
@@ -148,40 +145,46 @@ optional arguments:
 
 ### 1. Only Make Structure Information Predictions by cryo-READ.
 ```
-python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --prediction_only=True
+python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --prediction_only 
 ```
-[Map_Path] is the path of the experimental cryo-EM map, [Model_Path] is the path of our pre-trained deep learning model, [half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, [GPU_ID] specifies the gpu used for inference, [batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU).
+[Map_Path] is the path of the experimental cryo-EM map, [Model_Path] is the path of our pre-trained deep learning model, [half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, [GPU_ID] specifies the gpu used for inference, [batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU). 
+
+
 
 The predicted probability maps are saved in [Predict_Result/(map_name)/2nd_stage_detection] with mrc format. It will include 8 mrc files corresponding to 8 different classes.
 
 Example Command:
 ```
-python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=8 --prediction_only=True
+python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=8 --prediction_only
 ```
 
 ### 2. Build atomic structure without sequence information
 ```
-python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --resolution=[Map_Resolution] --no_seqinfo
+python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --resolution=[Map_Resolution] --no_seqinfo --refine
 ```
 [Map_Path] is the path of the experimental cryo-EM map, [Model_Path] is the path of our pre-trained deep learning model,  [half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, [GPU_ID] specifies the gpu used for inference, [batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU), [Map_Resolution] is the resolution of the deposited maps.
+
+"--refine" should be removed if you can not successfully install Phenix correctly.
 
 The automatically build atomic structure is saved in [Predict_Result/(map-name)/graph_atomic_modeling/Output_Structure_noseq/Final_Refined*.pdb] in pdb format.
 
 Example Command:
 ```
-python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=8 --resolution=3.7 --no_seqinfo
+python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=8 --resolution=3.7 --no_seqinfo --refine
 ```
 
 
 ### 3. Build atomic structure with sequence information
 ```
-python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --rule_soft=[assignment_rule] --resolution=[Map_Resolution]
+python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --rule_soft=[assignment_rule] --resolution=[Map_Resolution] --refine
 ```
 [Map_Path] is the path of the experimental cryo-EM map, [Model_Path] is the path of our pre-trained deep learning model, [Fasta_Path] is the path of the input fasta file about sequence information, [half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, [GPU_ID] specifies the gpu used for inference, [batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU), [rule_soft] specifies the assignment rule, default is 0 to use the strict assignment assembling rule, [Map_Resolution] is the resolution of the deposited maps.
 
+"--refine" should be removed if you can not successfully install Phenix correctly.
+
 Example Command:
 ```
-python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fasta --contour=0.3 --gpu=0 --batch_size=8 --rule_soft=0 --resolution=3.7 
+python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fasta --contour=0.3 --gpu=0 --batch_size=8 --rule_soft=0 --resolution=3.7  --refine
 ```
 The automatically build atomic structure is saved in [Predict_Result/(map-name)/graph_atomic_modeling/Output_Structure/Final_Refined*.pdb] in pdb format.
 
