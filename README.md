@@ -14,7 +14,9 @@ Copyright (C) 2022 Xiao Wang, Genki Terashi, Daisuke Kihara, and Purdue Universi
 
 License: GPL v3. (If you are interested in a different license, for example, for commercial use, please contact us.) 
 
-Contact: Daisuke Kihara (dkihara@purdue.edu), Xiao Wang (wang3702@purdue.edu)
+Contact: Daisuke Kihara (dkihara@purdue.edu)
+
+For technical problems or questions, please reach to Xiao Wang (wang3702@purdue.edu).
 
 ## Citation:
 
