@@ -20,11 +20,11 @@ For technical problems or questions, please reach to Xiao Wang (wang3702@purdue.
 
 ## Citation:
 
-Xiao Wang, Genki Terashi & Daisuke Kihara. Cryo-READ: DNA/RNA dE novo Atomic structure moDeling in cryo-EM maps with deep learning. bioArxiv, 2022.
+Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nucleic acids in cryo-EM maps using deep learning. bioArxiv, 2022.
 ```
-@article{wang2021emap2secplus,   
-  title={Cryo-READ: DNA/RNA dE Novo Atomic Structure MoDeling in cryo-EM Maps with Deep Learning},   
-  author={Xiao Wang,  Genki Terashi, and Daisuke Kihara},    
+@article{xiao2022CryoREAD,   
+  title={De novo structure modeling for nucleic acids in cryo-EM maps using deep learning},   
+  author={Xiao Wang, Genki Terashi, and Daisuke Kihara},    
   journal={bioArxiv},    
   year={2022}    
 }   
