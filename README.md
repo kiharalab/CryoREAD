@@ -81,7 +81,6 @@ pip3 install numpy
 pip3 install numba
 pip3 install scipy
 pip3 install ortools
-pip3 install sklearn
 pip3 install mrcfile
 pip3 install torch==1.6.0
 ```
