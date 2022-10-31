@@ -211,21 +211,27 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
                                sugar_base_match_dict,DNA_Label)
         init_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
         format_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_%d_%d_%d_formated.pdb"%(ldp_size,checking_stride,top_select))
-        refined_pdb_path = os.path.join(save_path,"Final_Refined_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
+        refined_pdb_path = os.path.join(save_path,"CryoREAD_Refined_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
     # 5.3 reformat pdb for phenix to do refinement (including the last column in pdb file indicate atom type)
+    if params['refine']:
+        try:
+            os.system("pymol -cq ops/save_formated_pdb.py "+str(init_pdb_path)+" "+str(format_pdb_path))
 
-    os.system("pymol -cq ops/save_formated_pdb.py "+str(init_pdb_path)+" "+str(format_pdb_path))
+            # 5.4 build final atomic structure with phenix.real_space_refine
 
-    # 5.4 build final atomic structure with phenix.real_space_refine
-
-    os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(frag_collect_dir,format_pdb_path,origin_map_path,params['resolution']))
-    gen_pdb_path = format_pdb_path[:-4]+"_phenix_refine_000.pdb"
-    #Final_Assemble_20_2_20_formated_phenix_refine_000.pdb
-    if os.path.exists(gen_pdb_path):
-        shutil.copy(gen_pdb_path,refined_pdb_path)
-        print("please check final refined atomic structure in %s"%refined_pdb_path)
-    else:
-        print("please check final refined atomic structure in this directory %s"%frag_collect_dir)
-
+            os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(frag_collect_dir,format_pdb_path,origin_map_path,params['resolution']))
+            gen_pdb_path = format_pdb_path[:-4]+"_phenix_refine_000.pdb"
+            #Final_Assemble_20_2_20_formated_phenix_refine_000.pdb
+            if os.path.exists(gen_pdb_path):
+                shutil.copy(gen_pdb_path,refined_pdb_path)
+                print("please check final refined atomic structure in %s"%refined_pdb_path)
+            else:
+                print("please check final refined atomic structure in this directory %s"%frag_collect_dir)
+            return
+        except Exception as e:
+            print("Refinement failed because of the possible error",e)
+    nonrefined_pdb_path = os.path.join(save_path,"CryoREAD_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
+    shutil.copy(init_pdb_path,nonrefined_pdb_path)
+    print("please check final output atomic structure in %s"%nonrefined_pdb_path)
 
 

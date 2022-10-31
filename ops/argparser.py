@@ -30,6 +30,7 @@ def argparser():
     parser.add_argument("--num_workers",type=int,default=4,help="number of workers to fetch data for GPU inference. (Integer), Default value: 4")
     parser.add_argument('--prediction_only',  action='store_true', help="Optional input. Only run the deep learning prediction step. (True/False) Default value: False")
     parser.add_argument('--no_seqinfo',  action='store_true', help="Optional input. Build structures when no sequence information is available. (True/False) Default value: False")
+    parser.add_argument("--refine",action="store_true",help="Optional Input. Use Phenix to do the last step refinement or not (Suggested to set as True).")
     args = parser.parse_args()
     params = vars(args)
     return params
