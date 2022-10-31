@@ -61,7 +61,7 @@ git clone git@github.com:kiharalab/cryo_READ.git && cd cryo_READ
 
 ### 3. Build dependencies.   
 You have two options to install dependency on your computer:
-#### 3.1 Install with pip and python(Ver 3.6.9).
+#### 3.1 Install with pip and python.
 ##### 3.1.1[`install pip`](https://pip.pypa.io/en/stable/installing/).
 ##### 3.1.2  Install dependency in command line.
 ```
@@ -83,7 +83,7 @@ pip3 install torch==1.6.0
 ##### 3.2.1 [`install conda`](https://docs.conda.io/projects/conda/en/latest/user-guide/install/macos.html). 
 ##### 3.2.2 Install dependency in command line
 ```
-conda create -n cryo_READ python=3.8.10
+conda create -n cryo_READ python
 conda activate cryo_READ
 pip install -r requirements.txt 
 ```
