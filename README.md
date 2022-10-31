@@ -39,10 +39,10 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. Cryo-READ: DNA/RNA dE novo Atomic str
 3) Fragment-based nucleotide assignment;  
 4) Full atomic structure modeling.   
 
-<p align="center">
-  <img src="figures/framework.jpg" alt="cryo-READ framework" width="90%">
-</p> 
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/50850224/199084130-34b35a89-3c0c-4647-b693-82fbcc10c820.jpg" alt="cryo-READ framework" width="70%">
+</p> 
 
 ## Pre-required software
 ### Required 
