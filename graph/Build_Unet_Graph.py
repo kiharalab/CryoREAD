@@ -220,8 +220,10 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
             format_pdb(init_pdb_path,format_pdb_path)
 
             # 5.4 build final atomic structure with phenix.real_space_refine
-
-            os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(frag_collect_dir,format_pdb_path,origin_map_path,params['resolution']))
+            if params['colab']:
+                os.system('cd %s; /content/phenix/phenix-1.20.1-4487/build/bin/phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(frag_collect_dir,format_pdb_path,origin_map_path,params['resolution']))
+            else:
+                os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(frag_collect_dir,format_pdb_path,origin_map_path,params['resolution']))
             gen_pdb_path = format_pdb_path[:-4]+"_phenix_refine_000.pdb"
             #Final_Assemble_20_2_20_formated_phenix_refine_000.pdb
             if os.path.exists(gen_pdb_path):
