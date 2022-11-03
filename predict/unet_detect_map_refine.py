@@ -14,12 +14,14 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
     chain_classes =len(chain_prob)
     base_classes = len(base_prob)
     count_voxel = 0
+    count_iter=0
     Coord_Voxel = []
     for x in range(0, scan_x, stride):
         x_end = min(x + voxel_size, scan_x)
         for y in range(0, scan_y, stride):
             y_end = min(y + voxel_size, scan_y)
             for z in range(0, scan_z, stride):
+                count_iter+=1
                 z_end = min(z + voxel_size, scan_z)
                 if x_end < scan_x:
                     x_start = x
@@ -39,13 +41,13 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
                     meaningful_density_count = len(np.argwhere(segment_map_voxel>0))
                     meaningful_density_ratio = meaningful_density_count/float(voxel_size**3)
                     if meaningful_density_ratio<=0.001:
-                        print("meaningful density ratio %f, skip it!"%meaningful_density_ratio)
+                        print("meaningful density ratio %f of current box, skip it!"%meaningful_density_ratio)
                         continue
                 else:
                     meaningful_density_count = len(np.argwhere(segment_map_voxel > contour))
                     meaningful_density_ratio = meaningful_density_count / float(voxel_size ** 3)
                     if meaningful_density_ratio <= 0.001:
-                        print("no meaningful density ratio, skip it!")
+                        print("no meaningful density ratio of current box, skip it!")
                         continue
                 segment_input_voxel = np.zeros([chain_classes+base_classes, voxel_size,voxel_size,voxel_size])
                 segment_input_voxel[:chain_classes]=chain_prob[:,x_start:x_end, y_start:y_end, z_start:z_end]
@@ -55,7 +57,7 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
                 count_meaningful = (segment_input_voxel>0.5).sum()
                 meaningful_density_ratio = count_meaningful/ float(voxel_size ** 3)
                 if meaningful_density_ratio <= 0.001:
-                    print("no meaningful predictions in 1st stage, skip it!")
+                    print("no meaningful predictions of current box in 1st stage, skip it!")
                     continue
 
 
@@ -63,6 +65,7 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
                 np.save(cur_path,segment_input_voxel)
                 Coord_Voxel.append([x_start,y_start,z_start])
                 count_voxel+=1
+                print("2nd stage: %.2f percent scanning finished"%(count_iter/(scan_x*scan_y*scan_z/(stride**3))))
     Coord_Voxel = np.array(Coord_Voxel)
     coord_path = os.path.join(train_save_path,"Coord.npy")
     np.save(coord_path,Coord_Voxel)
