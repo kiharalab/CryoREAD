@@ -73,6 +73,7 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
     return Coord_Voxel
 
 from model.Small_Unet_3Plus_DeepSup import Small_UNet_3Plus_DeepSup
+import gc
 def make_predictions(test_loader,model,Coord_Voxel,voxel_size,overall_shape,num_classes,run_type=0):
     avg_meters = {'data_time': AverageMeter('data_time'),
                   'train_time': AverageMeter('train_time')}
@@ -127,6 +128,11 @@ def make_predictions(test_loader,model,Coord_Voxel,voxel_size,overall_shape,num_
                     count_positive = len(np.argwhere(Prediction_Matrix[j]>=0.5))
                     print("%d classes already detected %d voxels"%(j,count_positive))
             end_time = time.time()
+            del final_output
+            del pred_label
+            del outputs
+            del input
+            gc.collect()
     #Prediction_Matrix = Prediction_Matrix/Count_Matrix
     #replace nan with 0
     Prediction_Matrix[np.isnan(Prediction_Matrix)] = 0
