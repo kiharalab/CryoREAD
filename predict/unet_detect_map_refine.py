@@ -117,9 +117,9 @@ def make_predictions(test_loader,model,Coord_Voxel,voxel_size,overall_shape,num_
                     z_end=scan_z
                 #print(final_output[k].shape)
                 #print(Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end].shape)
-                pred_label=np.argmax(final_output[k],axis=1)
-                count_positive= len(np.argwhere(pred_label!=0))
-                print("%d example with %d positive predictions"%(k,count_positive))
+                #pred_label=np.argmax(final_output[k],axis=1)
+                #count_positive= len(np.argwhere(pred_label!=0))
+                #print("%d example with %d positive predictions"%(k,count_positive))
                 Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end] =np.maximum(Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end],final_output[k])
 
                 #Count_Matrix[x_start:x_end,y_start:y_end,z_start:z_end]+=1
