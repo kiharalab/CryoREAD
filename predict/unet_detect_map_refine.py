@@ -129,7 +129,7 @@ def make_predictions(test_loader,model,Coord_Voxel,voxel_size,overall_shape,num_
                     print("%d classes already detected %d voxels"%(j,count_positive))
             end_time = time.time()
             del final_output
-            del pred_label
+            #del pred_label
             del outputs
             del input
             gc.collect()
