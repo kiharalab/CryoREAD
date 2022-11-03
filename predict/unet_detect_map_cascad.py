@@ -20,6 +20,7 @@ def gen_input_data(map_data,voxel_size,stride,contour,train_save_path):
             y_end = min(y + voxel_size, scan_y)
             for z in range(0, scan_z, stride):
                 count_iter+=1
+                print("1st stage: %.2f percent scanning finished"%(count_iter/(scan_x*scan_y*scan_z/(stride**3))))
                 z_end = min(z + voxel_size, scan_z)
                 if x_end < scan_x:
                     x_start = x
@@ -61,7 +62,7 @@ def gen_input_data(map_data,voxel_size,stride,contour,train_save_path):
                 np.save(cur_path,segment_map_voxel)
                 Coord_Voxel.append([x_start,y_start,z_start])
                 count_voxel+=1
-                print("1st stage: %.2f percent scanning finished"%(count_iter/(scan_x*scan_y*scan_z/(stride**3))))
+
     Coord_Voxel = np.array(Coord_Voxel)
     coord_path = os.path.join(train_save_path,"Coord.npy")
     np.save(coord_path,Coord_Voxel)
