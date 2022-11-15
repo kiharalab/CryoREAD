@@ -1,4 +1,4 @@
-# cryo_READ
+# CryoREAD
 
 <a href="https://github.com/marktext/marktext/releases/latest">
    <img src="https://img.shields.io/badge/cryo_READ-v1.0.0-green">
