@@ -5,3 +5,4 @@ scipy
 ortools
 mrcfile
 torch==1.6.0
+progress

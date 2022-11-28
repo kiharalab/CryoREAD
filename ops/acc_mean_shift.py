@@ -7,7 +7,7 @@ def carry_shift(point_cd,cnt,fmaxd,fsiv,xdim,ydim,zdim,dens):
         point_dens=np.zeros(cnt)
         for i in range(cnt):
             if i%1000==0:
-                print(i)
+                print("mean shift",i,"/",cnt)
             #print(i)
             #print('start shifting for '+str(i))
             pos=np.zeros(3)

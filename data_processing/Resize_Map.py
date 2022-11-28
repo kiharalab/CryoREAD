@@ -7,13 +7,13 @@ from multiprocessing.sharedctypes import Value, Array
 from numba import jit
 #https://github.com/jglaser/interp3d
 import shutil
-
+from ops.progressbar import progressbar
 
 @jit(nopython=True,nogil=True)
 def interpolate_fast(data,data_new,size,iterator1,iterator2,iterator3,prev_voxel_size):
-    for i in range(1, iterator1, 1):
-        if(i%10==0):
-            print("Finished",i)
+    for i in progressbar(range(1, iterator1, 1), "Computing: ", 60):
+        #if(i%10==0):
+        #    print("Finished",i,iterator1)
         for j in range(1, iterator2, 1):
             for k in range(1, iterator3, 1):
                 count = [int(i / prev_voxel_size), int(j / prev_voxel_size), int(k / prev_voxel_size)]
@@ -62,7 +62,7 @@ def interpolate_fast_general(data,data_new,size,iterator1,iterator2,iterator3,
                              prev_voxel_size1,prev_voxel_size2,prev_voxel_size3):
     for i in range(1, iterator1, 1):
         if(i%10==0):
-            print("Finished",i)
+            print("Finished",i,iterator1)
         for j in range(1, iterator2, 1):
             for k in range(1, iterator3, 1):
                 count = [int(i / prev_voxel_size1), int(j / prev_voxel_size2), int(k / prev_voxel_size3)]
@@ -109,7 +109,7 @@ def interpolate_fast_general(data,data_new,size,iterator1,iterator2,iterator3,
 def interpolate_slow(data,data_new,size,iterator1,iterator2,iterator3,prev_voxel_size):
     for i in range(1, iterator1, 1):
         if(i%10==0):
-            print("Finished",i)
+            print("Finished",i,iterator1)
         for j in range(1, iterator2, 1):
             for k in range(1, iterator3, 1):
                 count = [int(i / prev_voxel_size), int(j / prev_voxel_size), int(k / prev_voxel_size)]

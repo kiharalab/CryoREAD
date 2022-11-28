@@ -9,6 +9,7 @@ import torch.nn as nn
 from ops.Logger import AverageMeter,ProgressMeter
 from data_processing.DRNA_dataset import  Single_Dataset2
 from model.Small_Unet_3Plus_DeepSup import Small_UNet_3Plus_DeepSup
+from progress.bar import Bar
 def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train_save_path):
     scan_x, scan_y, scan_z = map_data.shape
     chain_classes =len(chain_prob)
@@ -16,11 +17,14 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
     count_voxel = 0
     count_iter=0
     Coord_Voxel = []
+    bar = Bar('Preparing Input: ', max=int((scan_x*scan_y*scan_z/(stride**3))))
+
     for x in range(0, scan_x, stride):
         x_end = min(x + voxel_size, scan_x)
         for y in range(0, scan_y, stride):
             y_end = min(y + voxel_size, scan_y)
             for z in range(0, scan_z, stride):
+                bar.next()
                 count_iter+=1
                 z_end = min(z + voxel_size, scan_z)
                 if x_end < scan_x:
@@ -65,7 +69,8 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
                 np.save(cur_path,segment_input_voxel)
                 Coord_Voxel.append([x_start,y_start,z_start])
                 count_voxel+=1
-                print("2nd stage: %.2f percent scanning finished"%(count_iter/(scan_x*scan_y*scan_z/(stride**3))))
+                #print("2nd stage: %.2f percent scanning finished"%(count_iter/(scan_x*scan_y*scan_z/(stride**3))))
+    bar.finish()
     Coord_Voxel = np.array(Coord_Voxel)
     coord_path = os.path.join(train_save_path,"Coord.npy")
     np.save(coord_path,Coord_Voxel)
