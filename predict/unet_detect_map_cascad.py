@@ -8,13 +8,14 @@ import torch.nn as nn
 from ops.Logger import AverageMeter,ProgressMeter
 from data_processing.DRNA_dataset import Single_Dataset
 from model.Cascade_Unet import Cascade_Unet
-from progress.bar import Bar
+
 
 def gen_input_data(map_data,voxel_size,stride,contour,train_save_path):
     scan_x, scan_y, scan_z = map_data.shape
     count_voxel = 0
     count_iter=0
     Coord_Voxel = []
+    from progress.bar import Bar
     bar = Bar('Preparing Input: ', max=int((scan_x*scan_y*scan_z/(stride**3))))
 
 

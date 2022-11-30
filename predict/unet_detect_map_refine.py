@@ -9,8 +9,8 @@ import torch.nn as nn
 from ops.Logger import AverageMeter,ProgressMeter
 from data_processing.DRNA_dataset import  Single_Dataset2
 from model.Small_Unet_3Plus_DeepSup import Small_UNet_3Plus_DeepSup
-from progress.bar import Bar
 def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train_save_path):
+    from progress.bar import Bar
     scan_x, scan_y, scan_z = map_data.shape
     chain_classes =len(chain_prob)
     base_classes = len(base_prob)
