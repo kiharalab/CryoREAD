@@ -7,13 +7,25 @@ from multiprocessing.sharedctypes import Value, Array
 from numba import jit
 #https://github.com/jglaser/interp3d
 import shutil
-from ops.progressbar import progressbar
+from numba_progress import ProgressBar
 
 @jit(nopython=True,nogil=True)
-def interpolate_fast(data,data_new,size,iterator1,iterator2,iterator3,prev_voxel_size):
-    for i in progressbar(range(1, iterator1, 1), "Computing: ", 60):
-        #if(i%10==0):
-        #    print("Finished",i,iterator1)
+def interpolate_fast(data,data_new,size,iterator1,iterator2,iterator3,prev_voxel_size,progress_proxy):
+
+
+    for i in range(1, iterator1, 1):
+        progress_proxy.update(1)
+        # if(i%1==0):
+        #     prefix="interpolating"
+        #     display_size=60
+        #     x = int(display_size*i/iterator1)
+        #     line=["#" for k in range(x)]
+        #     #line="".join(line)
+        #     line1=["." for k in range(size-x)]
+        #     #line1="".join(line1)
+        #     print(prefix, "[",line,line1,"] (", i, iterator1,")",
+        #         end='\r',  flush=True)
+            #print("Finished",i,iterator1)
         for j in range(1, iterator2, 1):
             for k in range(1, iterator3, 1):
                 count = [int(i / prev_voxel_size), int(j / prev_voxel_size), int(k / prev_voxel_size)]
@@ -61,8 +73,8 @@ def interpolate_fast(data,data_new,size,iterator1,iterator2,iterator3,prev_voxel
 def interpolate_fast_general(data,data_new,size,iterator1,iterator2,iterator3,
                              prev_voxel_size1,prev_voxel_size2,prev_voxel_size3):
     for i in range(1, iterator1, 1):
-        if(i%10==0):
-            print("Finished",i,iterator1)
+        #if(i%10==0):
+        #    print("Finished",i,iterator1)
         for j in range(1, iterator2, 1):
             for k in range(1, iterator3, 1):
                 count = [int(i / prev_voxel_size1), int(j / prev_voxel_size2), int(k / prev_voxel_size3)]
@@ -106,10 +118,11 @@ def interpolate_fast_general(data,data_new,size,iterator1,iterator2,iterator3,
                 data_new[i,j,k]=val
     return data_new#np.float32(data_new)
 
-def interpolate_slow(data,data_new,size,iterator1,iterator2,iterator3,prev_voxel_size):
+def interpolate_slow(data,data_new,size,iterator1,iterator2,iterator3,prev_voxel_size,progress_proxy):
     for i in range(1, iterator1, 1):
-        if(i%10==0):
-            print("Finished",i,iterator1)
+        progress_proxy.update(1)
+        # if(i%10==0):
+        #     print("Finished",i,iterator1)
         for j in range(1, iterator2, 1):
             for k in range(1, iterator3, 1):
                 count = [int(i / prev_voxel_size), int(j / prev_voxel_size), int(k / prev_voxel_size)]
@@ -185,9 +198,13 @@ def Reform_Map_Voxel_Final(map_path,new_map_path):
             it_val_z = int(np.floor(size[2] * prev_voxel_size_z))
             print("Previouse size:", size, " Current map size:", [it_val_x,it_val_y,it_val_z])
             data_new = np.zeros([it_val_x, it_val_y, it_val_z])
-            for i in range(it_val_x):
-                if i%10==0:
-                    print("Resizing finished %d/%d"%(i,it_val_x))
+            #from ops.progressbar import progressbar
+            from progress.bar import Bar
+            bar = Bar('Preparing Input: ', max=int(it_val_x))
+            for i in range(it_val_x):#progressbar(range(it_val_x), prefix="", size=60):
+                #if i%10==0:
+                #    print("Resizing finished %d/%d"%(i,it_val_x))
+                bar.next()
                 for j in range(it_val_y):
                     for k in range(it_val_z):
                         if ( i/prev_voxel_size_x>= size[0] - 1):
@@ -206,7 +223,7 @@ def Reform_Map_Voxel_Final(map_path,new_map_path):
                         current_query=np.array([x_query,y_query,z_query])
                         current_value=float(my_interpolating_function(current_query))
                         data_new[i,j,k]=current_value
-
+            bar.finish()
             data_new = np.swapaxes(data_new, 0, 2)
             data_new = np.float32(data_new)
             mrc_new = mrcfile.new(new_map_path, data=data_new, overwrite=True)
@@ -273,13 +290,15 @@ def Reform_Map_Voxel(map_path,new_map_path):
             #out_1d = pool.map(interpolate,enumerate(np.reshape(data_new, (iterator.value * iterator.value * iterator.value,))))
             #data_new = np.array(out_1d).reshape(iterator.value, iterator.value, iterator.value)
             try:
-                data_new=interpolate_fast(data,data_new,size,it_val1,it_val2,it_val3,prev_voxel_size)
+                with ProgressBar(total=it_val1) as progress:
+                    data_new=interpolate_fast(data,data_new,size,it_val1,it_val2,it_val3,prev_voxel_size,progress)
             except:
                 data_new = np.zeros([it_val1, it_val2, it_val3])
                 data_new[0, 0, 0] = data[0, 0, 0]
                 data_new[it_val1 - 1, it_val2 - 1, it_val3 - 1] = data[
                     size[0] - 1, size[1] - 1, size[2] - 1]
-                data_new = interpolate_slow(data, data_new, size, it_val1,it_val2,it_val3, prev_voxel_size)
+                with ProgressBar(total=it_val1) as progress:
+                    data_new = interpolate_slow(data, data_new, size, it_val1,it_val2,it_val3, prev_voxel_size,progress)
             data_new = np.swapaxes(data_new, 0, 2)
             data_new=np.float32(data_new)
             mrc_new = mrcfile.new(new_map_path, data=data_new, overwrite=True)
@@ -315,3 +334,67 @@ def Resize_Map(input_map_path,new_map_path):
         except:
             exit()
     return new_map_path
+
+if __name__ == "__main__":
+    import sys
+    def progressbar(it, prefix="", size=60, out=sys.stdout): # Python3.3+
+        count = len(it)
+        def show(j):
+            x = int(size*j/count)
+            print("{}[{}{}] {}/{}".format(prefix, "#"*x, "."*(size-x), j, count),
+                    end='\r', file=out, flush=True)
+        show(0)
+        for i, item in enumerate(it):
+            yield item
+            show(i+1)
+        print("\n", flush=True, file=out)
+    from numba_progress import ProgressBar
+    data_new=np.zeros([200,200,200])
+    data=np.zeros([100,100,100])
+    size=[100,100,100]
+    it_val1=200
+    it_val2=200
+    it_val3=200
+    prev_voxel_size=0.5
+    from scipy.interpolate import RegularGridInterpolator
+    with ProgressBar(total=it_val1) as progress:
+        interpolate_fast(data,data_new,size,it_val1,it_val2,it_val3,prev_voxel_size,progress)
+    with ProgressBar(total=it_val1) as progress:
+        data_new2 = interpolate_slow(data, data_new, size, it_val1,it_val2,it_val3, prev_voxel_size,progress)
+    #from ops.progressbar import progressbar
+    it_val_x=it_val1
+    it_val_y=it_val2
+    it_val_z=it_val3
+    prev_voxel_size_x=prev_voxel_size
+    prev_voxel_size_y=prev_voxel_size
+    prev_voxel_size_z=prev_voxel_size
+    x = np.arange(size[0])
+    y = np.arange(size[1])
+    z = np.arange(size[2])
+    my_interpolating_function = RegularGridInterpolator((x, y, z), data)
+    from progress.bar import Bar
+    bar = Bar('Preparing Input: ', max=int(it_val_x))
+    for i in range(it_val_x):#progressbar(range(it_val_x), prefix="", size=60):
+        #if i%10==0:
+        #    print("Resizing finished %d/%d"%(i,it_val_x))
+        bar.next()
+        for j in range(it_val_y):
+            for k in range(it_val_z):
+                if ( i/prev_voxel_size_x>= size[0] - 1):
+                    x_query=size[0] - 1
+                else:
+                    x_query = i/prev_voxel_size_x
+
+                if ( j/prev_voxel_size_y>= size[1] - 1):
+                    y_query=size[1] - 1
+                else:
+                    y_query = j/prev_voxel_size_y
+                if ( k/prev_voxel_size_z>= size[2] - 1):
+                    z_query=size[2] - 1
+                else:
+                    z_query = k/prev_voxel_size_z
+                current_query=np.array([x_query,y_query,z_query])
+                current_value=float(my_interpolating_function(current_query))
+                data_new[i,j,k]=current_value
+
+    bar.finish()
