@@ -16,7 +16,7 @@ def gen_input_data(map_data,voxel_size,stride,contour,train_save_path):
     count_iter=0
     Coord_Voxel = []
     from progress.bar import Bar
-    bar = Bar('Preparing Input: ', max=int((scan_x*scan_y*scan_z/(stride**3))))
+    bar = Bar('Preparing Input: ', max=int(np.ceil(scan_x/stride)*np.ceil(scan_y/stride)*np.ceil(scan_z/stride)))
 
 
     for x in range(0, scan_x, stride):

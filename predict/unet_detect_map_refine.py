@@ -17,7 +17,7 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
     count_voxel = 0
     count_iter=0
     Coord_Voxel = []
-    bar = Bar('Preparing Input: ', max=int((scan_x*scan_y*scan_z/(stride**3))))
+    bar = Bar('Preparing Input: ', max=int(np.ceil(scan_x/stride)*np.ceil(scan_y/stride)*np.ceil(scan_z/stride)))
 
     for x in range(0, scan_x, stride):
         x_end = min(x + voxel_size, scan_x)
