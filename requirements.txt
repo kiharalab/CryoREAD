@@ -7,3 +7,4 @@ mrcfile
 torch==1.6.0
 progress
 numba-progress
+tqdm
