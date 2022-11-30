@@ -1,4 +1,4 @@
-# cryo_READ
+# CryoREAD
 
 <a href="https://github.com/marktext/marktext/releases/latest">
    <img src="https://img.shields.io/badge/cryo_READ-v1.0.0-green">
@@ -30,8 +30,10 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nuclei
 }   
 ```
 
-## Project website: 
+## Project website: https://kiharalab.org/emsuites
 ## Online Platform:  (Run easily and freely)
+### https://bit.ly/CryoREAD 
+### https://github.com/kiharalab/CryoREAD/blob/main/CryoREAD.ipynb
 
 ## Introduction
 
