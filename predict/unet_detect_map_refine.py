@@ -61,7 +61,7 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
                 count_meaningful = (segment_input_voxel>0.5).sum()
                 meaningful_density_ratio = count_meaningful/ float(voxel_size ** 3)
                 if meaningful_density_ratio <= 0.001:
-                    print("no meaningful predictions of current box in 1st stage, skip it!")
+                    #print("no meaningful predictions of current box in 1st stage, skip it!")
                     continue
 
 
