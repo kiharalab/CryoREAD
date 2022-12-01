@@ -236,7 +236,7 @@ def Prune_Selected_Path(tmp_save_path,listfiles,merged_cd_dens,drna_graph,map_in
         cur_cif_path = os.path.join(tmp_save_path,item)
         #extract the coordinates
         extract_coord_list = Extract_CIF_coord(cur_cif_path) #order indicates connections
-        if len(extract_coord_list)<5:
+        if len(extract_coord_list)<=2:
             continue
         #identify the corresponding node id
         node_id_list = Identify_Trace_Node(merged_cd_dens,extract_coord_list,map_info_list)
