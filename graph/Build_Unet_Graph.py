@@ -61,7 +61,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
 
     #1.2 graph construction: edge constructions
     #pho_graph,pho_coordinate_list,pho_edge_pairs,pho_edge_d_dens = construct_graph(input_mrc,input_mrc.pho_dens, pho_point,chain_prob[1],chain_prob[-1],save_path,"pho_graph",map_info_list,params,prob_threshold=pho_prob_threshold,extend=True)
-    sugar_graph,sugar_coordinate_list,sugar_edge_pairs,sugar_edge_d_dens = construct_graph(input_mrc,input_mrc.sugar_dens,sugar_point,chain_prob[0],chain_prob[-1],save_path,"sugar_graph",map_info_list,params,prob_threshold=sugar_prob_threshold,extend=False)
+    sugar_graph,sugar_coordinate_list,sugar_edge_pairs,sugar_edge_d_dens = construct_graph(input_mrc,input_mrc.sugar_dens,sugar_point,chain_prob[0],chain_prob[-1],save_path,"sugar_graph",map_info_list,params,prob_threshold=sugar_prob_threshold,extend=True)
 
     #here edge density distance/probability since we prefer low distance+high prob
     #can't search once, it's too heavy loaded, hence divided into several graphs to calculate
