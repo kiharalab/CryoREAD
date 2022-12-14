@@ -68,11 +68,15 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
 
     #2. Path searching with sugar graphs
     #2.1 divide subgraphs
-    mst = Tree(params)
+    #mst = Tree(params)
     #sort edge, finding connections, label mst_label
-    connect_cid = mst.Setup_Connection(sugar_graph)
-    subgraphs = sugar_graph.build_subgraph(connect_cid)
-    print("in total we have %d graphs"%len(subgraphs))
+    #connect_cid = mst.Setup_Connection(sugar_graph)
+    #update with more relaxed subgraph construction, fully based on distance constraints
+    #connect_cid = mst.Setup_Relaxed_Connection(sugar_graph)
+    #subgraphs = sugar_graph.build_subgraph(connect_cid)
+    #print("in total we have %d graphs"%len(subgraphs))
+    #to allow more searches to avoid some failure
+    subgraphs = [[k for k in range(sugar_graph.Nnode)]]
 
     #2.2 collect all possible paths
     sugar_search_path = os.path.join(save_path,"sugar_search")

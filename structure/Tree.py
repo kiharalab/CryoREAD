@@ -206,6 +206,8 @@ class Tree(object):
         print('after cleaning Nt=%d, Ne=%d' % (graph.Nt, graph.Ne))
         return graph.cid
         # Clean isolated dens data from mrc
+
+
     def build_local_mst(self,graph,point, d2cut,save_path):
         # local MST
         print('local MST building')
