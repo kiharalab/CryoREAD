@@ -127,7 +127,7 @@ optional arguments:
   --box_size BOX_SIZE   Input box size for deep learning model. (Integer), Default value: 64
   --gpu GPU             Specify the gpu we will use. (str), Default value: None.
   --batch_size BATCH_SIZE
-                        Batch size for inference of network. (Integer), Default value: 8.
+                        Batch size for inference of network. (Integer), Default value: 4.
   -f F                  Filter for representative points, for LDPs, removing points' normalized density<=-f (Float), Default value: 0.05
   -m M                  After meanshifting merge points distance<[float]. (Float), Default value: 2.0.
   -g G                  Bandwidth of the Gaussian filter, (Float), Default value: 3.0.
@@ -163,7 +163,7 @@ The predicted probability maps are saved in [Predict_Result/(map_name)/2nd_stage
 
 Example Command:
 ```
-python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=8 --prediction_only
+python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=4 --prediction_only
 ```
 
 ### 2. Build atomic structure without sequence information
@@ -178,7 +178,7 @@ The automatically build atomic structure is saved in [Predict_Result/(map-name)/
 
 Example Command:
 ```
-python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=8 --resolution=3.7 --no_seqinfo --refine
+python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=4 --resolution=3.7 --no_seqinfo --refine
 ```
 
 
@@ -192,7 +192,7 @@ python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour
 
 Example Command:
 ```
-python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fasta --contour=0.3 --gpu=0 --batch_size=8 --rule_soft=0 --resolution=3.7  --refine
+python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fasta --contour=0.3 --gpu=0 --batch_size=4 --rule_soft=0 --resolution=3.7  --refine
 ```
 The automatically build atomic structure is saved in The automatically build atomic structure is saved in [Predict_Result/(map-name)/Output/Refine_cycle[k].pdb] in pdb format, here default k is 3. However, it may fail if your dependencies are not properly installed, then you may only find Refine_cycle1.pdb or Refine_cycle2.pdb. Modeled structures without considering sequence information are also saved as [Predict_Result/(map-name)/Output/CryoREAD_noseq.pdb] (without refinement). Meanwhile, structures only considering the sequence information without connecting gap regions are saved in [Predict_Result/(map-name)/Output/CryoREAD_seqonly.pdb] (without refinement) for reference.
 
