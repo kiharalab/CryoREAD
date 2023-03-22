@@ -31,6 +31,7 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nuclei
 ```
 
 ## Project website: https://kiharalab.org/emsuites
+### Detailed Instructions can be found https://kiharalab.org/emsuites/cryoread.php
 ## Online Platform:  (Run easily and freely)
 ### https://bit.ly/CryoREAD 
 ### https://github.com/kiharalab/CryoREAD/blob/main/CryoREAD.ipynb
@@ -202,8 +203,10 @@ The automatically build atomic structure is saved in The automatically build ato
 ### Input File
 Cryo-EM map with mrc format. 
 (Optional) Sequence information with fasta format.
+Our example input can be found [here](https://github.com/kiharalab/CryoREAD/tree/main/example)
 
 ### Output File 
 1 *.mrc: a mrc file saved our detected probabilites by our deep learning model.    
 2 *.pdb: a PDB file that stores the atomic DNA/RNA structure by our method.
+Our example output can be found [here](https://kiharalab.org/emsuites/cryoread/output_21051.tar.gz). All the intermediate results are also kept here. 
 
