@@ -58,6 +58,7 @@ Here, we developed a deep learning-based fully automated de novo DNA/RNA atomic 
 ### Required 
 Python 3 : https://www.python.org/downloads/     
 Phenix: https://phenix-online.org/documentation/install-setup-run.html   
+Coot: https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/
 ### Optional
 Pymol (for map visualization): https://pymol.org/2/    
 Chimera (for map visualization): https://www.cgl.ucsf.edu/chimera/download.html  
