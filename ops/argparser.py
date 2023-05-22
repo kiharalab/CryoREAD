@@ -10,6 +10,7 @@ def argparser():
     parser.add_argument('-F',type=str, help='Input map file path. (str)')
     parser.add_argument('-M', type=str,  default="best_model",help='Pre-trained model path.  (str) Default value: "best_model"')
     parser.add_argument("-P",type=str,help="Optional fasta sequence file path. (str) ")
+    parser.add_argument("--output",type=str,help="Output directory")
     parser.add_argument('--mode',type=int,required=True,help='Control Mode for program: 0: cryo_READ structure modeling. Required parameter. (Integer), Default value: 0')
     parser.add_argument("--contour",type=float,default=0,help="Contour level for input map, suggested 0.5*[author_contour]. (Float), Default value: 0.0")
     parser.add_argument("--stride",type=int,default=16,help="Stride for scanning of deep learning model. (Integer), Default value: 16.")
