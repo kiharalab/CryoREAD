@@ -35,6 +35,7 @@ if __name__ == "__main__":
         else:
             save_path=params['output']
             map_name="input"
+            mkdir(save_path)
         from data_processing.Resize_Map import Resize_Map
         cur_map_path = Resize_Map(cur_map_path,os.path.join(save_path,map_name+".mrc"))
         from predict.predict_1st_stage import Predict_1st_Stage
