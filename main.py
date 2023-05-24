@@ -30,7 +30,7 @@ if __name__ == "__main__":
             fasta_path = None
         else:
             fasta_path = os.path.abspath(params['P'])
-        if params['output'] is not None:
+        if params['output'] is None:
             save_path,map_name = init_save_path(cur_map_path)
         else:
             save_path=params['output']
