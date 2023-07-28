@@ -32,7 +32,11 @@ def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_d
         # 5.4.0 prepare the mask map
         mask_map_path = os.path.join(root_save_path,"mask_map.mrc")
         Gen_MaskDRNA_map(chain_prob,origin_map_path,mask_map_path,params['contour'],threshold=0.6)
-
+        #run coot+phenix refinement
+        output_dir = os.path.join(root_save_path,"Output")
+        mkdir(output_dir)
+        refine0_pdb_path = os.path.join(output_dir,"Refine_cycle0.pdb")
+        shutil.copy(format_pdb_path,refine0_pdb_path)
         # 5.4 build final atomic structure with phenix.real_space_refine
         if params['colab']:
             os.system('cd %s; /content/phenix/phenix-1.20.1-4487/build/bin/phenix.real_space_refine %s %s '
@@ -40,10 +44,16 @@ def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_d
         else:
             os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine" skip_map_model_overlap_check=True'%(frag_collect_dir,format_pdb_path,mask_map_path,params['resolution']))
         gen_pdb_path = format_pdb_path[:-4]+"_phenix_refine_000.pdb"
+        count_check=0
+        while not os.path.exists(gen_pdb_path) and count_check<5:
+            gen_pdb_path = format_pdb_path[:-4]+"_phenix_refine_00%d.pdb"%(count_check+1)
+            count_check+=1
+        if not os.path.exists(gen_pdb_path):
+            print("please check final non-refined atomic structure in %s"%refine0_pdb_path)
+            return
         try:
             #run coot+phenix refinement
-            output_dir = os.path.join(root_save_path,"Output")
-            mkdir(output_dir)
+
             refine1_pdb_path = os.path.join(output_dir,"Refine_cycle1.pdb")
             remove_op3_pdb(gen_pdb_path,refine1_pdb_path)
             #do coot refinement
