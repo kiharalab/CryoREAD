@@ -35,9 +35,10 @@ def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_d
 
         # 5.4 build final atomic structure with phenix.real_space_refine
         if params['colab']:
-            os.system('cd %s; /content/phenix/phenix-1.20.1-4487/build/bin/phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(frag_collect_dir,format_pdb_path,mask_map_path,params['resolution']))
+            os.system('cd %s; /content/phenix/phenix-1.20.1-4487/build/bin/phenix.real_space_refine %s %s '
+                      'resolution=%.4f output.suffix="_phenix_refine" skip_map_model_overlap_check=True'%(frag_collect_dir,format_pdb_path,mask_map_path,params['resolution']))
         else:
-            os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(frag_collect_dir,format_pdb_path,mask_map_path,params['resolution']))
+            os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine" skip_map_model_overlap_check=True'%(frag_collect_dir,format_pdb_path,mask_map_path,params['resolution']))
         gen_pdb_path = format_pdb_path[:-4]+"_phenix_refine_000.pdb"
         try:
             #run coot+phenix refinement
@@ -55,9 +56,11 @@ def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_d
             coot_refine_structure(refine1_pdb_path,mask_map_path,refine2_pdb_path,coot_software)
             refine3_pdb_path = os.path.join(output_dir,"Refine_cycle3.pdb")
             if params['colab']:
-                os.system('cd %s; /content/phenix/phenix-1.20.1-4487/build/bin/phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(output_dir,refine2_pdb_path,mask_map_path,params['resolution']))
+                os.system('cd %s; /content/phenix/phenix-1.20.1-4487/build/bin/phenix.real_space_refine %s %s '
+                          'resolution=%.4f output.suffix="_phenix_refine skip_map_model_overlap_check=True"'%(output_dir,refine2_pdb_path,mask_map_path,params['resolution']))
             else:
-                os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f output.suffix="_phenix_refine"'%(output_dir,refine2_pdb_path,mask_map_path,params['resolution']))
+                os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f '
+                          'output.suffix="_phenix_refine" skip_map_model_overlap_check=True'%(output_dir,refine2_pdb_path,mask_map_path,params['resolution']))
             phenix_final_pdb = refine2_pdb_path[:-4]+"_phenix_refine_000.pdb"
 
             if os.path.exists(phenix_final_pdb):
