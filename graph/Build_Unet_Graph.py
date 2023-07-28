@@ -72,7 +72,10 @@ def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_d
                 os.system('cd %s; phenix.real_space_refine %s %s resolution=%.4f '
                           'output.suffix="_phenix_refine" skip_map_model_overlap_check=True'%(output_dir,refine2_pdb_path,mask_map_path,params['resolution']))
             phenix_final_pdb = refine2_pdb_path[:-4]+"_phenix_refine_000.pdb"
-
+            count_check=0
+            while not os.path.exists(phenix_final_pdb) and count_check<5:
+                phenix_final_pdb = refine2_pdb_path[:-4]+"_phenix_refine_00%d.pdb"%(count_check+1)
+                count_check+=1
             if os.path.exists(phenix_final_pdb):
                 shutil.move(phenix_final_pdb,refine3_pdb_path)
                 print("please check final refined atomic structure in %s"%refine3_pdb_path)
