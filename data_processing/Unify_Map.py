@@ -43,6 +43,7 @@ def Unify_Map(input_map_path, new_map_path):
     mrc_new.update_header_stats()
     mrc_new.print_header()
     mrc_new.close()
+    return new_map_path
 
 
 if __name__ == "__main__":
