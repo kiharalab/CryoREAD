@@ -1,7 +1,8 @@
+from pathlib import Path
 
 import mrcfile
 import numpy as np
-from pathlib import Path
+
 
 def Unify_Map(input_map_path, new_map_path):
     # Read MRC file
@@ -27,10 +28,10 @@ def Unify_Map(input_map_path, new_map_path):
     # Reorder
     sort = np.asarray([0, 1, 2], dtype=np.int64)
     for i in range(3):
-        sort[mapcrs[i]-1] = i
+        sort[mapcrs[i] - 1] = i
     nstart = np.asarray([nstart[i] for i in sort])
     voxel_size = np.asarray([voxel_size[i] for i in sort])
-    data = np.transpose(data, axes=2-sort[::-1])
+    data = np.transpose(data, axes=2 - sort[::-1])
 
     # Move offsets from nstart to origin
     origin = origin + nstart * voxel_size
@@ -42,9 +43,6 @@ def Unify_Map(input_map_path, new_map_path):
     mrc_new.update_header_stats()
     mrc_new.print_header()
     mrc_new.close()
-
-
-
 
 
 if __name__ == "__main__":
