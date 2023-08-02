@@ -6,7 +6,7 @@ import numpy as np
 
 def Unify_Map(input_map_path, new_map_path):
     # Read MRC file
-    mrc = mrcfile.open(input_map_path, mode='r')
+    mrc = mrcfile.open(input_map_path, permissive=True)
 
     data = mrc.data.copy()
     voxel_size = np.asarray(mrc.voxel_size.tolist(), dtype=np.float32)
@@ -14,16 +14,18 @@ def Unify_Map(input_map_path, new_map_path):
     nstart = np.asarray([mrc.header.nxstart, mrc.header.nystart, mrc.header.nzstart], dtype=np.float32)
     cellb = np.array(mrc.header.cellb.tolist(), dtype=np.float32)
     mapcrs = np.asarray([mrc.header.mapc, mrc.header.mapr, mrc.header.maps], dtype=int)
+    if np.sum(nstart)==0:
+        return input_map_path
     mrc.print_header()
     mrc.close()
 
     # Check orthogonality
-    try:
-        assert (cellb[0] == cellb[1] == cellb[2] == 90.0)
-    except AssertionError:
-        print("Error! We can only process orthogonal map.")
-        mrc.close()
-        exit()
+#    try:
+#        assert (cellb[0] == cellb[1] == cellb[2] == 90.0)
+#    except AssertionError:
+#        print("Error! We can only process orthogonal map.")
+#        mrc.close()
+#        exit()
 
     # Reorder
     sort = np.asarray([0, 1, 2], dtype=np.int64)
