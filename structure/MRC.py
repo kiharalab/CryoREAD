@@ -408,9 +408,9 @@ class MRC(object):
         fmaxd = (bandwidth / gstep) * 2.0
         print('fmaxd=%f' % fmaxd)
         # Meanshifting
-        tmp_xdim = (float)(self.xdim)
-        tmp_ydim = (float)(self.ydim)
-        tmp_zdim = float(self.zdim)
+        tmp_xdim = (float)(density.shape[0])
+        tmp_ydim = (float)(density.shape[1])
+        tmp_zdim = float(density.shape[2])
         tmp_dens = np.array(density)
         #point.cd: [id]:[x,y,z] in grid space
         if not constriant:
@@ -464,9 +464,9 @@ class MRC(object):
         fmaxd = (bandwidth / gstep) * 2.0
         print('fmaxd=%f' % fmaxd)
         # Meanshifting
-        tmp_xdim = (float)(self.xdim)
-        tmp_ydim = (float)(self.ydim)
-        tmp_zdim = float(self.zdim)
+        tmp_xdim = (float)(self.dens.shape[0])
+        tmp_ydim = (float)(self.dens.shape[1])
+        tmp_zdim = float(self.dens.shape[2])
         tmp_dens = np.array(self.dens)
         #point.cd: [id]:[x,y,z] in grid space
         point.cd, point.dens = carry_shift(point.cd, cnt, fmaxd, fsiv,
