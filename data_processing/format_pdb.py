@@ -25,7 +25,7 @@ map_dict={"P":"P","C5'":"C","O5'":"O","C4'":"C","O4'":"O","C3'":"C","O3'":"O","C
 def write_res_info(wfile,current_atom_info,atomid,nucid):
     if nucid>9999:
         nucid=9999
-    res_name = current_atom_info['P'][3]
+    res_name = current_atom_info["C4'"][3]
     # res_name=residue.get_resname().replace(" ","")
     # current_atom_info={} #[atom_name]:[information]
     # for atom in residue.get_list():
