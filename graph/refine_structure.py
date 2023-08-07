@@ -2,7 +2,7 @@ import os
 from ops.os_operation import mkdir
 import shutil
 from data_processing.format_pdb import format_pdb,remove_op3_pdb
-def refine_structure(input_pdb,input_map,output_dir):
+def refine_structure(input_pdb,input_map,output_dir,params):
     mkdir(output_dir)
     assert input_pdb[-4:]==".pdb"
     format_pdb_path =  os.path.join(output_dir,"input_format.pdb")

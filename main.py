@@ -77,7 +77,7 @@ if __name__ == "__main__":
         output_dir = os.path.abspath(params['P'])
         #resolution param also needed
         from graph.refine_structure import refine_structure
-        refine_structure(input_pdb,input_map,output_dir)
+        refine_structure(input_pdb,input_map,output_dir,params)
 
 
 
