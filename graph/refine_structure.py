@@ -6,7 +6,7 @@ def refine_structure(input_pdb,input_map,output_dir):
     mkdir(output_dir)
     assert input_pdb[-4:]==".pdb"
     format_pdb_path =  os.path.join(output_dir,"input_format.pdb")
-    format_pdb(init_pdb_path,format_pdb_path)
+    format_pdb(input_pdb,format_pdb_path)
     if "resolution" not in params:
         params['resolution'] =5
         print("no resolutino input detected, use 5A as default resolution for refinement!")
