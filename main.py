@@ -70,6 +70,15 @@ if __name__ == "__main__":
         chain_predict_path = os.path.join(cur_predict_path,"chain_predictprob.npy")
         Build_Unet_Graph(cur_map_path,chain_predict_path,fasta_path,graph_save_path,
                 gaussian_bandwidth,dcut, rdcut,params)
+    elif params['mode']==1:
+        #structure refinement pipeline
+        input_pdb = os.path.abspath(params['F'])
+        input_map = os.path.abspath(params['M'])
+        output_dir = os.path.abspath(params['P'])
+        #resolution param also needed
+        from graph.refine_structure import refine_structure
+        refine_structure(input_pdb,input_map,output_dir)
+
 
 
 
