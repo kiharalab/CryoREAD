@@ -30,8 +30,19 @@ def read_fasta(input_fasta_path):
                             break
 
                 line=line.strip("\n").replace(" ","")
+                #quick check to see if it includes protein fasta
+                dna_seq_flag=True
+                count_porition=0
                 for item in line:
-                    chain_dict[current_id].append(dna_rna_set[item])
+                    if item in dna_rna_set:
+                        count_porition+=1
+                count_porition = count_porition/len(line)
+                if count_porition<=0.9:
+                    dna_seq_flag=False
+                if dna_seq_flag:
+                    for item in line:
+                        if item in dna_rna_set:
+                            chain_dict[current_id].append(dna_rna_set[item])
     print("read chain info from fasta:",chain_dict)
     return chain_dict
 
