@@ -1,6 +1,6 @@
 
 from collections import  defaultdict
-def read_fasta(input_fasta_path):
+def read_fasta(input_fasta_path,dna_check=False):
     #format should be
     #>chain_id
     #sequence
@@ -11,6 +11,7 @@ def read_fasta(input_fasta_path):
     tmp_chain_list=[chr(i) for i in range(ord('A'), ord('Z') + 1)]  # uppercase letters
     tmp_chain_list.extend([chr(i) for i in range(ord('a'), ord('z') + 1)])  # lowercase letters
     read_chain=False
+    dna_label=True
     with open(input_fasta_path,'r') as file:
         for line in file:
             if line[0]==">":
@@ -42,17 +43,22 @@ def read_fasta(input_fasta_path):
                 if dna_seq_flag:
                     for item in line:
                         if item in dna_rna_set:
+                            if item=="U":
+                                dna_label=False
                             chain_dict[current_id].append(dna_rna_set[item])
     print("read chain info from fasta:",chain_dict)
-    return chain_dict
+    if dna_check:
+        return chain_dict,dna_label
+    else:
+        return chain_dict
 
-def read_dna_label(chain_dict):
-    dna_label=False
-    for key in chain_dict:
-        seq = chain_dict[key]
-        for item in key:
-            if item=="T":
-                dna_label=True
-    return dna_label
+# def read_dna_label(chain_dict):
+#     dna_label=False
+#     for key in chain_dict:
+#         seq = chain_dict[key]
+#         for item in key:
+#             if item=="T":
+#                 dna_label=True
+#     return dna_label
 
 

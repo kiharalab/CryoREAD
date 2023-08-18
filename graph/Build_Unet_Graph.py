@@ -9,7 +9,7 @@ from graph.Graph_ops import  construct_graph
 import os
 from ops.os_operation import  mkdir
 from graph.path_utils import collect_all_searched_path
-from ops.fasta_utils import read_fasta,read_dna_label
+from ops.fasta_utils import read_fasta
 from graph.Assign_ops import Assign_Base_Main_Path_sugar,Assign_PhoLDP_Sugarpath,Assign_Base_Main_Path
 from graph.visualize_utils import Visualize_Path_Base,Visualize_LDP_Path
 import pickle
@@ -108,8 +108,8 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
     #["sugar", "phosphate","A","UT","C","G","protein","base"]
     #0.2 read sequence information
     if fasta_path is not None and os.path.exists(fasta_path) and os.path.getsize(fasta_path)>0:
-        chain_dict = read_fasta(input_fasta_path=fasta_path)
-        DNA_Label = read_dna_label(chain_dict)
+        chain_dict,DNA_Label= read_fasta(input_fasta_path=fasta_path,dna_check=True)
+        #DNA_Label = read_dna_label(chain_dict)
         print("we have %d chains in provided fasta files"%(len(chain_dict)))
     else:
         chain_dict = None
