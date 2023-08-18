@@ -24,11 +24,11 @@ from data_processing.Gen_MaskDRNA_map import Gen_MaskDRNA_map
 from graph.geo_structure_modeling import Build_Atomic_Structure
 
 def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
-                     chain_prob,origin_map_path,refined_pdb_path,params):
+                     chain_prob,origin_map_path,refined_pdb_path,params,DNA_label=False):
     try:
         #remove this to remove dependencies of pymol
         #os.system("pymol -cq ops/save_formated_pdb.py "+str(init_pdb_path)+" "+str(format_pdb_path))
-        format_pdb(init_pdb_path,format_pdb_path)
+        format_pdb(init_pdb_path,format_pdb_path,DNA_label=DNA_label)
         # 5.4.0 prepare the mask map
         mask_map_path = os.path.join(root_save_path,"mask_map.mrc")
         Gen_MaskDRNA_map(chain_prob,origin_map_path,mask_map_path,params['contour'],threshold=0.6)
@@ -253,7 +253,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
         # 5.3 reformat pdb for phenix to do refinement (including the last column in pdb file indicate atom type)
         if params['refine']:
             refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
-                     chain_prob,origin_map_path,refined_pdb_path,params)
+                     chain_prob,origin_map_path,refined_pdb_path,params,DNA_label=DNA_Label)
         else:
             output_dir = os.path.join(root_save_path,"Output")
             mkdir(output_dir)
@@ -262,7 +262,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
             print("please check final output atomic structure in %s"%nonrefined_pdb_path)
         return
     else:
-        format_pdb(init_pdb_path,format_pdb_path)
+        format_pdb(init_pdb_path,format_pdb_path,DNA_Label)
         output_dir = os.path.join(root_save_path,"Output")
         mkdir(output_dir)
         nonrefined_pdb_path = os.path.join(output_dir,"CryoREAD_noseq.pdb")
@@ -326,7 +326,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
                     Extra_Added_Assign_Dict,sugar_base_match_dict,DNA_Label)
     init_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_%d_%d_%d.pdb"%(ldp_size,checking_stride,top_select))
     format_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_%d_%d_%d_formated.pdb"%(ldp_size,checking_stride,top_select))
-    format_pdb(init_pdb_path,format_pdb_path)
+    format_pdb(init_pdb_path,format_pdb_path,DNA_Label)
     output_dir = os.path.join(root_save_path,"Output")
     mkdir(output_dir)
     nonrefined_pdb_path = os.path.join(output_dir,"CryoREAD_seqonly.pdb")
@@ -347,7 +347,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
     refined_pdb_path = os.path.join(save_path,"Final_Refinedseq.pdb")
     if params['refine']:
         refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
-                 chain_prob,origin_map_path,refined_pdb_path,params)
+                 chain_prob,origin_map_path,refined_pdb_path,params,DNA_label=DNA_Label)
     else:
         output_dir = os.path.join(root_save_path,"Output")
         mkdir(output_dir)

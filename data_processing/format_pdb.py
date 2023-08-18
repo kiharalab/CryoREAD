@@ -85,7 +85,7 @@ def write_res_info(wfile,current_atom_info,atomid,nucid):
             atomid+=1
     nucid+=1
     return atomid,nucid
-def format_pdb(input_pdb_path,output_pdb_path):
+def format_pdb(input_pdb_path,output_pdb_path,DNA_label=False):
     #parser = PDBParser()
     #structure = parser.get_structure("input",input_pdb_path)
     with open(output_pdb_path,"w") as wfile:
@@ -103,6 +103,8 @@ def format_pdb(input_pdb_path,output_pdb_path):
                     z=float(read_line[46:55])
                     resi=int(read_line[22:26])
                     res_name = read_line[17:20].replace(" ","")
+                    if DNA_label and res_name=="U":
+                        res_name="T"
                     if resi!=prev_resid:
                         if len(keep_info_dict)>0:
                             atomid,nucid =write_res_info(wfile,keep_info_dict,atomid,nucid)
