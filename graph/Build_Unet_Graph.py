@@ -28,7 +28,7 @@ def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_d
     try:
         #remove this to remove dependencies of pymol
         #os.system("pymol -cq ops/save_formated_pdb.py "+str(init_pdb_path)+" "+str(format_pdb_path))
-        format_pdb(init_pdb_path,format_pdb_path,DNA_label=DNA_label)
+        format_pdb(init_pdb_path,format_pdb_path)
         # 5.4.0 prepare the mask map
         mask_map_path = os.path.join(root_save_path,"mask_map.mrc")
         Gen_MaskDRNA_map(chain_prob,origin_map_path,mask_map_path,params['contour'],threshold=0.6)
@@ -77,7 +77,8 @@ def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_d
                 phenix_final_pdb = refine2_pdb_path[:-4]+"_phenix_refine_00%d.pdb"%(count_check+1)
                 count_check+=1
             if os.path.exists(phenix_final_pdb):
-                shutil.move(phenix_final_pdb,refine3_pdb_path)
+                #shutil.move(phenix_final_pdb,refine3_pdb_path)
+                format_pdb_path(phenix_final_pdb,refine3_pdb_path,DNA_label)
                 print("please check final refined atomic structure in %s"%refine3_pdb_path)
                 print("You can also check other refined output here %s"%output_dir)
             else:
@@ -86,7 +87,8 @@ def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_d
             #Final_Assemble_20_2_20_formated_phenix_refine_000.pdb
             print("coot refinement failed!")
             if os.path.exists(gen_pdb_path):
-                shutil.copy(gen_pdb_path,refined_pdb_path)
+                #shutil.copy(gen_pdb_path,refined_pdb_path)
+                format_pdb_path(gen_pdb_path,refined_pdb_path,DNA_label)
                 print("please check final refined atomic structure in %s"%refined_pdb_path)
             else:
                 print("please check final refined atomic structure in this directory %s"%frag_collect_dir)
@@ -258,7 +260,8 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
             output_dir = os.path.join(root_save_path,"Output")
             mkdir(output_dir)
             nonrefined_pdb_path = os.path.join(output_dir,"CryoREAD_norefine.pdb")
-            shutil.copy(init_pdb_path,nonrefined_pdb_path)
+            #shutil.copy(init_pdb_path,nonrefined_pdb_path)
+            format_pdb_path(init_pdb_path,nonrefined_pdb_pathh,DNA_label)
             print("please check final output atomic structure in %s"%nonrefined_pdb_path)
         return
     else:
@@ -352,7 +355,8 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
         output_dir = os.path.join(root_save_path,"Output")
         mkdir(output_dir)
         nonrefined_pdb_path = os.path.join(output_dir,"CryoREAD_norefine.pdb")
-        shutil.copy(init_pdb_path,nonrefined_pdb_path)
+        #shutil.copy(init_pdb_path,nonrefined_pdb_path)
+        format_pdb_path(init_pdb_path,nonrefined_pdb_path,DNA_Label)
         print("please check final output atomic structure in %s"%nonrefined_pdb_path)
 
 
