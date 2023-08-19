@@ -78,17 +78,17 @@ def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_d
                 count_check+=1
             if os.path.exists(phenix_final_pdb):
                 #shutil.move(phenix_final_pdb,refine3_pdb_path)
-                format_pdb_path(phenix_final_pdb,refine3_pdb_path,DNA_label)
+                format_pdb(phenix_final_pdb,refine3_pdb_path,DNA_label)
                 print("please check final refined atomic structure in %s"%refine3_pdb_path)
                 print("You can also check other refined output here %s"%output_dir)
             else:
                 print("please check final refined atomic structure (pdb format) in this directory %s"%output_dir)
         except:
             #Final_Assemble_20_2_20_formated_phenix_refine_000.pdb
-            print("coot refinement failed!")
+            print("refinement failed!")
             if os.path.exists(gen_pdb_path):
                 #shutil.copy(gen_pdb_path,refined_pdb_path)
-                format_pdb_path(gen_pdb_path,refined_pdb_path,DNA_label)
+                format_pdb(gen_pdb_path,refined_pdb_path,DNA_label)
                 print("please check final refined atomic structure in %s"%refined_pdb_path)
             else:
                 print("please check final refined atomic structure in this directory %s"%frag_collect_dir)
