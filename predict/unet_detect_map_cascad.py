@@ -131,8 +131,8 @@ def make_predictions(test_loader,model,Coord_Voxel,voxel_size,overall_shape,num_
                 #print(final_output[k].shape)
                 #print(Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end].shape)
 
-                Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end] += final_output[k][:x_end-x_start,:y_end-y_start,:z_end-z_start]
-                Base_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end] += final_base[k][:x_end-x_start,:y_end-y_start,:z_end-z_start]
+                Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end] += final_output[k][:,:x_end-x_start,:y_end-y_start,:z_end-z_start]
+                Base_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end] += final_base[k][:,:x_end-x_start,:y_end-y_start,:z_end-z_start]
                 Count_Matrix[x_start:x_end,y_start:y_end,z_start:z_end]+=1
             if batch_idx%1000==0:
                 for j in range(num_classes):
