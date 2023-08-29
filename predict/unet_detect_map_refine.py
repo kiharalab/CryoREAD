@@ -60,8 +60,8 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
                        # print("no meaningful density ratio of current box, skip it!")
                         continue
                 segment_input_voxel = np.zeros([chain_classes+base_classes, voxel_size,voxel_size,voxel_size])
-                segment_input_voxel[:chain_classes]=chain_prob[:,x_start:x_end, y_start:y_end, z_start:z_end]
-                segment_input_voxel[chain_classes:]=base_prob[:,x_start:x_end, y_start:y_end, z_start:z_end]
+                segment_input_voxel[:chain_classes,:x_end-x_start,:y_end-y_start,:z_end-z_start]=chain_prob[:,x_start:x_end, y_start:y_end, z_start:z_end]
+                segment_input_voxel[chain_classes:,:x_end-x_start,:y_end-y_start,:z_end-z_start]=base_prob[:,x_start:x_end, y_start:y_end, z_start:z_end]
                 #check values in segment input_voxel
                 #different classes >=0.5 number should be bigger than 0.001
                 count_meaningful = (segment_input_voxel>0.5).sum()
@@ -146,7 +146,7 @@ def make_predictions(test_loader,model,Coord_Voxel,voxel_size,overall_shape,num_
                 #pred_label=np.argmax(final_output[k],axis=1)
                 #count_positive= len(np.argwhere(pred_label!=0))
                 #print("%d example with %d positive predictions"%(k,count_positive))
-                Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end] =np.maximum(Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end],final_output[k])
+                Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end] =np.maximum(Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end],final_output[k][:,:x_end-x_start,:y_end-y_start,:z_end-z_start])
 
                 #Count_Matrix[x_start:x_end,y_start:y_end,z_start:z_end]+=1
             if batch_idx%1000==0:
