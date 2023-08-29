@@ -31,14 +31,20 @@ def gen_input_data(map_data,chain_prob,base_prob,voxel_size,stride,contour,train
                     x_start = x
                 else:
                     x_start = x_end - voxel_size
+                    if x_start<0:
+                        x_start=0
                 if y_end < scan_y:
                     y_start = y
                 else:
                     y_start = y_end - voxel_size
+                    if y_start<0:
+                        y_start=0
                 if z_end < scan_z:
                     z_start = z
                 else:
                     z_start = z_end - voxel_size
+                    if z_start<0:
+                        z_start=0
                 #already normalized
                 segment_map_voxel = map_data[x_start:x_end, y_start:y_end, z_start:z_end]
                 if contour<=0:
@@ -114,12 +120,27 @@ def make_predictions(test_loader,model,Coord_Voxel,voxel_size,overall_shape,num_
                 tmp_index = cur_id[k]
                 x_start, y_start, z_start = Coord_Voxel[int(tmp_index)]
                 x_end,y_end,z_end = x_start+voxel_size,y_start+voxel_size,z_start+voxel_size
-                if x_end>scan_x:
-                    x_end=scan_x
-                if y_end>scan_y:
+                if x_end < scan_x:
+                    x_start = x_start
+                else:
+                    x_end = scan_x
+                    x_start = x_end - voxel_size
+                    if x_start<0:
+                        x_start=0
+                if y_end < scan_y:
+                    y_start = y_start
+                else:
                     y_end = scan_y
-                if z_end >scan_z:
+                    y_start = y_end - voxel_size
+                    if y_start<0:
+                        y_start=0
+                if z_end < scan_z:
+                    z_start = z_start
+                else:
                     z_end=scan_z
+                    z_start = z_end - voxel_size
+                    if z_start<0:
+                        z_start=0
                 #print(final_output[k].shape)
                 #print(Prediction_Matrix[:,x_start:x_end,y_start:y_end,z_start:z_end].shape)
                 #pred_label=np.argmax(final_output[k],axis=1)
