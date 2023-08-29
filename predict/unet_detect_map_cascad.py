@@ -113,18 +113,21 @@ def make_predictions(test_loader,model,Coord_Voxel,voxel_size,overall_shape,num_
                 if x_end < scan_x:
                     x_start = x_start
                 else:
+                    x_end = scan_x
                     x_start = x_end - voxel_size
                     if x_start<0:
                         x_start=0
                 if y_end < scan_y:
                     y_start = y_start
                 else:
+                    y_end = scan_y
                     y_start = y_end - voxel_size
                     if y_start<0:
                         y_start=0
                 if z_end < scan_z:
                     z_start = z_start
                 else:
+                    z_end=scan_z
                     z_start = z_end - voxel_size
                     if z_start<0:
                         z_start=0
