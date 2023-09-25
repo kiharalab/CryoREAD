@@ -28,8 +28,9 @@ class Single_Dataset(torch.utils.data.Dataset):
         cur_id = self.id_list[idx]
         input = np.load(inputfile)
         input = input[np.newaxis, :]
-        input = torch.from_numpy(np.array(input, np.float32, copy=True))
-        return input,cur_id
+        input2 = torch.from_numpy(np.array(input, np.float32, copy=True))
+        del input 
+        return input2,cur_id
 class Single_Dataset2(torch.utils.data.Dataset):
     def __init__(self, data_path, search_key="input_"):
         """
