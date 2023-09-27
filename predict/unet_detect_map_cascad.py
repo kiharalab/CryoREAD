@@ -172,6 +172,7 @@ def unet_detect_map_cascad(map_data,resume_model_path,voxel_size,
         test_dataset,
         batch_size=batch_size,
         shuffle=False,
+        pin_memory=True,
         num_workers=params['num_workers'],
         drop_last=False)
     chain_class = 4

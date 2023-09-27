@@ -178,6 +178,7 @@ def unet_detect_map_refine(map_data,chain_prob,base_prob,resume_model_path,voxel
     test_loader = torch.utils.data.DataLoader(
         test_dataset,
         batch_size=batch_size,
+        pin_memory=True,
         shuffle=False,
         num_workers=params['num_workers'],
         drop_last=False)
