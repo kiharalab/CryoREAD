@@ -20,7 +20,7 @@ from graph.assignment_ext import Extend_Solve_Assignment_SP_support
 from graph.reassign_ops import reassign_basedonfrag,merge_assign_geo_seq
 
 from data_processing.format_pdb import format_pdb,remove_op3_pdb
-from data_processing.Gen_MaskDRNA_map import Gen_MaskDRNA_map
+from data_processing.Gen_MaskDRNA_map import Gen_MaskDRNA_map,Gen_MaskProtein_map
 from graph.geo_structure_modeling import Build_Atomic_Structure
 
 def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
@@ -120,6 +120,9 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
 
     chain_prob = np.load(chain_prob_path)#[sugar,phosphate,A,UT,C,G,protein,base]
     input_mrc = MRC(origin_map_path, gaussian_bandwidth)
+    #0 gen protein map for other programs to run
+    mask_map_path = os.path.join(root_save_path,"mask_protein.mrc")
+    Gen_MaskProtein_map(chain_prob,origin_map_path,mask_map_path,params['contour'],threshold=0.3)
 
     #1. chain tracing
     sp_prob = chain_prob[0]+chain_prob[1]
