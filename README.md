@@ -20,13 +20,14 @@ For technical problems or questions, please reach to Xiao Wang (wang3702@purdue.
 
 ## Citation:
 
-Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nucleic acids in cryo-EM maps using deep learning. bioArxiv, 2022.
+Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nucleic acids in cryo-EM maps using deep learning. Nature Methods, 2023.
+[https://www.nature.com/articles/s41592-023-02032-5](https://www.nature.com/articles/s41592-023-02032-5)
 ```
-@article{xiao2022CryoREAD,   
+@article{wang2023CryoREAD,   
   title={De novo structure modeling for nucleic acids in cryo-EM maps using deep learning},   
   author={Xiao Wang, Genki Terashi, and Daisuke Kihara},    
-  journal={bioArxiv},    
-  year={2022}    
+  journal={Nature Methods},    
+  year={2023}    
 }   
 ```
 
@@ -73,9 +74,23 @@ git clone git@github.com:kiharalab/CryoREAD.git && cd CryoREAD
 
 ### 3. Build dependencies.   
 You have two options to install dependency on your computer:
-#### 3.1 Install with pip and python.
-##### 3.1.1[`install pip`](https://pip.pypa.io/en/stable/installing/).
-##### 3.1.2  Install dependency in command line.
+#### 3.2 Install with anaconda (Recommended)
+##### 3.2.1 [`install anaconda`](https://www.anaconda.com/download). 
+##### 3.2.2 Install dependency in command line
+Make sure you are in the CryoREAD directory and then run 
+```
+conda env create -f environment.yml
+```
+Each time when you want to run this software, simply activate the environment by
+```
+conda activate CryoREAD
+conda deactivate(If you want to exit) 
+```
+
+
+#### 3.2 Install with pip and python (Not Suggested).
+##### 3.2.1[`install pip`](https://pip.pypa.io/en/stable/installing/).
+##### 3.2.2  Install dependency in command line.
 ```
 pip3 install -r requirements.txt --user
 ```
@@ -90,27 +105,21 @@ pip3 install mrcfile
 pip3 install torch==1.6.0
 ```
 
-#### 3.2 Install with anaconda
-##### 3.2.1 [`install conda`](https://docs.conda.io/projects/conda/en/latest/user-guide/install/macos.html). 
-##### 3.2.2 Install dependency in command line
-```
-conda create -n CryoREAD python
-conda activate CryoREAD
-pip install -r requirements.txt 
-```
-Each time when you want to run this software, simply activate the environment by
-```
-conda activate CryoREAD
-conda deactivate(If you want to exit) 
-```
+
 
 #### 4 Verify the pre-installed software
 To verify phenix is correctly installed for final refinement step, please run
 ```
 phenix.real_space_refine -h
 ```
+To veryify coot is correctly installed for final refinement step, please run
+```commandline
+coot
+```
 If it can print out the help information of this function, then the refinemnt step of our program can be supported.
 **If not, please always remove --refine command line in all the commands, then CryoREAD should output structure without refinement.**
+
+
 
 
 ## Usage
@@ -153,7 +162,10 @@ optional arguments:
   --no_seqinfo NO_SEQINFO
                         Optional input. Build structures when no sequence information is available. (True/False) Default value: False
 ```
-
+### Tech Specs
+CPU: >=8 cores <br>
+Memory: >=50Gb. For maps with more than 3,000 nucleotides, memory space should be higher than 300GB if sequence is provided. <br>
+GPU: any GPU supports CUDA with more than 12GB memory.
 ### 1. Only Make Structure Information Predictions by cryo-READ.
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --prediction_only 
