@@ -20,3 +20,4 @@ dependencies:
       - mrcfile
       - progress
       - numba-progress
+      - pandas==2.0.3
