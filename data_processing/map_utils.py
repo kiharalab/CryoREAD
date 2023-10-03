@@ -144,10 +144,10 @@ def find_top_density(map_data,threshold):
     return bin_edges[-1]
 
 def automate_contour(map_data):
-    use_density=map_data[map_data>0]
+    use_density=map_data[map_data>1e-6]
     #hist,bin_edges=np.histogram(use_density, bins=1000)
     sorted_array = np.sort(use_density)
-    select_index=int(len(sorted_array)/1000)
+    select_index=int(len(sorted_array)/1000) #usually 0
     return sorted_array[select_index]
 def process_map_data(input_map_path):
     with mrcfile.open(input_map_path, permissive=True) as mrc:
