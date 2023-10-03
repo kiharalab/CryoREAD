@@ -31,12 +31,14 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nuclei
 }   
 ```
 
-## Project website: https://kiharalab.org/emsuites
-### Detailed Instructions can be found https://kiharalab.org/emsuites/cryoread.php
+
 ## Online Platform:  (Run easily and freely)
-### Server: https://em.kiharalab.org/algorithm/CryoREAD
+## Server(Recommended): https://em.kiharalab.org/algorithm/CryoREAD
 ### https://bit.ly/CryoREAD 
 ### https://github.com/kiharalab/CryoREAD/blob/main/CryoREAD.ipynb
+
+## Project website: https://kiharalab.org/emsuites
+### Detailed Instructions can be found https://kiharalab.org/emsuites/cryoread.php
 
 ## Introduction
 
