@@ -1,6 +1,8 @@
 
 
 import os
+import mrcfile
+import numpy as np
 from ops.argparser import argparser
 from ops.os_operation import mkdir
 import time
@@ -40,6 +42,12 @@ if __name__ == "__main__":
         cur_map_path = Unify_Map(cur_map_path,os.path.join(save_path,map_name+"_unified.mrc"))
         from data_processing.Resize_Map import Resize_Map
         cur_map_path = Resize_Map(cur_map_path,os.path.join(save_path,map_name+".mrc"))
+        #do a pre check to notify user errors for contour
+        with mrcfile.open(cur_map_path,permissive=True) as mrc:
+            data=mrc.data
+        if np.max(data)<=params['contour']:
+            print("Please provide contour level lower than maximum density value to run!")
+            exit()
         from predict.predict_1st_stage import Predict_1st_Stage
         #1st stage cascad prediciton
         model_1st_stage_path = os.path.join(model_dir,"stage1_network.pth")
