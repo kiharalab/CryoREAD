@@ -2,7 +2,7 @@ biopython
 numpy
 numba
 scipy
-ortools
+ortools==9.4.1874
 mrcfile
 torch==1.6.0
 progress

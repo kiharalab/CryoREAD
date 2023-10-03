@@ -16,7 +16,7 @@ dependencies:
       - numpy==1.24.4
       - scipy==1.10.1
       - tqdm==4.65.0
-      - ortools
+      - ortools==9.4.1874
       - mrcfile
       - progress
       - numba-progress
