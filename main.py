@@ -46,8 +46,12 @@ if __name__ == "__main__":
         with mrcfile.open(cur_map_path,permissive=True) as mrc:
             data=mrc.data
         if np.max(data)<=params['contour']:
-            print("Please provide contour level lower than maximum density value to run!")
-            exit()
+            print("!!!Warning!!!Please provide contour level lower than maximum density value to run!")
+            #exit()
+            from data_processing.map_utils import automate_contour
+            params['contour']=automate_contour(data)
+            print("!!!Warning!!!reset contour level: %f"%params['contour'])
+
         from predict.predict_1st_stage import Predict_1st_Stage
         #1st stage cascad prediciton
         model_1st_stage_path = os.path.join(model_dir,"stage1_network.pth")
