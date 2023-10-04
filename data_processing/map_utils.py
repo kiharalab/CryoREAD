@@ -169,7 +169,70 @@ def process_map_data(input_map_path):
         #mapc to x, mapr to y maps to z
     return data, mapc, mapr, maps,new_origin,nxstart,nystart,nzstart
 
-
+def segment_map(input_map,output_map,contour=0):
+    """
+    segment meaningful region of a map
+    :param input_map:
+    :param output_map:
+    :return:
+    generate a new small size map
+    """
+    with mrcfile.open(input_map, permissive=True) as mrc:
+        prev_voxel_size = mrc.voxel_size
+        prev_voxel_size_x = float(prev_voxel_size['x'])
+        prev_voxel_size_y = float(prev_voxel_size['y'])
+        prev_voxel_size_z = float(prev_voxel_size['z'])
+        nx, ny, nz, nxs, nys, nzs, mx, my, mz = \
+            mrc.header.nx, mrc.header.ny, mrc.header.nz, \
+            mrc.header.nxstart, mrc.header.nystart, mrc.header.nzstart, \
+            mrc.header.mx, mrc.header.my, mrc.header.mz
+        orig = mrc.header.origin
+        #check the useful density in the input
+        input_data = mrc.data
+        useful_index = np.argwhere(input_data>contour)
+        min_x = int(np.min(useful_index[:,0]))
+        max_x = int(np.max(useful_index[:,0]))
+        min_y = int(np.min(useful_index[:,1]))
+        max_y = int(np.max(useful_index[:,1]))
+        min_z = int(np.min(useful_index[:,2]))
+        max_z = int(np.max(useful_index[:,2]))
+        mapc = mrc.header.mapc
+        mapr = mrc.header.mapr
+        maps = mrc.header.maps
+        new_data = input_data[min_x:max_x,min_y:max_y,min_z:max_z]
+        shift_start = permute_ns_coord_to_pdb([min_x,min_y,min_z],mapc,mapr,maps)
+        origin = np.array(mrc.header.origin.tolist(), dtype=np.float32)
+        origin = np.array(origin)+np.array(shift_start)
+        mrc_new = mrcfile.new(output_map, data=new_data, overwrite=True)
+        vsize = mrc_new.voxel_size
+        vsize.flags.writeable = True
+        vsize.x = 1.0
+        vsize.y = 1.0
+        vsize.z = 1.0
+        mrc_new.voxel_size = vsize
+        mrc_new.update_header_from_data()
+        # mrc_new.header.nx = int(max_x-min_x)
+        # mrc_new.header.ny = int(max_y-min_y)
+        # mrc_new.header.nz = int(max_z-min_z)
+        mrc_new.header.nxstart = nxs * prev_voxel_size_x
+        mrc_new.header.nystart = nys * prev_voxel_size_y
+        mrc_new.header.nzstart = nzs * prev_voxel_size_z
+        # mrc_new.header.mx = int(max_x-min_x)
+        # mrc_new.header.my = int(max_y-min_y)
+        # mrc_new.header.mz = int(max_z-min_z)
+        mrc_new.header.mapc = mrc.header.mapc
+        mrc_new.header.mapr = mrc.header.mapr
+        mrc_new.header.maps = mrc.header.maps
+        # mrc_new.header.cella.x = int(max_x-min_x)
+        # mrc_new.header.cella.y = int(max_y-min_y)
+        # mrc_new.header.cella.z = int(max_z-min_z)
+        #mrc_new.header.origin = origin
+        (mrc_new.header.origin.x, mrc_new.header.origin.y, mrc_new.header.origin.z) = origin
+        mrc_new.update_header_stats()
+        mrc.print_header()
+        mrc_new.print_header()
+        mrc_new.close()
+    return output_map
 def permute_map_coord_to_pdb(input_coord,mapc,mapr,maps):
     """
     :param input_coord: [x,y,z] coord from pdb
