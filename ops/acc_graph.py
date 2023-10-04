@@ -94,8 +94,8 @@ def acc_edge_prob(Ne,id1,id2,merged_cd_dens,dens,edge_d,fsiv,fmaxd,xdim,ydim,zdi
                 tmp_dens=mean_shift_pos(cd1,fsiv,fmaxd,xdim,ydim,zdim,mrc_dense)
                 if tmp_dens<MinDens:
                     MinDens=tmp_dens
-            if MinDens==0:#very rare case when it come to border of the box
-                MinDens=1 #ignore those boundary cases#(merged_cd_dens[v1,3]+merged_cd_dens[v2,3])/2
+            if MinDens<=1e-4:#very rare case when it come to border of the box
+                MinDens=1e-4 #to avoid very big values #ignore those boundary cases#(merged_cd_dens[v1,3]+merged_cd_dens[v2,3])/2
             dens[ii]=edge_d[ii]/MinDens#prob bigger, distance smaller is our favorite choice
     return dens
 
