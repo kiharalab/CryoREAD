@@ -95,7 +95,7 @@ def acc_edge_prob(Ne,id1,id2,merged_cd_dens,dens,edge_d,fsiv,fmaxd,xdim,ydim,zdi
                 if tmp_dens<MinDens:
                     MinDens=tmp_dens
             if MinDens==0:#very rare case when it come to border of the box
-                MinDens=(merged_cd_dens[v1,3]+merged_cd_dens[v2,3])/2
+                MinDens=1 #ignore those boundary cases#(merged_cd_dens[v1,3]+merged_cd_dens[v2,3])/2
             dens[ii]=edge_d[ii]/MinDens#prob bigger, distance smaller is our favorite choice
     return dens
 
