@@ -13,7 +13,7 @@ def argparser():
     parser.add_argument("--output",type=str,help="Output directory")
     parser.add_argument('--mode',type=int,required=True,help='Control Mode for program: 0: cryo_READ structure modeling. Required parameter. (Integer), Default value: 0')
     parser.add_argument("--contour",type=float,default=0,help="Contour level for input map, suggested 0.5*[author_contour]. (Float), Default value: 0.0")
-    parser.add_argument("--stride",type=int,default=16,help="Stride for scanning of deep learning model. (Integer), Default value: 16.")
+    parser.add_argument("--stride",type=int,default=32,help="Stride for scanning of deep learning model. (Integer), Default value: 32.")
     parser.add_argument("--box_size",type=int,default=64,help="Input box size for deep learning model. (Integer), Default value: 64")
     parser.add_argument("--gpu",type=str,default=None,help="Specify the gpu we will use. (str), Default value: None.")
     parser.add_argument('--batch_size', type=int, default=8, help='Batch size for inference of network. (Integer), Default value: 8.')
