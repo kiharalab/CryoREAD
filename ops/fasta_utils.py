@@ -22,7 +22,7 @@ def read_fasta(input_fasta_path,dna_check=False):
                 if "_" in current_id:
                     current_id = current_id.split("_")[1]
                 read_chain=True
-            elif len(line)>0:
+            elif len(line.strip("\n").replace(" ",""))>0:
                 if current_id is None or read_chain==False or len(current_id)!=1:
                     visit_set=list(chain_dict.keys())
                     for tmp_chain in tmp_chain_list:
