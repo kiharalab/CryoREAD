@@ -222,7 +222,7 @@ def build_collision_table(All_Base_Assign_List,checking_stride,ldp_size,
 
 from ortools.sat.python import cp_model
 from ortools.linear_solver import pywraplp
-from ortools.init import pywrapinit
+#from ortools.init import pywrapinit
 import numpy as np
 def prepare_score_array(N_order, order_key_index,order_chain_index,overall_dict):
     score_array = np.zeros(N_order)
