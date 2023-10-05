@@ -30,7 +30,7 @@ def read_fasta(input_fasta_path,dna_check=False):
                             current_id=tmp_chain
                             break
 
-                line=line.strip("\n").replace(" ","")
+                line=line.strip("\n").replace(" ","").replace("N","").replace("X","")
                 #quick check to see if it includes protein fasta
                 dna_seq_flag=True
                 count_porition=0
