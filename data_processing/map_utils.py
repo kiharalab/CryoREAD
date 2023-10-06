@@ -200,7 +200,7 @@ def segment_map(input_map,output_map,contour=0):
         mapr = mrc.header.mapr
         maps = mrc.header.maps
         new_data = input_data[min_x:max_x,min_y:max_y,min_z:max_z]
-        shift_start = permute_ns_coord_to_pdb([min_x,min_y,min_z],mapc,mapr,maps)
+        shift_start = permute_map_coord_to_pdb([min_x,min_y,min_z],mapc,mapr,maps)
         origin = np.array(mrc.header.origin.tolist(), dtype=np.float32)
         origin = np.array(origin)+np.array(shift_start)
         mrc_new = mrcfile.new(output_map, data=new_data, overwrite=True)
