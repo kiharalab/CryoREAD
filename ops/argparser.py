@@ -33,6 +33,7 @@ def argparser():
     parser.add_argument('--no_seqinfo',  action='store_true', help="Optional input. Build structures when no sequence information is available. (True/False) Default value: False")
     parser.add_argument("--refine",action="store_true",help="Optional Input. Use Phenix to do the last step refinement or not (Suggested to set as True).")
     parser.add_argument("--colab",action="store_true",help="Optional Input. Used to specify the phenix path for colab settings")
+    parser.add_argument("--thread",type=int,default=1,help="Use multiple threads for fragment-based sequence assignment,default:1 (multi-threading is disabled)")
     args = parser.parse_args()
     params = vars(args)
     return params

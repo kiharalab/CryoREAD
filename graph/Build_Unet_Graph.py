@@ -281,9 +281,16 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
     mkdir(greedy_save_path)
     # 6.1 greedy assign based on geomery as well as the
     if chain_dict is not None:
-        overall_dict,frag_location_dict=greedy_assign_PS(All_Base_Path_List_sugar,All_Path_List,
-        Path_P_align_list,Path_P_reverse_align_list,Pho_Prob_Refer_Dict,Pho_Prob_Refer_Reverse_Dict,
-        chain_prob,ldp_size,sugar_point,map_info_list,chain_dict,greedy_save_path,top_select,checking_stride)
+        if params['thread']==1:
+            overall_dict,frag_location_dict=greedy_assign_PS(All_Base_Path_List_sugar,All_Path_List,
+            Path_P_align_list,Path_P_reverse_align_list,Pho_Prob_Refer_Dict,Pho_Prob_Refer_Reverse_Dict,
+            chain_prob,ldp_size,sugar_point,map_info_list,chain_dict,greedy_save_path,top_select,checking_stride)
+        else:
+            from graph.DP_ops import greedy_assign_PS_effective
+            overall_dict,frag_location_dict=greedy_assign_PS_effective(All_Base_Path_List_sugar,All_Path_List,
+            Path_P_align_list,Path_P_reverse_align_list,Pho_Prob_Refer_Dict,Pho_Prob_Refer_Reverse_Dict,
+            chain_prob,ldp_size,sugar_point,map_info_list,chain_dict,greedy_save_path,top_select,checking_stride,
+                                                                       num_cpus=params['thread'])
     else:
         print("!!!parsing fasta input failed, we can not output structures considering sequence assignment!!!")
         exit()
