@@ -485,6 +485,7 @@ def greedy_assign_PS_effective(All_Base_Path_List_sugar,All_Path_List_sugar,Path
 
         cur_path_save_path = os.path.join(greedy_save_path,"path_%d"%path_id)
         mkdir(cur_path_save_path)
+        from multiprocessing import Pool
         p= Pool(num_cpus)
 
         start_ldp_index =0
