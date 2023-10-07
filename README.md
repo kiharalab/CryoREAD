@@ -163,6 +163,8 @@ optional arguments:
                         Optional input. Only run the deep learning prediction step. (True/False) Default value: False
   --no_seqinfo NO_SEQINFO
                         Optional input. Build structures when no sequence information is available. (True/False) Default value: False
+  --thread THREAD
+                        Use multiple threads for fragment-based sequence assignment,default:1 (multi-threading is disabled)
 ```
 ### Tech Specs
 CPU: >=8 cores <br>
@@ -201,17 +203,26 @@ python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=
 
 ### 3. Build atomic structure with sequence information
 ```
-python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --rule_soft=[assignment_rule] --resolution=[Map_Resolution] --refine
+python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --rule_soft=[assignment_rule] --resolution=[Map_Resolution] --refine --thread=[num_threads]
 ```
-[Map_Path] is the path of the experimental cryo-EM map, [Model_Path] is the path of our pre-trained deep learning model, [Fasta_Path] is the path of the input fasta file about sequence information, [half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, [GPU_ID] specifies the gpu used for inference, [batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU), [rule_soft] specifies the assignment rule, default is 0 to use the strict assignment assembling rule, [Map_Resolution] is the resolution of the deposited maps.
+[Map_Path] is the path of the experimental cryo-EM map, 
+[Model_Path] is the path of our pre-trained deep learning model, 
+[Fasta_Path] is the path of the input fasta file about sequence information, 
+[half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, 
+[GPU_ID] specifies the gpu used for inference, 
+[batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU), 
+[rule_soft] specifies the assignment rule, default is 0 to use the strict assignment assembling rule, 
+[Map_Resolution] is the resolution of the deposited maps.
+[num_thread] specifies the number of cpus used for fragment-based sequence assignment.
 
 "--refine" should be removed if you can not successfully install Phenix correctly.
 
 Example Command:
 ```
-python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fasta --contour=0.3 --gpu=0 --batch_size=4 --rule_soft=0 --resolution=3.7  --refine
+python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fasta --contour=0.3 --gpu=0 --batch_size=4 --rule_soft=0 --resolution=3.7  --refine --thread 4 
 ```
 The automatically build atomic structure is saved in The automatically build atomic structure is saved in [Predict_Result/(map-name)/Output/Refine_cycle[k].pdb] in pdb format, here default k is 3. However, it may fail if your dependencies are not properly installed, then you may only find Refine_cycle1.pdb or Refine_cycle2.pdb. Modeled structures without considering sequence information are also saved as [Predict_Result/(map-name)/Output/CryoREAD_noseq.pdb] (without refinement). Meanwhile, structures only considering the sequence information without connecting gap regions are saved in [Predict_Result/(map-name)/Output/CryoREAD_seqonly.pdb] (without refinement) for reference.
+Please adjust --thread based on your available cpu numbers (more is better).
 
 ### 4. DNA/RNA structure refinement
 The full refinement pipeline involving Phenix and coot is also available for refinement-only purposes. 
