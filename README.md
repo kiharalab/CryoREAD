@@ -38,7 +38,7 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nuclei
 ### https://github.com/kiharalab/CryoREAD/blob/main/CryoREAD.ipynb
 
 ## Project website: https://kiharalab.org/emsuites
-### Detailed Instructions can be found https://kiharalab.org/emsuites/cryoread.php
+### Detailed pipeline instructionscan be found https://kiharalab.org/emsuites/cryoread.php
 
 ## Introduction
 
@@ -166,11 +166,14 @@ optional arguments:
   --thread THREAD
                         Use multiple threads for fragment-based sequence assignment,default:1 (multi-threading is disabled)
 ```
-### Tech Specs
+### System Requirements
 CPU: >=8 cores <br>
-Memory: >=50Gb. For maps with more than 3,000 nucleotides, memory space should be higher than 300GB if sequence is provided. <br>
-GPU: any GPU supports CUDA with more than 12GB memory.
-### 1. Only Make Structure Information Predictions by cryo-READ.
+Memory (RAM): >=50Gb. For maps with more than 3,000 nucleotides, memory space should be higher than 200GB if the sequence is provided. <br>
+GPU: any GPU supports CUDA with at least 12GB memory. <br>
+GPU is required for CryoREAD and no CPU version is available for CryoREAD since it is too slow.
+
+## Four different running modes of CryoREAD 
+### Mode 1. Only Make Structure Information Predictions by cryo-READ.
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --prediction_only 
 ```
@@ -185,13 +188,13 @@ Example Command:
 python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=4 --prediction_only
 ```
 
-### 2. Build atomic structure without sequence information
+### Mode 2. Build atomic structure without sequence information
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --resolution=[Map_Resolution] --no_seqinfo --refine
 ```
 [Map_Path] is the path of the experimental cryo-EM map, [Model_Path] is the path of our pre-trained deep learning model,  [half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, [GPU_ID] specifies the gpu used for inference, [batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU), [Map_Resolution] is the resolution of the deposited maps.
 
-"--refine" should be removed if you can not successfully install Phenix correctly.
+"--refine" should be removed if you can not successfully install Phenix/coot correctly, which may result in nucleotides that do not satisfy some geometry and chemical constraints.
 
 The automatically build atomic structure is saved in [Predict_Result/(map-name)/Output/Refine_cycle[k].pdb] in pdb format, here default k is 3. However, it may fail if your dependencies are not properly installed, then you may only find Refine_cycle1.pdb or Refine_cycle2.pdb.
 
@@ -201,7 +204,7 @@ python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=
 ```
 
 
-### 3. Build atomic structure with sequence information
+### Mode 3. Build atomic structure with sequence information
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --rule_soft=[assignment_rule] --resolution=[Map_Resolution] --refine --thread=[num_threads]
 ```
@@ -215,7 +218,8 @@ python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour
 [Map_Resolution] is the resolution of the deposited maps.
 [num_thread] specifies the number of cpus used for fragment-based sequence assignment.
 
-"--refine" should be removed if you can not successfully install Phenix correctly.
+"--refine" should be removed if you can not successfully install Phenix/coot correctly,which may result in nucleotides that do not satisfy some geometry and chemical constraints.
+
 
 Example Command:
 ```
@@ -224,7 +228,7 @@ python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fas
 The automatically build atomic structure is saved in The automatically build atomic structure is saved in [Predict_Result/(map-name)/Output/Refine_cycle[k].pdb] in pdb format, here default k is 3. However, it may fail if your dependencies are not properly installed, then you may only find Refine_cycle1.pdb or Refine_cycle2.pdb. Modeled structures without considering sequence information are also saved as [Predict_Result/(map-name)/Output/CryoREAD_noseq.pdb] (without refinement). Meanwhile, structures only considering the sequence information without connecting gap regions are saved in [Predict_Result/(map-name)/Output/CryoREAD_seqonly.pdb] (without refinement) for reference.
 Please adjust --thread based on your available cpu numbers (more is better).
 
-### 4. DNA/RNA structure refinement
+### Mode 4. DNA/RNA structure refinement
 The full refinement pipeline involving Phenix and coot is also available for refinement-only purposes. 
 ```
 python3 main.py --mode=1 -F=[input_structure_pdb] -M=[input_map_path] -P=[output_dir]
