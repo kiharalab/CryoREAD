@@ -71,7 +71,7 @@ Chimera (for map visualization): https://www.cgl.ucsf.edu/chimera/download.html
 ### 1. [`Install git`](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) 
 ### 2. Clone the repository in your computer 
 ```
-git clone git@github.com:kiharalab/CryoREAD.git && cd CryoREAD
+git clone  https://github.com/kiharalab/CryoREAD.git && cd CryoREAD
 ```
 
 ### 3. Build dependencies.   
