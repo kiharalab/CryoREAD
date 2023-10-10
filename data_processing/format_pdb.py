@@ -6,6 +6,7 @@ import os
 #follow standard order
 _base_atoms_rna = ["P", "C5'","O5'",  "C4'", "O4'", "C3'", "O3'", "C2'", "O2'", "C1'"]
 _base_atoms_dna = ["P", "C5'","O5'",  "C4'", "O4'", "C3'", "O3'", "C2'", "C1'"]
+_base_atoms_protein = ['N',"CA","C","O"]
 residue_atoms_order = {
     'A': ["N1", "C2", "N3", "C4","C5","C6", "N6",  "N7", "C8","N9"  ],
     'G':  ["N1", "C2", "N2", "N3", "C4","C5", "C6", "O6","N7", "C8","N9"],
@@ -16,6 +17,26 @@ residue_atoms_order = {
     'DG':  ["N1", "C2", "N2", "N3", "C4","C5", "C6", "O6","N7", "C8","N9"],
     'DC': ["N1", "C2", "O2", "N3", "C4", "N4", "C5", "C6"],
     'DT':["N1", "C2", "O2", "N3", "C4", "O4", "C5", "C6",'C7'],
+    "ALA": ["CB"],
+    "ARG": ["CB", "CG", "CD", "NE", "CZ", "NH1", "NH2"],
+    "ASN": ["CB", "CG", "OD1", "ND2"],
+    "ASP": ["CB", "CG", "OD1", "OD2"],
+    "CYS": ["CB", "SG"],
+    "GLU": ["CB", "CG", "CD", "OE1", "OE2"],
+    "GLN": ["CB", "CG", "CD", "OE1", "NE2"],
+    "GLY": [],
+    "HIS": ["CB", "CG", "ND1", "CD2", "CE1", "NE2"],
+    "ILE": ["CB", "CG1", "CG2", "CD1"],
+    "LEU": ["CB", "CG", "CD1", "CD2"],
+    "LYS": ["CB", "CG", "CD", "CE", "NZ"],
+    "MET": ["CB", "CG", "SD", "CE"],
+    "PHE": ["CB", "CG", "CD1", "CD2", "CE1", "CE2", "CZ"],
+    "PRO": ["CB", "CG", "CD"],
+    "SER": ["CB", "OG"],
+    "THR": ["CB", "OG1", "CG2"],
+    "TRP": ["CB", "CG", "CD1", "CD2", "NE1", "CE2", "CE3", "CZ2", "CZ3", "CH2"],
+    "TYR": ["CB", "CG", "CD1", "CD2", "CE1", "CE2", "CZ", "OH"],
+    "VAL": ["CB", "CG1", "CG2"]
 }
 _base_atoms_end = ["OP1","OP2","OP3"]
 map_dict={"P":"P","C5'":"C","O5'":"O","C4'":"C","O4'":"O","C3'":"C","O3'":"O","C2'":"C","O2'":"O","C1'":"C",
@@ -30,7 +51,10 @@ def write_res_info(wfile,current_atom_info,atomid,nucid):
     elif "CA" in current_atom_info:
         res_name = current_atom_info["CA"][3]
     else:
-        return 
+        return
+    if res_name not in residue_atoms_order:
+        print("unrecognized info: ",current_atom_info)
+        return
     # res_name=residue.get_resname().replace(" ","")
     # current_atom_info={} #[atom_name]:[information]
     # for atom in residue.get_list():
@@ -44,7 +68,9 @@ def write_res_info(wfile,current_atom_info,atomid,nucid):
     #     for k in range(3):
     #         format_coord.append(float(atom_coord_split[k]))
     #     current_atom_info[atom_name]=format_coord
-    if "D" in res_name:
+    if "CA" in current_atom_info:
+        _base_atoms_order = _base_atoms_protein
+    elif "D" in res_name:
         _base_atoms_order = _base_atoms_dna
     else:
         _base_atoms_order = _base_atoms_rna
