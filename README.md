@@ -179,11 +179,9 @@ python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_l
 ```
 [Map_Path] is the path of the experimental cryo-EM map, [Model_Path] is the path of our pre-trained deep learning model, [half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, [GPU_ID] specifies the gpu used for inference, [batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU). 
 
-
-
 The predicted probability maps are saved in [Predict_Result/(map_name)/2nd_stage_detection] with mrc format. It will include 8 mrc files corresponding to 8 different classes.
 
-Example Command:
+#### Example Command:
 ```
 python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=4 --prediction_only
 ```
@@ -198,7 +196,7 @@ python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_l
 
 The automatically build atomic structure is saved in [Predict_Result/(map-name)/Output/Refine_cycle[k].pdb] in pdb format, here default k is 3. However, it may fail if your dependencies are not properly installed, then you may only find Refine_cycle1.pdb or Refine_cycle2.pdb.
 
-Example Command:
+#### Example Command:
 ```
 python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=4 --resolution=3.7 --no_seqinfo --refine
 ```
@@ -221,20 +219,25 @@ python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour
 "--refine" should be removed if you can not successfully install Phenix/coot correctly,which may result in nucleotides that do not satisfy some geometry and chemical constraints.
 
 
-Example Command:
+#### Example Command:
 ```
 python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fasta --contour=0.3 --gpu=0 --batch_size=4 --rule_soft=0 --resolution=3.7  --refine --thread 4 
 ```
-The automatically build atomic structure is saved in The automatically build atomic structure is saved in [Predict_Result/(map-name)/Output/Refine_cycle[k].pdb] in pdb format, here default k is 3. However, it may fail if your dependencies are not properly installed, then you may only find Refine_cycle1.pdb or Refine_cycle2.pdb. Modeled structures without considering sequence information are also saved as [Predict_Result/(map-name)/Output/CryoREAD_noseq.pdb] (without refinement). Meanwhile, structures only considering the sequence information without connecting gap regions are saved in [Predict_Result/(map-name)/Output/CryoREAD_seqonly.pdb] (without refinement) for reference.
+The automatically build atomic structure is saved in [Predict_Result/(map-name)/Output/Refine_cycle[k].pdb] in pdb format, here default k is 3. However, it may fail if your dependencies are not properly installed, then you may only find Refine_cycle1.pdb or Refine_cycle2.pdb. Modeled structures without considering sequence information are also saved as [Predict_Result/(map-name)/Output/CryoREAD_noseq.pdb] (without refinement). Meanwhile, structures only considering the sequence information without connecting gap regions are saved in [Predict_Result/(map-name)/Output/CryoREAD_seqonly.pdb] (without refinement) for reference.
 Please adjust --thread based on your available cpu numbers (more is better).
 
-### Mode 4. DNA/RNA structure refinement
+### Mode 4. Structure refinement
 The full refinement pipeline involving Phenix and coot is also available for refinement-only purposes. 
 ```
 python3 main.py --mode=1 -F=[input_structure_pdb] -M=[input_map_path] -P=[output_dir]
 ```
-This refinement pipeline can work for any given DNA/RNA structure and a corresponding map. [input_structure_pdb] is the path of input structure in pdb format, [input_map_path] corresponds to the input map path. The final output Refine_cycle3.pdb will be generated in your specified [output_dir] directory.
+This refinement pipeline can work for any given structure (not limited to DNA/RNA) and a corresponding map. [input_structure_pdb] is the path of the input structure in pdb format, [input_map_path] corresponds to the input map path. The final output Refine_cycle3.pdb will be generated in your specified [output_dir] directory.
 
+#### Example Command:
+```
+python3 main.py --mode=1 -F=example/6v5b_drna.pdb -M=example/21051.mrc -P=refine_test
+```
+This will refine the input structure according to density and output the refined structure in [refine_test] directory. 
 
 ## Example
 ### Input File
