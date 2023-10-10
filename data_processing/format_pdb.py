@@ -41,7 +41,11 @@ residue_atoms_order = {
 _base_atoms_end = ["OP1","OP2","OP3"]
 map_dict={"P":"P","C5'":"C","O5'":"O","C4'":"C","O4'":"O","C3'":"C","O3'":"O","C2'":"C","O2'":"O","C1'":"C",
           "N1":"N","C2":"C","O2":"O","N3":"N","C4":"C","N4":"N","C5":"C","C6":"C","O4":"O","N9":"N","C8":"C",
-          "N7":"N","N6":"N","O6":"O","OP1":"O","OP2":"O1-","OP3":"O","C7":"C","N2":"N"}
+          "N7":"N","N6":"N","O6":"O","OP1":"O","OP2":"O1-","OP3":"O","C7":"C","N2":"N","N":"N","CA":"C","O":"O","C":"C"}
+for key in residue_atoms_order:
+    tmp_list=residue_atoms_order[key]
+    for atom_name in tmp_list:
+        map_dict[atom_name]=atom_name[0]
 
 def write_res_info(wfile,current_atom_info,atomid,nucid):
     if nucid>9999:
