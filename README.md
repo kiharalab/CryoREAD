@@ -41,22 +41,34 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nuclei
 ### Detailed pipeline instructionscan be found https://kiharalab.org/emsuites/cryoread.php
 
 ## Introduction
-
+<details>
+   <summary>Cryo_READ is a computational tool using deep learning to automatically build full DNA/RNA atomic structure from cryo-EM map.  </summary>
 DNA and RNA play fundamental roles in various cellular processes, where the three-dimensional (3D) structure provides critical information to understand molecular mechanisms of their functions.  Although an increasing number of structures of nucleic acids and their complexes with proteins are determined by cryogenic electron microscopy (cryo-EM), structure modeling for DNA and RNA is still often challenging particularly when the map is determined at sub-atomic resolution. Moreover, computational methods are sparse for nucleic acid structure modeling.
 
 Here, we developed a deep learning-based fully automated de novo DNA/RNA atomic structure modeling method, CryoREAD. CryoREAD identifies phosphate, sugar, and base positions in a cryo-EM map using deep learning, which are traced and modeled into a 3D structure. When tested on cryo-EM maps determined at 2.0 to 5.0 Å resolution, CryoREAD built substantially accurate models than existing methods. We have further applied the method on cryo-EM maps of biomolecular complexes in SARS-CoV-2.
-
+</details>
 
 ## Overall Protocol 
-1) Structure Detection by deep neural network Cryo-READ networks;   
+<details>
+1) Structure Detection by deep neural network CryoREAD networks;   
 2) Tracing backbone according to detections;   
 3) Fragment-based nucleotide assignment;  
 4) Full atomic structure modeling.   
 
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/50850224/199084130-34b35a89-3c0c-4647-b693-82fbcc10c820.jpg" alt="cryo-READ framework" width="70%">
-</p> 
+  <img src="https://user-images.githubusercontent.com/50850224/199084130-34b35a89-3c0c-4647-b693-82fbcc10c820.jpg" alt="CryoREAD framework" width="70%">
+</p>
+</details>
+
+## Installation
+<details>
+
+### System Requirements
+CPU: >=8 cores <br>
+Memory (RAM): >=50Gb. For maps with more than 3,000 nucleotides, memory space should be higher than 200GB if the sequence is provided. <br>
+GPU: any GPU supports CUDA with at least 12GB memory. <br>
+GPU is required for CryoREAD and no CPU version is available for CryoREAD since it is too slow.
 
 ## Pre-required software
 ### Required 
@@ -121,10 +133,17 @@ coot
 If it can print out the help information of this function, then the refinemnt step of our program can be supported.
 **If not, please always remove --refine command line in all the commands, then CryoREAD should output structure without refinement.**
 
+</details>
 
 
 
-## Usage
+
+
+# Usage
+
+<details>
+<summary>Command Parameters</summary>
+   
 ```
 usage: main.py [-h] [-F F] [-M M] [-P P] --mode MODE [--contour CONTOUR] [--stride STRIDE] [--box_size BOX_SIZE] [--gpu GPU] [--batch_size BATCH_SIZE] [-f F] [-m M]
                [-g G] [-k K] [-R R] [--rule_soft RULE_SOFT] [--frag_size FRAG_SIZE] [--frag_stride FRAG_STRIDE] [--top_select TOP_SELECT] [--resolution RESOLUTION]
@@ -166,27 +185,16 @@ optional arguments:
   --thread THREAD
                         Use multiple threads for fragment-based sequence assignment,default:1 (multi-threading is disabled)
 ```
-### System Requirements
-CPU: >=8 cores <br>
-Memory (RAM): >=50Gb. For maps with more than 3,000 nucleotides, memory space should be higher than 200GB if the sequence is provided. <br>
-GPU: any GPU supports CUDA with at least 12GB memory. <br>
-GPU is required for CryoREAD and no CPU version is available for CryoREAD since it is too slow.
 
-## Four different running modes of CryoREAD 
-### Mode 1. Only Make Structure Information Predictions by cryo-READ.
-```
-python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --prediction_only 
-```
-[Map_Path] is the path of the experimental cryo-EM map, [Model_Path] is the path of our pre-trained deep learning model, [half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, [GPU_ID] specifies the gpu used for inference, [batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU). 
+</details>
 
-The predicted probability maps are saved in [Predict_Result/(map_name)/2nd_stage_detection] with mrc format. It will include 8 mrc files corresponding to 8 different classes.
 
-#### Example Command:
-```
-python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=4 --prediction_only
-```
 
-### Mode 2. Build atomic structure without sequence information
+
+<details>
+   <summary> DNA/RNA structure modeling without FASTA sequence</summary>
+   
+### Build atomic structure without sequence information
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --resolution=[Map_Resolution] --no_seqinfo --refine
 ```
@@ -201,8 +209,13 @@ The automatically build atomic structure is saved in [Predict_Result/(map-name)/
 python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=4 --resolution=3.7 --no_seqinfo --refine
 ```
 
+</details>
 
-### Mode 3. Build atomic structure with sequence information
+<details>
+
+<summary> DNA/RNA structure modeling with FASTA sequence</summary>
+
+### Build atomic structure with sequence information
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --rule_soft=[assignment_rule] --resolution=[Map_Resolution] --refine --thread=[num_threads]
 ```
@@ -219,6 +232,7 @@ python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour
 "--refine" should be removed if you can not successfully install Phenix/coot correctly,which may result in nucleotides that do not satisfy some geometry and chemical constraints.
 
 
+
 #### Example Command:
 ```
 python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fasta --contour=0.3 --gpu=0 --batch_size=4 --rule_soft=0 --resolution=3.7  --refine --thread 4 
@@ -226,7 +240,31 @@ python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fas
 The automatically build atomic structure is saved in [Predict_Result/(map-name)/Output/Refine_cycle[k].pdb] in pdb format, here default k is 3. However, it may fail if your dependencies are not properly installed, then you may only find Refine_cycle1.pdb or Refine_cycle2.pdb. Modeled structures without considering sequence information are also saved as [Predict_Result/(map-name)/Output/CryoREAD_noseq.pdb] (without refinement). Meanwhile, structures only considering the sequence information without connecting gap regions are saved in [Predict_Result/(map-name)/Output/CryoREAD_seqonly.pdb] (without refinement) for reference.
 Please adjust --thread based on your available cpu numbers (more is better).
 
-### Mode 4. Structure refinement
+</details>
+
+<details>
+
+<summary>CryoREAD detection (if you only want to check detection by deep learning)</summary>
+
+### Structure Information Predictions by CryoREAD.
+```
+python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --prediction_only 
+```
+[Map_Path] is the path of the experimental cryo-EM map, [Model_Path] is the path of our pre-trained deep learning model, [half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, [GPU_ID] specifies the gpu used for inference, [batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU). 
+
+The predicted probability maps are saved in [Predict_Result/(map_name)/2nd_stage_detection] with mrc format. It will include 8 mrc files corresponding to 8 different classes.
+
+#### Example Command:
+```
+python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=0 --batch_size=4 --prediction_only
+```
+</details>
+
+<details>
+
+<summary>Structure Refinement Pipeline in CryoREAD (if you only want to refine your structure)</summary>
+
+### Structure refinement
 The full refinement pipeline involving Phenix and coot is also available for refinement-only purposes. 
 ```
 python3 main.py --mode=1 -F=[input_structure_pdb] -M=[input_map_path] -P=[output_dir]
@@ -239,7 +277,12 @@ python3 main.py --mode=1 -F=example/6v5b_drna.pdb -M=example/21051.mrc -P=refine
 ```
 This will refine the input structure according to density and output the refined structure in [refine_test] directory. 
 
+</details>
+
 ## Example
+
+<details>
+
 ### Input File
 Cryo-EM map with mrc format. 
 (Optional) Sequence information with fasta format.
@@ -249,4 +292,4 @@ Our example input can be found [here](https://github.com/kiharalab/CryoREAD/tree
 1 *.mrc: a mrc file saved our detected probabilites by our deep learning model.    
 2 *.pdb: a PDB file that stores the atomic DNA/RNA structure by our method.
 Our example output can be found [here](https://kiharalab.org/emsuites/cryoread/output_21051.tar.gz). All the intermediate results are also kept here. 
-
+</details>
