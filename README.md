@@ -32,13 +32,29 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nuclei
 ```
 
 
-## Online Platform:  (Run easily and freely)
-## Server(Recommended): https://em.kiharalab.org/algorithm/CryoREAD
-### https://bit.ly/CryoREAD 
-### https://github.com/kiharalab/CryoREAD/blob/main/CryoREAD.ipynb
+# Online Platform:
 
-## Project website: https://kiharalab.org/emsuites
-### Detailed pipeline instructionscan be found https://kiharalab.org/emsuites/cryoread.php
+## Server(Recommended): https://em.kiharalab.org/algorithm/CryoREAD
+<details>
+We have three publicly available platforms, which basically offer the same functionality.
+Input: cryo-EM map+sequence file (optional). Output: modeled structure. The input and output is the same across all platforms.
+</details>
+
+### Google Colab: https://bit.ly/CryoREAD
+<details> 
+   Step-by-step instructions are available. For free user, colab has 4-hour running time limit and may not work for large structure(>=1000 nucleotides).
+</details>
+
+### Local installation with source code at Github
+<details>
+Full code is available here and it is easier for user to modify to develop their own tools.
+<br>It provides two additional supports:
+<br>1. Detection Output: This option outputs probability values of detected phosphate, sugar, base, and base types, computed by deep learning, in the map, for users reference.
+<br>2. Refinement pipeline: structures from other source can be refined in the specified EM map.
+</details>
+
+### Project website: https://kiharalab.org/emsuites
+### Detailed pipeline instructions can be found https://kiharalab.org/emsuites/cryoread.php
 
 ## Introduction
 <details>
