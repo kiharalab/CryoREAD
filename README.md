@@ -66,10 +66,11 @@ Here, we developed a deep learning-based fully automated de novo DNA/RNA atomic 
 
 ## Overall Protocol 
 <details>
-1) Structure Detection by deep neural network CryoREAD networks;   
-2) Tracing backbone according to detections;   
-3) Fragment-based nucleotide assignment;  
-4) Full atomic structure modeling.   
+   
+1) Structure Detection by deep neural network CryoREAD networks;  <br>
+2) Tracing backbone according to detections;   <br>
+3) Fragment-based nucleotide assignment;  <br>
+4) Full atomic structure modeling.   <br>
 
 
 <p align="center">
