@@ -37,7 +37,7 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nuclei
 ## Server(Recommended): https://em.kiharalab.org/algorithm/CryoREAD
 <details>
 We have three publicly available platforms, which basically offer the same functionality.
-Input: cryo-EM map+sequence file (optional). Output: modeled structure. The input and output is the same across all platforms.
+Input: cryo-EM map+sequence file (optional). Output: modeled structure. The input and output are the same across all platforms.
 </details>
 
 ### Google Colab: https://bit.ly/CryoREAD
