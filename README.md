@@ -42,7 +42,9 @@ Input: cryo-EM map+sequence file (optional). Output: modeled structure. The inpu
 
 ### Google Colab: https://bit.ly/CryoREAD
 <details> 
-   Step-by-step instructions are available. For free user, colab has 4-hour running time limit and may not work for large structure(>=1000 nucleotides).
+   
+   Step-by-step instructions are available. Limited by redistribution constraints of Coot and Phenix, the structure here is not refined and may include atom clashes. If you want better structure, please use our [server](https://em.kiharalab.org/algorithm/CryoREAD) or Github.  For free user, colab has 4-hour running time limit and may not work for large structure(>=1000 nucleotides).
+   
 </details>
 
 ### Local installation with source code at Github
