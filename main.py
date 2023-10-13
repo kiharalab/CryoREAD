@@ -19,6 +19,9 @@ def init_save_path(origin_map_path):
 if __name__ == "__main__":
     params = argparser()
     if params['mode']==0:
+        #configure the running path
+        running_dir = os.path.dirname(os.path.abspath(__file__))
+        os.chmod(running_dir)
         gpu_id = params['gpu']
         if gpu_id is not None:
             os.environ["CUDA_VISIBLE_DEVICES"] = gpu_id
@@ -88,6 +91,8 @@ if __name__ == "__main__":
         Build_Unet_Graph(cur_map_path,chain_predict_path,fasta_path,graph_save_path,
                 gaussian_bandwidth,dcut, rdcut,params)
     elif params['mode']==1:
+        running_dir = os.path.dirname(os.path.abspath(__file__))
+        os.chmod(running_dir)
         #structure refinement pipeline
         input_pdb = os.path.abspath(params['F'])
         input_map = os.path.abspath(params['M'])
