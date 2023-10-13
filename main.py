@@ -21,7 +21,7 @@ if __name__ == "__main__":
     if params['mode']==0:
         #configure the running path
         running_dir = os.path.dirname(os.path.abspath(__file__))
-        os.chmod(running_dir)
+
         gpu_id = params['gpu']
         if gpu_id is not None:
             os.environ["CUDA_VISIBLE_DEVICES"] = gpu_id
@@ -41,6 +41,7 @@ if __name__ == "__main__":
             save_path=params['output']
             map_name="input"
             mkdir(save_path)
+        os.chdir(running_dir)
         from data_processing.Unify_Map import Unify_Map
         cur_map_path = Unify_Map(cur_map_path,os.path.join(save_path,map_name+"_unified.mrc"))
         from data_processing.Resize_Map import Resize_Map
@@ -92,7 +93,7 @@ if __name__ == "__main__":
                 gaussian_bandwidth,dcut, rdcut,params)
     elif params['mode']==1:
         running_dir = os.path.dirname(os.path.abspath(__file__))
-        os.chmod(running_dir)
+        os.chdir(running_dir)
         #structure refinement pipeline
         input_pdb = os.path.abspath(params['F'])
         input_map = os.path.abspath(params['M'])
