@@ -92,12 +92,13 @@ if __name__ == "__main__":
         Build_Unet_Graph(cur_map_path,chain_predict_path,fasta_path,graph_save_path,
                 gaussian_bandwidth,dcut, rdcut,params)
     elif params['mode']==1:
-        running_dir = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(running_dir)
+
         #structure refinement pipeline
         input_pdb = os.path.abspath(params['F'])
         input_map = os.path.abspath(params['M'])
         output_dir = os.path.abspath(params['P'])
+        running_dir = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(running_dir)
         #resolution param also needed
         from graph.refine_structure import refine_structure
         refine_structure(input_pdb,input_map,output_dir,params)
