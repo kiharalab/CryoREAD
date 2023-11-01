@@ -171,7 +171,7 @@ usage: main.py [-h] [-F F] [-M M] [-P P] --mode MODE [--contour CONTOUR] [--stri
 optional arguments:
   -h, --help            show this help message and exit
   -F F                  Input map file path. (str)
-  -M M                  Pre-trained model path. (str) Default value: "best_model"
+  -M M                  Pre-trained model path. (str) Default value: "best_model". If you want to reproduce the results in our paper, your can specify "best_model_paper". Here the default path is the new model trained on the entire dataset.
   -P P                  Optional fasta sequence file path. (str)
   --mode MODE           Control Mode for program: 0: cryo_READ structure modeling. Required parameter. (Integer), Default value: 0
   --contour CONTOUR     Contour level for input map, suggested 0.5*[author_contour]. (Float), Default value: 0.0
@@ -218,7 +218,7 @@ optional arguments:
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --resolution=[Map_Resolution] --no_seqinfo --refine
 ```
 [Map_Path] is the path of the experimental cryo-EM map, 
-<br>[Model_Path] is the path of our pre-trained deep learning model, 
+<br>[Model_Path] is the path of our pre-trained deep learning model, (If you want to reproduce the results in our paper, your can specify "best_model_paper". Here the default path is the new model trained on the entire dataset.)
 <br>[half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, 
 <br>[GPU_ID] specifies the gpu used for inference,
 <br> [batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU), 
@@ -244,7 +244,7 @@ python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --rule_soft=[assignment_rule] --resolution=[Map_Resolution] --refine --thread=[num_threads]
 ```
 [Map_Path] is the path of the experimental cryo-EM map, 
-<br>[Model_Path] is the path of our pre-trained deep learning model, 
+<br>[Model_Path] is the path of our pre-trained deep learning model, (If you want to reproduce the results in our paper, your can specify "best_model_paper". Here the default path is the new model trained on the entire dataset.)
 <br>[Fasta_Path] is the path of the input fasta file about sequence information, 
 <br>[half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, 
 <br>[GPU_ID] specifies the gpu used for inference, 
@@ -275,7 +275,7 @@ The automatically build atomic structure is saved in [Predict_Result/(map-name)/
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --prediction_only 
 ```
 [Map_Path] is the path of the experimental cryo-EM map, 
-<br>[Model_Path] is the path of our pre-trained deep learning model, 
+<br>[Model_Path] is the path of our pre-trained deep learning model, (If you want to reproduce the results in our paper, your can specify "best_model_paper". Here the default path is the new model trained on the entire dataset.)
 <br>[half_contour_level] is 0.5* contour_level (suggested by author) to remove outside regions to save processing time, 
 <br>[GPU_ID] specifies the gpu used for inference, 
 <br>[batch_size] is the number of examples per batch in the inference (we used 8 with a 24GB GPU). 
