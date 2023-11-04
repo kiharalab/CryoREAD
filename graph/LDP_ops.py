@@ -84,18 +84,20 @@ def build_LDP(input_mrc,sugar_density, sugar_Nact,origin_map_path,save_path,ext_
         sugar_point.Merge_point(input_mrc, sugar_point_path)  # You will get a merged point file here.
     else:
         sugar_point.load_merge(input_mrc, sugar_point_path)
-    merged_cd_dens = np.loadtxt(sugar_point_path[:-4] + 'onlymerged.txt')
-    LDP_save_path = os.path.join(save_path,ext_name+"_LDP.mrc")
-    save_LDP_map(LDP_save_path, merged_cd_dens, origin_map_path)
-    mapc, mapr, maps, origin, nxstart, nystart, nzstart = map_info_list
-    All_location = Extract_LDP_coord(merged_cd_dens,mapc, mapr, maps, origin, nxstart, nystart, nzstart)
-    graph_path = os.path.join(save_path, ext_name+"_LDP.pdb")
-    Show_Graph_Connect(All_location, [], graph_path)
+    merged_cd_dens = sugar_point.merged_cd_dens#np.loadtxt(sugar_point_path[:-4] + 'onlymerged.txt')
+    if len(merged_cd_dens)>0:
+        LDP_save_path = os.path.join(save_path,ext_name+"_LDP.mrc")
+        save_LDP_map(LDP_save_path, merged_cd_dens, origin_map_path)
+        mapc, mapr, maps, origin, nxstart, nystart, nzstart = map_info_list
+        All_location = Extract_LDP_coord(merged_cd_dens,mapc, mapr, maps, origin, nxstart, nystart, nzstart)
+        graph_path = os.path.join(save_path, ext_name+"_LDP.pdb")
+        Show_Graph_Connect(All_location, [], graph_path)
+        #plot in b factor
+        ldp_prob_path = os.path.join(save_path, ext_name+"_LDPdens.cif")
+        Show_Bfactor_cif(ext_name+"_dens",All_location,ldp_prob_path,sugar_point.merged_cd_dens[:,3])
     #Get each LDP's sum probability values from its neighbors
     sugar_point = calculate_merge_point_density(sugar_point,sugar_density)
-    #plot in b factor
-    ldp_prob_path = os.path.join(save_path, ext_name+"_LDPdens.cif")
-    Show_Bfactor_cif(ext_name+"_dens",All_location,ldp_prob_path,sugar_point.merged_cd_dens[:,3])
+
     #turns out density showed very good results its correlation with real phosphate positions
     return sugar_point
 from ops.os_operation import mkdir

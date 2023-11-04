@@ -81,6 +81,8 @@ class Points(object):
 
         self.merged_data = np.loadtxt(point_path)
         self.merged_cd_dens = np.loadtxt(point_path[:-4] + 'onlymerged.txt')
+        if len(self.merged_cd_dens.shape)==1 and len(self.merged_cd_dens)>0:
+            self.merged_cd_dens = self.merged_cd_dens[np.newaxis,:]#very rare case for consideration
         self.Nmerge = len(self.merged_cd_dens)
 
         print('merging finishing with %d left' % self.Nmerge)

@@ -121,8 +121,9 @@ def Assign_Base_Main_Path_sugar(Path_ID_List,pho_coordinate,Base_LDP_List,base_p
 
     Base_Coord_List = []
     for base_ldp in Base_LDP_List:
-        base_coord = base_ldp.merged_cd_dens[:,:3]
-        Base_Coord_List.append(base_coord)
+        if len(base_ldp.merged_cd_dens)>0:
+            base_coord = base_ldp.merged_cd_dens[:,:3]
+            Base_Coord_List.append(base_coord)
     Base_Coord_List = np.concatenate(Base_Coord_List,axis=0)
 
     distance_array = cdist(pho_coordinate,Base_Coord_List)
@@ -155,8 +156,9 @@ def Assign_Base_Main_Path(Path_ID_List,pho_coordinate,Base_LDP_List,base_prob_ar
 
     Base_Coord_List = []
     for base_ldp in Base_LDP_List:
-        base_coord = base_ldp.merged_cd_dens[:,:3]
-        Base_Coord_List.append(base_coord)
+        if len(base_ldp.merged_cd_dens)>0:
+            base_coord = base_ldp.merged_cd_dens[:,:3]
+            Base_Coord_List.append(base_coord)
     Base_Coord_List = np.concatenate(Base_Coord_List,axis=0)
 
     distance_array = cdist(pho_coordinate,Base_Coord_List)

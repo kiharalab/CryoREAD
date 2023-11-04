@@ -14,8 +14,9 @@ def Match_Sugar_Base_Location(Path_ID_List,sugar_point,Base_LDP_List,map_info_li
 
     Base_Coord_List = []
     for base_ldp in Base_LDP_List:
-        base_coord = base_ldp.merged_cd_dens[:,:3]
-        Base_Coord_List.append(base_coord)
+        if len(base_ldp.merged_cd_dens)>0:
+            base_coord = base_ldp.merged_cd_dens[:,:3]
+            Base_Coord_List.append(base_coord)
     Base_Coord_List = np.concatenate(Base_Coord_List,axis=0)
     sb_distance = cdist(sugar_coordinate,Base_Coord_List)
     Base_refer_dict={}
