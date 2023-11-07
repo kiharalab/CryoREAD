@@ -75,7 +75,12 @@ if __name__ == "__main__":
         mkdir(save_path_2nd_stage)
         Predict_2nd_Stage(cur_map_path,save_path_1st_stage,model_2nd_stage_path,save_path_2nd_stage,
                        params['box_size'],params['stride'],params['batch_size'],params['contour'],params)
-
+        #0 gen protein map for other programs to run
+        cur_predict_path = os.path.join(save_path_2nd_stage,"Input")
+        chain_predict_path = os.path.join(cur_predict_path,"chain_predictprob.npy")
+        chain_prob = np.load(chain_predict_path)#[sugar,phosphate,A,UT,C,G,protein,base]
+        mask_map_path = os.path.join(save_path,"mask_protein.mrc")
+        Gen_MaskProtein_map(chain_prob,cur_map_path,mask_map_path,params['contour'],threshold=0.3)
         if params['prediction_only']:
             print("Our prediction results are saved in %s with mrc format for visualization check."%save_path_2nd_stage)
             exit()
@@ -87,8 +92,7 @@ if __name__ == "__main__":
         graph_save_path = os.path.join(save_path,"graph_atomic_modeling")
         mkdir(graph_save_path)
 
-        cur_predict_path = os.path.join(save_path_2nd_stage,"Input")
-        chain_predict_path = os.path.join(cur_predict_path,"chain_predictprob.npy")
+
         Build_Unet_Graph(cur_map_path,chain_predict_path,fasta_path,graph_save_path,
                 gaussian_bandwidth,dcut, rdcut,params)
     elif params['mode']==1:

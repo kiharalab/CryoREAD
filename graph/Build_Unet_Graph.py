@@ -120,9 +120,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
 
     chain_prob = np.load(chain_prob_path)#[sugar,phosphate,A,UT,C,G,protein,base]
     input_mrc = MRC(origin_map_path, gaussian_bandwidth)
-    #0 gen protein map for other programs to run
-    mask_map_path = os.path.join(root_save_path,"mask_protein.mrc")
-    Gen_MaskProtein_map(chain_prob,origin_map_path,mask_map_path,params['contour'],threshold=0.3)
+
 
     #1. chain tracing
     sp_prob = chain_prob[0]+chain_prob[1]
