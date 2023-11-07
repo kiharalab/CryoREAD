@@ -295,16 +295,17 @@ python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=
 ### Structure refinement
 The full refinement pipeline involving Phenix and coot is also available for refinement-only purposes. 
 ```
-python3 main.py --mode=1 -F=[input_structure_pdb] -M=[input_map_path] -P=[output_dir]
+python3 main.py --mode=1 -F=[input_structure_pdb] -M=[input_map_path] -P=[output_dir] --resolution=[resolution]
 ```
 This refinement pipeline can work for any given structure (not limited to DNA/RNA) and a corresponding map.
 <br>[input_structure_pdb] is the path of the input structure in pdb format, 
 <br>[input_map_path] corresponds to the input map path. 
 <br>[output_dir]: the directory you specify to save the outputs during refinement process. The final output Refine_cycle3.pdb will be generated in this directory.
+<br> [resolution] is the resolution of the deposited maps.
 
 #### Example Command:
 ```
-python3 main.py --mode=1 -F=example/6v5b_drna.pdb -M=example/21051.mrc -P=refine_test
+python3 main.py --mode=1 -F=example/6v5b_drna.pdb -M=example/21051.mrc -P=refine_test --resolution=3.7
 ```
 This will refine the input structure according to density and output the refined structure in [refine_test] directory. 
 
