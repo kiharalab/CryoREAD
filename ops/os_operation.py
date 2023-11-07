@@ -24,3 +24,20 @@ def unzip_gz(file_path):
         file.write(g_file.read())
     g_file.close()
     return new_path
+import shutil
+def collect_refine_pdb(save_dir,last_pdb_path,final_pdb_path):
+    pdb_file=os.path.join(save_dir,"Refine_cycle3.pdb")
+    if os.path.exists(pdb_file):
+        shutil.copy(pdb_file,final_pdb_path)
+    else:
+        pdb_file=os.path.join(save_dir,"Refine_cycle2.pdb")
+        if os.path.exists(pdb_file):
+            shutil.copy(pdb_file,final_pdb_path)
+        else:
+            pdb_file=os.path.join(save_dir,"Refine_cycle1.pdb")
+            if os.path.exists(pdb_file):
+                shutil.copy(pdb_file,final_pdb_path)
+            else:
+                if os.path.exists(last_pdb_path):
+                    shutil.copy(last_pdb_path,final_pdb_path)
+
