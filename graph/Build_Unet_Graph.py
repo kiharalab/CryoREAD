@@ -257,10 +257,13 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
         if params['refine']:
             refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
                      chain_prob,origin_map_path,refined_pdb_path,params,DNA_label=DNA_Label)
+            final_pdb_path =  os.path.join(root_save_path,"CryoREAD.pdb")
+            from ops.os_operation import collect_refine_pdb
+            collect_refine_pdb(os.path.join(root_save_path,"Output"),refined_pdb_path,final_pdb_path)
         else:
-            output_dir = os.path.join(root_save_path,"Output")
-            mkdir(output_dir)
-            nonrefined_pdb_path = os.path.join(output_dir,"CryoREAD_norefine.pdb")
+            #output_dir = os.path.join(root_save_path,"Output")
+            #mkdir(output_dir)
+            nonrefined_pdb_path = os.path.join(root_save_path,"CryoREAD_norefine.pdb")
             #shutil.copy(init_pdb_path,nonrefined_pdb_path)
             format_pdb(init_pdb_path,nonrefined_pdb_path,DNA_Label)
             print("please check final output atomic structure in %s"%nonrefined_pdb_path)
