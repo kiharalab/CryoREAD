@@ -19,6 +19,7 @@ class Points(object):
         rdcut = self.params['f']
         if self.Ncd == 0:
             print('not running merge shifting parts')
+            self.merged_cd_dens = np.array([])
             return
         # id number of each points, so that when i is merged to j,
         # we can mark i with j, so that we know where it goes
