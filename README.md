@@ -226,7 +226,7 @@ python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_l
 
 "--refine" should be removed if you can not successfully install Phenix/coot correctly, which may result in nucleotides that do not satisfy some geometry and chemical constraints.
 
-The automatically build atomic structure is saved in [Predict_Result/(map-name)/CryoREAD_noseq.pdb] in pdb format. You can also add ```--output=[your_directory]``` to specify the output directory. Then the output will be saved in [output_dir/CryoREAD_noseq.pdb].
+The automatically build atomic structure is saved in [Predict_Result/(map-name)/CryoREAD_noseq.pdb] (or  [Predict_Result/(map-name)/CryoREAD_norefine.pdb] if you do not add --refine param) in pdb format. You can also add ```--output=[your_directory]``` to specify the output directory. Then the output will be saved in [output_dir/CryoREAD_noseq.pdb]. 
 
 #### Example Command:
 ```
@@ -261,7 +261,7 @@ python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour
 ```
 python3 main.py --mode=0 -F=example/21051.mrc -M=best_model -P=example/21051.fasta --contour=0.3 --gpu=0 --batch_size=4 --rule_soft=0 --resolution=3.7  --refine --thread 4 
 ```
-The automatically build atomic structure is saved in [Predict_Result/(map-name)/CryoREAD.pdb] in pdb format. Modeled structures without considering sequence information are also saved as [Predict_Result/(map-name)/Output/CryoREAD_noseq.pdb] (without refinement). Meanwhile, structures only considering the sequence information without connecting gap regions are saved in [Predict_Result/(map-name)/Output/CryoREAD_seqonly.pdb] (without refinement) for reference.
+The automatically build atomic structure is saved in [Predict_Result/(map-name)/CryoREAD.pdb] in pdb format (or  [Predict_Result/(map-name)/CryoREAD_norefine.pdb] if you do not add --refine param). Modeled structures without considering sequence information are also saved as [Predict_Result/(map-name)/Output/CryoREAD_noseq.pdb] (without refinement). Meanwhile, structures only considering the sequence information without connecting gap regions are saved in [Predict_Result/(map-name)/Output/CryoREAD_seqonly.pdb] (without refinement) for reference.
 <br>Please adjust --thread based on your available CPU numbers (more is better).
 
 </details>
