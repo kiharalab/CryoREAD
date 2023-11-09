@@ -57,6 +57,7 @@ Full code is available here and it is easier for user to modify to develop their
 
 ### Project website: https://kiharalab.org/emsuites
 ### Detailed pipeline instructions can be found https://kiharalab.org/emsuites/cryoread.php
+### CryoREAD algorithm video (20 minutes): https://www.youtube.com/watch?v=p7Bpou2vL6o
 
 ## Introduction
 <details>
