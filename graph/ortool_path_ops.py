@@ -94,7 +94,8 @@ def ortools_build_path(save_path,coordinate_list,edge_pairs,edge_density,cutoff_
 
     max_Value = 99999999
 
-    number_vehicles = int(np.ceil(len(coordinate_list) / 100))
+    #number_vehicles = int(np.ceil(len(coordinate_list) / 100))
+    number_vehicles = int(np.ceil(len(coordinate_list) / 20))#find 100 did not work so well for very big structures for new model
     if number_vehicles<=5:
         number_vehicles=5
     ortool_data = create_ortool_data_model(coordinate_list, edge_pairs, edge_density, number_vehicles,cutoff_length,relax_choice=relax_choice)
