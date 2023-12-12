@@ -105,7 +105,7 @@ ldp_distance_array,ldp_prev_connect,seq_gap_total_limit=2):
 
 
 def dynamic_assign_multi(updated_base_list,current_chain,
-        ldp_gap_penalty,seq_gap_penalty,fragment_distance_array,save_path):
+        ldp_gap_penalty,seq_gap_penalty,fragment_distance_array,save_path=None):
     map_dict={0:"A",1:"T",2:"C",3:"G"}
     #build M*N matrix
     match_matrix = np.zeros([len(updated_base_list)+1,len(current_chain)+1])
@@ -114,8 +114,9 @@ def dynamic_assign_multi(updated_base_list,current_chain,
         for j in range(len(current_chain)):
             cur_label=int(current_chain[j])
             match_matrix[i+1,j+1]=current_prob[cur_label]*100#-100#if it's higher than reference value, it should be bigger than 1
-    score_path = os.path.join(save_path,"match_score.txt")
-    np.savetxt(score_path,match_matrix)
+    if save_path is not None:
+        score_path = os.path.join(save_path,"match_score.txt")
+        np.savetxt(score_path,match_matrix)
     match_score = match_matrix
     pointer = np.zeros([len(updated_base_list)+1,len(current_chain)+1])
     scratch = np.zeros([len(updated_base_list)+1,len(current_chain)+1])
@@ -145,18 +146,19 @@ def dynamic_assign_multi(updated_base_list,current_chain,
     scratch,pointer,seq_gap_count,ldp_prev_connect,ldp_gap_count=global_align_score(ldp_gap_penalty,seq_gap_penalty, match_matrix,
     np.arange(len(updated_base_list)), np.arange(len(current_chain)),
      pointer, scratch,seq_gap_accumulation, ldp_gap_accumulation,fragment_final_distance, ldp_prev_connect,seq_gap_total_limit)
-    score_path = os.path.join(save_path,"optimal_score.txt")
-    np.savetxt(score_path,scratch)
-    score_path = os.path.join(save_path,"optimal_direction.txt")
-    np.savetxt(score_path,pointer)#verfied corret
-    score_path = os.path.join(save_path,"sequence_miss_count.txt")
-    np.savetxt(score_path,seq_gap_count)#verified correct
-    score_path = os.path.join(save_path,"ldp_prev_connect.txt")
-    np.savetxt(score_path,ldp_prev_connect)
-    score_path = os.path.join(save_path,"ldp_distance_array.txt")
-    np.savetxt(score_path,fragment_final_distance)
-    score_path = os.path.join(save_path,"ldp_gap_count.txt")
-    np.savetxt(score_path,ldp_gap_count)
+    if save_path is not None:
+        score_path = os.path.join(save_path,"optimal_score.txt")
+        np.savetxt(score_path,scratch)
+        score_path = os.path.join(save_path,"optimal_direction.txt")
+        np.savetxt(score_path,pointer)#verfied corret
+        score_path = os.path.join(save_path,"sequence_miss_count.txt")
+        np.savetxt(score_path,seq_gap_count)#verified correct
+        score_path = os.path.join(save_path,"ldp_prev_connect.txt")
+        np.savetxt(score_path,ldp_prev_connect)
+        score_path = os.path.join(save_path,"ldp_distance_array.txt")
+        np.savetxt(score_path,fragment_final_distance)
+        score_path = os.path.join(save_path,"ldp_gap_count.txt")
+        np.savetxt(score_path,ldp_gap_count)
     input_seq_line=""
     for i in range(len(updated_base_list)):
         choice=int(np.argmax(updated_base_list[i]))
@@ -188,9 +190,9 @@ def dynamic_assign_multi(updated_base_list,current_chain,
                 cur_x -= int(abs(check_pointer))
             #match_matrix[cur_x-1]=cur_y-1
             check_pointer = pointer[cur_x,cur_y]
-
-        score_path = os.path.join(save_path,"match_result%d.txt"%count_match)
-        np.savetxt(score_path,match_matrix)
+        if save_path is not None:
+            score_path = os.path.join(save_path,"match_result%d.txt"%count_match)
+            np.savetxt(score_path,match_matrix)
         match_seq_line = ""
         count_replace =0
         for i in range(len(match_matrix)):
@@ -216,15 +218,15 @@ def dynamic_assign_multi(updated_base_list,current_chain,
     for i in range(len(current_chain)):
         match_label = int(current_chain[i])
         all_seq_line += map_dict[match_label]
-
-    score_path = os.path.join(save_path,"match_seq.txt")
-    with open(score_path,'w') as file:
-        file.write(input_seq_line+"\n")
-        for j in range(len(match_seq_list)):
-            current_interval = match_interval_list[j]
-            file.write(match_seq_list[j]+"\t"+"%.2f"%max_score_list[j]+
-            "\t%d,%d\n"%(current_interval[0],current_interval[1]))
-        file.write(all_seq_line+"\n")
+    if save_path is not None:
+        score_path = os.path.join(save_path,"match_seq.txt")
+        with open(score_path,'w') as file:
+            file.write(input_seq_line+"\n")
+            for j in range(len(match_seq_list)):
+                current_interval = match_interval_list[j]
+                file.write(match_seq_list[j]+"\t"+"%.2f"%max_score_list[j]+
+                "\t%d,%d\n"%(current_interval[0],current_interval[1]))
+            file.write(all_seq_line+"\n")
 
     return max_score_list,match_seq_list,match_interval_list
 
@@ -296,7 +298,7 @@ def greedy_assign_PS(All_Base_Path_List_sugar,All_Path_List_sugar,Path_P_align_l
                 dp_save_path = os.path.join(cur_path_save_path,"path_starting_%d_chain_%s"%(start_ldp_index,current_chain_id))
                 mkdir(dp_save_path)
                 max_score, match_seq_line,match_seq_interval = dynamic_assign_multi(study_ldp_base_list,current_chain,
-                        ldp_gap_penalty,seq_gap_penalty,fragment_distance_array, dp_save_path)
+                        ldp_gap_penalty,seq_gap_penalty,fragment_distance_array, None)
                 path_assign_collection_list.extend(match_seq_line)
                 path_assign_score_list.extend(max_score)
                 path_assign_interval_list.extend(match_seq_interval)
@@ -306,7 +308,7 @@ def greedy_assign_PS(All_Base_Path_List_sugar,All_Path_List_sugar,Path_P_align_l
                 dp_save_path = os.path.join(cur_path_save_path,"rpath_starting_%d_chain_%s"%(start_ldp_index,current_chain_id))
                 mkdir(dp_save_path)
                 max_score, match_seq_line,match_seq_interval = dynamic_assign_multi(study_ldp_base_list,current_reverse_chain,
-                        ldp_gap_penalty,seq_gap_penalty,fragment_distance_array, dp_save_path)
+                        ldp_gap_penalty,seq_gap_penalty,fragment_distance_array, None)
                 path_assign_collection_list.extend(match_seq_line)
                 path_assign_score_list.extend(max_score)
                 path_assign_interval_list.extend(match_seq_interval)
@@ -383,7 +385,7 @@ def distributed_dp_calcu(chain_dict,cur_path_save_path,start_ldp_index,
         dp_save_path = os.path.join(cur_path_save_path,"path_starting_%d_chain_%s"%(start_ldp_index,current_chain_id))
         mkdir(dp_save_path)
         max_score, match_seq_line,match_seq_interval = dynamic_assign_multi(study_ldp_base_list,current_chain,
-                ldp_gap_penalty,seq_gap_penalty,fragment_distance_array, dp_save_path)
+                ldp_gap_penalty,seq_gap_penalty,fragment_distance_array, None)
         path_assign_collection_list.extend(match_seq_line)
         path_assign_score_list.extend(max_score)
         path_assign_interval_list.extend(match_seq_interval)
@@ -396,7 +398,7 @@ def distributed_dp_calcu(chain_dict,cur_path_save_path,start_ldp_index,
         dp_save_path = os.path.join(cur_path_save_path,"rpath_starting_%d_chain_%s"%(start_ldp_index,current_chain_id))
         mkdir(dp_save_path)
         max_score, match_seq_line,match_seq_interval = dynamic_assign_multi(study_ldp_base_list,current_reverse_chain,
-                ldp_gap_penalty,seq_gap_penalty,fragment_distance_array, dp_save_path)
+                ldp_gap_penalty,seq_gap_penalty,fragment_distance_array, None)
         path_assign_collection_list.extend(match_seq_line)
         path_assign_score_list.extend(max_score)
         path_assign_interval_list.extend(match_seq_interval)

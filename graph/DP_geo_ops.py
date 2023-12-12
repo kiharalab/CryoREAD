@@ -62,22 +62,24 @@ def global_align_score(ldp_gap_penalty,match_matrix,
                 ldp_prev_connect[i]=prev_neighbor
     return scratch,pointer,ldp_prev_connect
 
-def dynamic_assign_geo(updated_base_list,ldp_gap_penalty,fragment_distance_array,save_path):
+def dynamic_assign_geo(updated_base_list,ldp_gap_penalty,fragment_distance_array,save_path=None):
     map_dict={0:"A",1:"T",2:"C",3:"G"}
     match_matrix = np.max(updated_base_list,axis=1)#updated_base_list
-    score_path = os.path.join(save_path,"match_score.txt")
-    np.savetxt(score_path,match_matrix)
+    if save_path is not None:
+        score_path = os.path.join(save_path,"match_score.txt")
+        np.savetxt(score_path,match_matrix)
     pointer = np.zeros(len(updated_base_list))#indicates the operations at position i
     scratch = np.zeros(len(updated_base_list))
     ldp_prev_connect = np.zeros(len(updated_base_list))-1
     scratch,pointer,ldp_prev_connect=global_align_score(ldp_gap_penalty,match_matrix,
     pointer, scratch,fragment_distance_array, ldp_prev_connect)
-    score_path = os.path.join(save_path,"optimal_score.txt")
-    np.savetxt(score_path,scratch)
-    score_path = os.path.join(save_path,"optimal_direction.txt")
-    np.savetxt(score_path,pointer)#verfied corret
-    score_path = os.path.join(save_path,"ldp_prev_connect.txt")
-    np.savetxt(score_path,ldp_prev_connect)
+    if save_path is not None:
+        score_path = os.path.join(save_path,"optimal_score.txt")
+        np.savetxt(score_path,scratch)
+        score_path = os.path.join(save_path,"optimal_direction.txt")
+        np.savetxt(score_path,pointer)#verfied corret
+        score_path = os.path.join(save_path,"ldp_prev_connect.txt")
+        np.savetxt(score_path,ldp_prev_connect)
     input_seq_line=""
     for i in range(len(updated_base_list)):
         choice=int(np.argmax(updated_base_list[i]))
@@ -95,17 +97,26 @@ def dynamic_assign_geo(updated_base_list,ldp_gap_penalty,fragment_distance_array
     max_score = np.max(scratch)
     match_matrix = np.zeros(len(updated_base_list))
     match_matrix[ldp_prev_connect==-1]=1
-    match_seq=""
-    with open(score_path,'w') as file:
-        file.write(input_seq_line+"\n")
+    if save_path is not None:
+        score_path = os.path.join(save_path,"match_seq.txt")
+        match_seq=""
+        with open(score_path,'w') as file:
+            file.write(input_seq_line+"\n")
+            for k in range(len(match_matrix)):
+                if match_matrix[k]==1:
+                    file.write(input_seq_line[k])
+                    match_seq +=input_seq_line[k]
+                else:
+                    file.write("-")
+                    match_seq+="-"
+            file.write("\n")
+    else:
+        match_seq=""
         for k in range(len(match_matrix)):
             if match_matrix[k]==1:
-                file.write(input_seq_line[k])
                 match_seq +=input_seq_line[k]
             else:
-                file.write("-")
                 match_seq+="-"
-        file.write("\n")
     return max_score,match_seq
 
 
