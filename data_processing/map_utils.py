@@ -81,7 +81,14 @@ def save_dens_map(save_map_path,new_dens,
         mrc_new.print_header()
         mrc_new.close()
         del data_new
-
+def increase_map_density(input_path,output_path,add_contour):
+    add_contour=abs(add_contour)
+    with mrcfile.open(input_path,permissive=True) as mrc:
+        data=mrc.data
+        data=np.float32(data)
+    data = data+add_contour
+    save_dens_map(output_path,data,add_contour)
+    return output_path
 def save_predict_specific_map(save_map_path,specific_class,prediction_array,
                               origin_map_path,label_only=False):
     prediction = np.array(prediction_array)

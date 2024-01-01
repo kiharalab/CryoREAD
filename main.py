@@ -46,6 +46,11 @@ if __name__ == "__main__":
         cur_map_path = Unify_Map(cur_map_path,os.path.join(save_path,map_name+"_unified.mrc"))
         from data_processing.Resize_Map import Resize_Map
         cur_map_path = Resize_Map(cur_map_path,os.path.join(save_path,map_name+".mrc"))
+        if params['contour']<0:
+            #change contour level to 0 and increase all the density
+            from data_processing.map_utils import increase_map_density
+            cur_map_path = increase_map_density(cur_map_path,os.path.join(save_path,map_name+"_increase.mrc"),params['contour'])
+            params['contour']=0
         #segment map to remove those useless regions
         from data_processing.map_utils import segment_map
         cur_new_map_path = os.path.join(save_path,map_name+"_segment.mrc")
