@@ -368,7 +368,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
         #mkdir(output_dir)
         nonrefined_pdb_path = os.path.join(root_save_path,"CryoREAD_norefine.pdb")
         #shutil.copy(init_pdb_path,nonrefined_pdb_path)
-        format_pdb_path(init_pdb_path,nonrefined_pdb_path,DNA_Label)
+        format_pdb(init_pdb_path,nonrefined_pdb_path,DNA_Label)
         print("please check final output atomic structure in %s"%nonrefined_pdb_path)
 
 
