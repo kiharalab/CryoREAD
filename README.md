@@ -312,6 +312,30 @@ This will refine the input structure according to density and output the refined
 
 </details>
 
+<details>
+
+<summary>Structure Evaluation in CryoREAD (if you only want to compare your predicted structure with native structure)</summary>
+
+### Predicted Structure Evaluation
+We provided the evaluation pipeline used in CryoREAD, use 5Å as a cutoff. Different from Phenix, we matched the nucleotides based on the average distance of the backbone atoms of nucleotides instead of only using P atoms, which is not so stable and accurate. 
+
+To use our evaluation pipeline, please use
+```
+python3 main.py --mode=2 -F=predicted.cif[.pdb] -M=target.cif[.pdb] 
+```
+Here -F takes the predicted pdb/cif file and -M takes the native pdb/cif files. The example output is as follows
+```
+****************************************************************************************************
+Atom Coverage: 0.940 Atom Precision: 0.872
+Sequence Recall(Match): 0.600 Sequence Precision(Match): 0.562
+Sequence Recall: 0.564 Sequence Precision: 0.490
+RMSD: 3.010
+****************************************************************************************************
+```
+All the reported metrics in our paper can be calculated. 
+
+</details>
+
 ## Example
 
 <details>
