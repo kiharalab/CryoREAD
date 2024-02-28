@@ -111,14 +111,15 @@ def calcudate_atomwise_distmat(query_dict,target_dict):
     query_dict: dictionary of predicted structure
     target_dict: dictionary of native structure
     return:
-    distance_matrix: M*N matrix, M is the number of nucleotides in query pdb, N is the number of nucleotides in target pdb
+    distance_matrix: K*M*N matrix, K is the number of atom types,
+      M is the number of nucleotides in query pdb, N is the number of nucleotides in target pdb
     """
     #first get atom list
     query_keys=list(query_dict.keys())
     target_keys = list(target_dict.keys())
     tmp_key = query_keys[0]
     atom_list = list(target_dict[tmp_key].keys())
-    distance_matrix = np.zeros([len(query_keys),len(target_keys)]) #M*N matrix
+    distance_matrix = np.zeros([len(atom_list),len(query_keys),len(target_keys)]) #M*N matrix
     count_matrix = np.zeros([len(query_keys),len(target_keys)]) #M*N matrix count the number of atoms for each pair of nucleotides
     for select_atom in atom_list:
         query_atom_list=[]
@@ -147,7 +148,8 @@ def calcudate_atomwise_distmat(query_dict,target_dict):
             current_dist_matrix[missing_query_index[k],:]=0
         for k in range(len(missing_target_index)):
             current_dist_matrix[:,missing_target_index[k]]=0
-        distance_matrix+=current_dist_matrix
+        distance_matrix[atom_list.index(select_atom),:,:]=current_dist_matrix
+        
         tmp_count_matrix = np.ones([len(query_keys),len(target_keys)])
         for k in range(len(missing_query_index)):
             tmp_count_matrix[missing_query_index[k],:]=0
@@ -159,14 +161,15 @@ def calcudate_atomwise_distmat(query_dict,target_dict):
     if len(zero_index[0])>0:
         print("Some atoms are missing in the query/target pdb/cif, please check the input file")
         exit()
-    distance_matrix = distance_matrix/count_matrix
+    
     return distance_matrix
 
-def calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff,max_cutoff=10.0):
+def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_matrix,cutoff,max_cutoff=10.0):
     """
     query_dict: dictionary of predicted structure
     target_dict: dictionary of native structure 
     distance_matrix: M*N matrix, M is the number of nucleotides in query pdb, N is the number of nucleotides in target pdb
+    distance_atom_matrix: K*M*N matrix, K is the number of atom types, M is the number of nucleotides in query pdb, N is the number of nucleotides in target pdb
     cutoff: distance cutoff for evaluation
     max_cutoff: a distance cutoff to calculate precision, when no match in 10A, we did not put it into calculation
     return:
@@ -177,7 +180,33 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff,max_cuto
     #first find the closest pair of nucleotides
     query_keys=list(query_dict.keys())
     target_keys = list(target_dict.keys())
-    #calculate atom coverage if we simply find the closest pair of nucleotides
+    #calculate atom precision and coverage
+    query_ratio_list=[]
+    target_ratio_list=[]
+    for i in range(len(query_keys)):
+        cur_dist = distance_matrix[i]
+        current_key_index = np.argwhere(cur_dist<=cutoff)
+        max_ratio=0
+        for tmp_index in current_key_index:
+            tmp_index = int(tmp_index)
+            cur_ratio = np.sum(distance_atom_matrix[:,i,tmp_index]<=cutoff)/len(distance_atom_matrix)
+            if cur_ratio>max_ratio:
+                max_ratio=cur_ratio
+        query_ratio_list.append(max_ratio)
+    #similar way for target
+    for j in range(len(target_keys)):
+        cur_dist = distance_matrix[:,j]
+        current_query_index = np.argwhere(cur_dist<=cutoff)
+        max_ratio=0
+        for tmp_index in current_query_index:
+            tmp_index = int(tmp_index)
+            cur_ratio = np.sum(distance_atom_matrix[:,tmp_index,j]<=cutoff)/len(distance_atom_matrix)
+            if cur_ratio>max_ratio:
+                max_ratio=cur_ratio
+        target_ratio_list.append(max_ratio)
+    atom_coverage = np.sum(np.array(target_ratio_list))/len(target_keys)
+    atom_precision = np.sum(np.array(query_ratio_list))/len(query_keys)
+    #calculate RMSD and denominator for sequence match regions
     visit_target_set=set()
     visit_query_set=set()
     all_possible_match_dict = defaultdict(list)
@@ -203,10 +232,11 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff,max_cuto
             continue
         total_use_query+=1
     RMSD= np.mean(np.array(RMSD))
+
     visit_atom_query_set = visit_query_set
     visit_atom_target_set = visit_target_set
-    atom_precision = len(visit_query_set)/total_use_query
-    atom_coverage = len(visit_target_set)/len(target_keys)
+    #atom_precision = len(visit_query_set)/total_use_query
+    #atom_coverage = len(visit_target_set)/len(target_keys)
     #get the atom coverage and precision
     overall_match_dict={} #match_dict[query_nuc_id]=target_nuc_id
     visit_query_set=set()#indicate if the target is already matched
@@ -331,10 +361,14 @@ def evaluate_structure(query_pdb,target_pdb,cutoff=5.0,max_cutoff=10.0):
         print("No nucleotide found in the target pdb/cif file")
         exit()
     #calculate the distance between the two structures: N*M distance matrix, this is the average distance of corresponding atoms between the two structures 
-    distance_matrix = calcudate_center_distmat(query_dict,target_dict)
+    distance_matrix = calcudate_center_distmat(query_dict,target_dict) #this is for match
+    distance_atom_matrix = calcudate_atomwise_distmat(query_dict,target_dict)#this is for calculating the atom-wise coverage and precision
     #calculate atom coverage, atom precision, sequuence recall(match),sequence precision(match), sequence recall, sequence precision, RMSD, base-RMSD
     atom_coverage,atom_precision,sequence_match,sequence_match_prec,\
-    sequence_recall,sequence_prec,RMSD = calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff,max_cutoff=max_cutoff)
+    sequence_recall,sequence_prec,RMSD = calculate_eval_metric(query_dict,target_dict,
+                                                               distance_matrix,distance_atom_matrix,
+                                                               cutoff,
+                                                               max_cutoff=max_cutoff)
     print("*"*100)
     print("Atom Coverage: %.3f"%atom_coverage+" Atom Precision: %.3f"%atom_precision)
     print("Sequence Recall(Match): %.3f"%sequence_match+" Sequence Precision(Match): %.3f"%sequence_match_prec)
