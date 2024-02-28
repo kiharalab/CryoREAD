@@ -189,7 +189,7 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_m
         max_ratio=0
         for tmp_index in current_key_index:
             tmp_index = int(tmp_index)
-            cur_ratio = np.sum(distance_atom_matrix[:,i,tmp_index]<=cutoff)/len(distance_atom_matrix)
+            cur_ratio = np.sum(distance_atom_matrix[:,i,tmp_index]<=cutoff)/np.sum(distance_atom_matrix[:,i,tmp_index]!=0)
             if cur_ratio>max_ratio:
                 max_ratio=cur_ratio
         query_ratio_list.append(max_ratio)
@@ -200,7 +200,7 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_m
         max_ratio=0
         for tmp_index in current_query_index:
             tmp_index = int(tmp_index)
-            cur_ratio = np.sum(distance_atom_matrix[:,tmp_index,j]<=cutoff)/len(distance_atom_matrix)
+            cur_ratio = np.sum(distance_atom_matrix[:,tmp_index,j]<=cutoff)/np.sum(distance_atom_matrix[:,tmp_index,j]!=0)
             if cur_ratio>max_ratio:
                 max_ratio=cur_ratio
         target_ratio_list.append(max_ratio)
