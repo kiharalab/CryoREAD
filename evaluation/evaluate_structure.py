@@ -162,12 +162,13 @@ def calcudate_atomwise_distmat(query_dict,target_dict):
     distance_matrix = distance_matrix/count_matrix
     return distance_matrix
 
-def calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff):
+def calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff,max_cutoff=10.0):
     """
     query_dict: dictionary of predicted structure
     target_dict: dictionary of native structure 
     distance_matrix: M*N matrix, M is the number of nucleotides in query pdb, N is the number of nucleotides in target pdb
     cutoff: distance cutoff for evaluation
+    max_cutoff: a distance cutoff to calculate precision, when no match in 10A, we did not put it into calculation
     return:
     atom_coverage,atom_precision,sequence_match,sequence_match_prec,sequence_recall,sequence_prec,RMSD
     """
@@ -247,7 +248,24 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff):
     sequence_prec = total_match/len(query_keys)
     #calculate rmsd based on the matched nucleotides
     return atom_coverage,atom_precision,sequence_match,sequence_match_prec,sequence_recall,sequence_prec,RMSD
-
+def calcudate_center_distmat(query_dict,target_dict):
+    """
+    query_dict: dictionary of predicted structure
+    target_dict: dictionary of native structure
+    return:
+    distance_matrix: M*N matrix, M is the number of nucleotides in query pdb, N is the number of nucleotides in target pdb
+    """
+    #first get atom list
+    query_keys=list(query_dict.keys())
+    target_keys = list(target_dict.keys())
+    query_center={}
+    key_center={}
+    for key in query_keys:
+        query_center[key]=np.mean(np.array(list(query_dict[key].values()),dtype=float),axis=0)
+    for key in target_keys:
+        key_center[key]=np.mean(np.array(list(target_dict[key].values()),dtype=float),axis=0)
+    distance_matrix = cdist(np.array(list(query_center.values()),dtype=float),np.array(list(key_center.values()),dtype=float))
+    return distance_matrix
 def evaluate_structure(query_pdb,target_pdb,cutoff=5.0):
     
     """
@@ -283,7 +301,8 @@ def evaluate_structure(query_pdb,target_pdb,cutoff=5.0):
         print("No nucleotide found in the target pdb/cif file")
         exit()
     #calculate the distance between the two structures: N*M distance matrix, this is the average distance of corresponding atoms between the two structures 
-    distance_matrix = calcudate_atomwise_distmat(query_dict,target_dict)
+    #distance_matrix = calcudate_atomwise_distmat(query_dict,target_dict)
+    distance_matrix = calcudate_center_distmat(query_dict,target_dict)
     #calculate atom coverage, atom precision, sequuence recall(match),sequence precision(match), sequence recall, sequence precision, RMSD, base-RMSD
     atom_coverage,atom_precision,sequence_match,sequence_match_prec,sequence_recall,sequence_prec,RMSD = calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff)
     print("*"*100)
