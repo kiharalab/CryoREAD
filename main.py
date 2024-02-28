@@ -113,6 +113,17 @@ if __name__ == "__main__":
         from graph.refine_structure import refine_structure
         refine_structure(input_pdb,input_map,output_dir,params)
 
+    elif params['mode']==2:
+        #add evaluation script for predicted structure and native structure
+        # python3 main.py --mode=2 -F=predicted.cif[.pdb] -M=target.cif[.pdb] 
+        query_pdb = os.path.abspath(params['F']) # predicted pdb/cif file
+        target_pdb = os.path.abspath(params['M']) # native pdb/cif file
+        cutoff = 5.0
+        #output all the metrics reported in CryoREAD's paper
+        from evaluation.evaluate_structure import evaluate_structure
+        evaluate_structure(query_pdb,target_pdb,cutoff)
+
+
 
 
 
