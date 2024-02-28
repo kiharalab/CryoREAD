@@ -180,32 +180,7 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_m
     #first find the closest pair of nucleotides
     query_keys=list(query_dict.keys())
     target_keys = list(target_dict.keys())
-    #calculate atom precision and coverage
-    query_ratio_list=[]
-    target_ratio_list=[]
-    for i in range(len(query_keys)):
-        cur_dist = distance_matrix[i]
-        current_key_index = np.argwhere(cur_dist<=cutoff)
-        max_ratio=0
-        for tmp_index in current_key_index:
-            tmp_index = int(tmp_index)
-            cur_ratio = np.sum(distance_atom_matrix[:,i,tmp_index]<=cutoff)/np.sum(distance_atom_matrix[:,i,tmp_index]!=0)
-            if cur_ratio>max_ratio:
-                max_ratio=cur_ratio
-        query_ratio_list.append(max_ratio)
-    #similar way for target
-    for j in range(len(target_keys)):
-        cur_dist = distance_matrix[:,j]
-        current_query_index = np.argwhere(cur_dist<=cutoff)
-        max_ratio=0
-        for tmp_index in current_query_index:
-            tmp_index = int(tmp_index)
-            cur_ratio = np.sum(distance_atom_matrix[:,tmp_index,j]<=cutoff)/np.sum(distance_atom_matrix[:,tmp_index,j]!=0)
-            if cur_ratio>max_ratio:
-                max_ratio=cur_ratio
-        target_ratio_list.append(max_ratio)
-    atom_coverage = np.sum(np.array(target_ratio_list))/len(target_keys)
-    atom_precision = np.sum(np.array(query_ratio_list))/len(query_keys)
+    #calculate aotm coverage and precision
     #calculate RMSD and denominator for sequence match regions
     visit_target_set=set()
     visit_query_set=set()
@@ -216,13 +191,17 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_m
         current_query_index = np.argwhere(cur_dist<=cutoff)
 
         if len(current_query_index)>0:
+            tmp_min_dist=max_cutoff
             for tmp_index in current_query_index:
                 tmp_index = int(tmp_index)
                 visit_query_set.add(tmp_index)
                 all_possible_match_dict[j].append(tmp_index)
+                tmp_distance = np.mean(distance_atom_matrix[:,tmp_index,j])
+                if tmp_distance<tmp_min_dist:
+                    tmp_min_dist=tmp_distance
             visit_target_set.add(j)
-            current_query_index = int(np.argmin(cur_dist))
-            RMSD.append(np.min(cur_dist))
+            #current_query_index = int(np.argmin(cur_dist))
+            RMSD.append(tmp_min_dist)
     #discard some query atoms that are not matched
     total_use_query = 0
     for i, query_key in enumerate(query_keys):
@@ -235,8 +214,8 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_m
 
     visit_atom_query_set = visit_query_set
     visit_atom_target_set = visit_target_set
-    #atom_precision = len(visit_query_set)/total_use_query
-    #atom_coverage = len(visit_target_set)/len(target_keys)
+    atom_precision = len(visit_query_set)/total_use_query
+    atom_coverage = len(visit_target_set)/len(target_keys)
     #get the atom coverage and precision
     overall_match_dict={} #match_dict[query_nuc_id]=target_nuc_id
     visit_query_set=set()#indicate if the target is already matched
@@ -362,7 +341,7 @@ def evaluate_structure(query_pdb,target_pdb,cutoff=5.0,max_cutoff=10.0):
         exit()
     #calculate the distance between the two structures: N*M distance matrix, this is the average distance of corresponding atoms between the two structures 
     distance_matrix = calcudate_center_distmat(query_dict,target_dict) #this is for match
-    distance_atom_matrix = calcudate_atomwise_distmat(query_dict,target_dict)#this is for calculating the atom-wise coverage and precision
+    distance_atom_matrix = calcudate_atomwise_distmat(query_dict,target_dict)#this is for calculating the atom-wise RMSD
     #calculate atom coverage, atom precision, sequuence recall(match),sequence precision(match), sequence recall, sequence precision, RMSD, base-RMSD
     atom_coverage,atom_precision,sequence_match,sequence_match_prec,\
     sequence_recall,sequence_prec,RMSD = calculate_eval_metric(query_dict,target_dict,
