@@ -194,10 +194,18 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff,max_cuto
             visit_target_set.add(j)
             current_query_index = int(np.argmin(cur_dist))
             RMSD.append(np.min(cur_dist))
+    #discard some query atoms that are not matched
+    total_use_query = 0
+    for i, query_key in enumerate(query_keys):
+        cur_dist = distance_matrix[i,:]
+        current_min_index = int(np.argmin(cur_dist))
+        if cur_dist[current_min_index]>max_cutoff:#this is because CryoREAD sometimes modeled region that EM-Map include but user did not model
+            continue
+        total_use_query+=1
     RMSD= np.mean(np.array(RMSD))
     visit_atom_query_set = visit_query_set
     visit_atom_target_set = visit_target_set
-    atom_precision = len(visit_query_set)/len(query_keys)
+    atom_precision = len(visit_query_set)/total_use_query
     atom_coverage = len(visit_target_set)/len(target_keys)
     #get the atom coverage and precision
     overall_match_dict={} #match_dict[query_nuc_id]=target_nuc_id
@@ -237,15 +245,36 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff,max_cuto
                 query_key = query_keys[tmp_index]
                 current_query_base = query_dict[query_key]["P"][3]
                 if current_query_base==current_target_base:
-                    overall_match_dict[query_key]=target_key
-                    visit_query_set.add(tmp_index)
-                    visit_target_set.add(j)
-                    break
+                    match_dist = cur_dist[tmp_index]
+                    #further check if this matched base has another closet match and also has correct base type
+                    cur_dist2 = distance_matrix[tmp_index,:]
+                    current_tmp_target_index = np.argwhere(cur_dist2<=match_dist)
+                    if len(current_tmp_target_index)==0:
+                        overall_match_dict[query_key]=target_key
+                        visit_query_set.add(tmp_index)
+                        visit_target_set.add(j)
+                        break
+                    else:
+                        for tmp_target_index in current_tmp_target_index:
+                            tmp_target_index = int(tmp_target_index)
+                            if tmp_target_index in visit_target_set:
+                                continue
+                            tmp_target_key = target_keys[tmp_target_index]
+                            if query_dict[query_key]["P"][3]==target_dict[tmp_target_key]["P"][3]:
+                                overall_match_dict[query_key]=tmp_target_key
+                                visit_query_set.add(tmp_index)
+                                visit_target_set.add(tmp_target_index)
+                                break
+                        if query_key not in overall_match_dict:
+                            overall_match_dict[query_key]=target_key
+                            visit_query_set.add(tmp_index)
+                            visit_target_set.add(j)
+                            break
     total_match = len(overall_match_dict)
     sequence_match = total_match/len(visit_atom_target_set)
     sequence_match_prec = total_match/len(visit_atom_query_set)
     sequence_recall = total_match/len(target_keys)
-    sequence_prec = total_match/len(query_keys)
+    sequence_prec = total_match/total_use_query
     #calculate rmsd based on the matched nucleotides
     return atom_coverage,atom_precision,sequence_match,sequence_match_prec,sequence_recall,sequence_prec,RMSD
 def calcudate_center_distmat(query_dict,target_dict):
@@ -266,12 +295,13 @@ def calcudate_center_distmat(query_dict,target_dict):
         key_center[key]=np.mean(np.array(list(target_dict[key].values()),dtype=float),axis=0)
     distance_matrix = cdist(np.array(list(query_center.values()),dtype=float),np.array(list(key_center.values()),dtype=float))
     return distance_matrix
-def evaluate_structure(query_pdb,target_pdb,cutoff=5.0):
+def evaluate_structure(query_pdb,target_pdb,cutoff=5.0,max_cutoff=10.0):
     
     """
     query_pdb: predicted pdb file
     target_pdb: native pdb file
     cutoff: distance cutoff for evaluation
+    max_cutoff: a distance cutoff to calculate precision, when no match in 10A, we did not put it into calculation
     """
     _pho_atoms=["OP3", "P", "OP1", "OP2", "O5'",]
     _sugar_atoms = [ "C5'", "C4'", "O4'", "C3'", "O3'", "C2'", "O2'", "C1'"]    
@@ -301,10 +331,10 @@ def evaluate_structure(query_pdb,target_pdb,cutoff=5.0):
         print("No nucleotide found in the target pdb/cif file")
         exit()
     #calculate the distance between the two structures: N*M distance matrix, this is the average distance of corresponding atoms between the two structures 
-    #distance_matrix = calcudate_atomwise_distmat(query_dict,target_dict)
     distance_matrix = calcudate_center_distmat(query_dict,target_dict)
     #calculate atom coverage, atom precision, sequuence recall(match),sequence precision(match), sequence recall, sequence precision, RMSD, base-RMSD
-    atom_coverage,atom_precision,sequence_match,sequence_match_prec,sequence_recall,sequence_prec,RMSD = calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff)
+    atom_coverage,atom_precision,sequence_match,sequence_match_prec,\
+    sequence_recall,sequence_prec,RMSD = calculate_eval_metric(query_dict,target_dict,distance_matrix,cutoff,max_cutoff=max_cutoff)
     print("*"*100)
     print("Atom Coverage: %.3f"%atom_coverage+" Atom Precision: %.3f"%atom_precision)
     print("Sequence Recall(Match): %.3f"%sequence_match+" Sequence Precision(Match): %.3f"%sequence_match_prec)
