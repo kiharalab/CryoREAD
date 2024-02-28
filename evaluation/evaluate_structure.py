@@ -46,11 +46,13 @@ def cif2dict(input_cif_path,filter_list=None):
                 split_result = line.split()
                 split_info=line.strip("\n").split()
                 current_atom_name = split_info[atom_type_ids]
+                current_atom_name = current_atom_name.replace(" ","")
                 current_res_index = int(split_info[seq_ids])
                 current_res_name = split_info[res_name_ids]
                 current_x = float(split_info[x_ids])
                 current_y = float(split_info[y_ids])
                 current_z = float(split_info[z_ids])
+                current_atom_name = current_atom_name.replace(" ","")
                 if current_res_name not in map_dict:
                     continue
                 pred_label = map_dict[current_res_name]
@@ -93,7 +95,7 @@ def pdb2dict(input_pdb_path,filter_list=None):
                 if nuc_type not in map_dict:
                     continue
                 pred_label = map_dict[nuc_type]
-                
+                atom_name = atom_name.replace(" ","")
                 if filter_list is not None and atom_name not in filter_list:
                     continue
                 if track_nuc_id!=nuc_id:
