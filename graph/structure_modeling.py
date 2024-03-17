@@ -40,6 +40,9 @@ def build_atomic_fragment_cluster_cif_SP(Path_Assign_Dict,all_sugar_location,Pat
             fragment_info_list,frag_score = merge_cluster_cif_PS(current_path_dict,current_cluster_id_list,cur_ldp_sugar_location,
             tmp_verify_path,cur_pho_ldp_nodeid_list,cur_pho_ldp_nodeid_reverse_list,pho_point,map_info_list)
             overall_score+=frag_score
+            if len(fragment_info_list)<=2:
+                #not enough to build an atomic model, skip it.
+                continue
             #clean pho locations in case we have one pho assigned to 2 sugars in the path
             fragment_info_list,_ = clean_pho_assign_info_list(fragment_info_list,pho_point.merged_cd_dens[:,:3],map_info_list)
             fragment_info_list,further_flag = clean_pho_assign_info_list(fragment_info_list,pho_point.merged_cd_dens[:,:3],map_info_list,round=2)
