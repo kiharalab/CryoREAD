@@ -7,7 +7,7 @@ from graph.io_utils import append_cif_info
 from atomic.io_utils import Write_Atomic_Fraginfo_cif
 from graph.structure_utils import clean_pho_assign_info_list
 from graph.LDP_ops import Convert_LDPcoord_To_Reallocation
-
+from ops.cif_utils import cif2pdb
 def build_cif_PS(current_path_dict,path_id,ldp_sugar_location,
         Path_P_align_list,pho_point,map_info_list):
     pho_merged_cd = pho_point.merged_cd_dens[:,:3]
@@ -103,35 +103,15 @@ def Build_Atomic_Structure(overall_dict,
     with open(fragment_all_path,'w') as file:
         file.write("#score: %f\n"%overall_score)
     check_file_list.sort()
-    Natm=1
-    Nres=0
+    pdb_file_list=[]
     for item in check_file_list:
-        cur_pdb_name = item[:-4]+".pdb"
-        prev_resi = None
-        with open(cur_pdb_name,'r') as rfile:
-            with open(fragment_all_path,"a+") as wfile:
+        pdb_file_name = item.replace(".cif",".pdb")
+        cif2pdb(item,pdb_file_name)
+        pdb_file_list.append(pdb_file_name)
+    with open(fragment_all_path,'a+') as wfile:
+        for item in pdb_file_list:
+            with open(item,'r') as rfile:
                 for line in rfile:
-                    #advance modifying the residue id to build
-                    if (line.startswith('ATOM')):
-                        #chain_id, current_seq_index,atom_name2, cur_pho_position,nuc_type,avg_score
-                        chain_name = line[21]
-                        atom_name = line[12:16]
-                        x=float(line[30:38])
-                        y=float(line[38:46])
-                        z=float(line[46:55])
-                        resi=int(line[22:26])
-                        score = float(line[60:68])
-                        resn = line[17:20]
-                        if resi!=prev_resi:
-                            Nres+=1
-                            prev_resi=resi
-                        line=""
-                        line += "ATOM%7d %-4s %3s%2s%4d    " % (Natm, atom_name,resn, chain_name,Nres)
-                        line = line + "%8.3f%8.3f%8.3f%6.2f%6.2f\n" % (x,y,z, 1.0, score)
-                        wfile.write(line)
-
-                        Natm+=1
-                    #wfile.write(line)
-                    else:
-                        wfile.write(line)
+                    wfile.write(line)
+        
 
