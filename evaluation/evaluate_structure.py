@@ -176,7 +176,7 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_m
     atom_coverage,atom_precision,sequence_match,sequence_match_prec,sequence_recall,sequence_prec,RMSD
     """
     
-
+    atom_track="P"
     #first find the closest pair of nucleotides
     query_keys=list(query_dict.keys())
     target_keys = list(target_dict.keys())
@@ -230,8 +230,13 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_m
             continue   
         if current_query_index in visit_query_set or j in visit_target_set:
             continue
-        current_query_base = query_dict[query_key]["P"][3]
-        current_target_base = target_dict[target_key]["P"][3]
+        try:
+            current_query_base = query_dict[query_key][atom_track][3]
+            current_target_base = target_dict[target_key][atom_track][3]
+        except:
+            #for some cases they missed P atoms
+            current_query_base = query_dict[query_key]["C4'"][3]
+            current_target_base = target_dict[target_key]["C4'"][3]
         if current_query_base!=current_target_base:
             continue
         #1 predict base can only be mapped to one native base
@@ -243,8 +248,12 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_m
         if j in visit_target_set:
             continue
         cur_dist = distance_matrix[:,j]
-       
-        current_target_base = target_dict[target_key]["P"][3]
+        try:
+            current_target_base = target_dict[target_key][atom_track][3]
+        except:
+            #for some cases they missed P atoms
+            #print(target_dict[target_key])
+            current_target_base = target_dict[target_key]["C4'"][3]
         current_query_index = np.argwhere(cur_dist<=cutoff)
         if len(current_query_index)>0:
             for tmp_index in current_query_index:
@@ -252,7 +261,11 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_m
                 if tmp_index in visit_query_set:
                     continue
                 query_key = query_keys[tmp_index]
-                current_query_base = query_dict[query_key]["P"][3]
+                try:
+                    current_query_base = query_dict[query_key][atom_track][3]
+                except:
+                    current_query_base = query_dict[query_key]["C4'"][3]
+
                 if current_query_base==current_target_base:
                     match_dist = cur_dist[tmp_index]
                     #further check if this matched base has another closet match and also has correct base type
@@ -269,7 +282,11 @@ def calculate_eval_metric(query_dict,target_dict,distance_matrix,distance_atom_m
                             if tmp_target_index in visit_target_set:
                                 continue
                             tmp_target_key = target_keys[tmp_target_index]
-                            if query_dict[query_key]["P"][3]==target_dict[tmp_target_key]["P"][3]:
+                            try:
+                                judge_flag=query_dict[query_key][atom_track][3]==target_dict[tmp_target_key][atom_track][3]
+                            except:
+                                judge_flag=query_dict[query_key]["C4'"][3]==target_dict[tmp_target_key]["C4'"][3]
+                            if judge_flag:
                                 overall_match_dict[query_key]=tmp_target_key
                                 visit_query_set.add(tmp_index)
                                 visit_target_set.add(tmp_target_index)
