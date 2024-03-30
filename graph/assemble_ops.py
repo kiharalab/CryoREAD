@@ -235,7 +235,7 @@ def prepare_score_array(N_order, order_key_index,order_chain_index,overall_dict)
     return score_array
 
 
-def solve_assignment(collision_table,order_key_index,order_chain_index,overall_dict):
+def solve_assignment(collision_table,order_key_index,order_chain_index,overall_dict,time_use=3600):
     model = cp_model.CpModel()
 
     x = []
@@ -260,17 +260,22 @@ def solve_assignment(collision_table,order_key_index,order_chain_index,overall_d
 
     print('#Start Solving...')
     # Solve
+    print("Time limit is set to %d seconds"%time_use)
     solver = cp_model.CpSolver()
-    solver.parameters.max_time_in_seconds = 3600
+    solver.parameters.max_time_in_seconds = time_use
     solver.parameters.num_search_workers = 8
     solver.parameters.log_search_progress = True
     solution_printer = cp_model.ObjectiveSolutionPrinter()
 
     status = solver.SolveWithSolutionCallback(model, solution_printer)
     results=[]
-    if status == pywraplp.Solver.OPTIMAL or pywraplp.Solver.FEASIBLE:
+    if status == pywraplp.Solver.OPTIMAL or status==pywraplp.Solver.FEASIBLE:
         for i in range(len(collision_table)):
             if solver.BooleanValue(x[i]):
                 #print(i,'ID=',idtbl[i]) #order->ID
                 results.append(i)
+    else:
+        print("*"*100)
+        print('No solution found for assembling, please make contact the developer! You can also check the CryoREAD_noseq.pdb as temporary results.')
+        print("*"*100)
     return results

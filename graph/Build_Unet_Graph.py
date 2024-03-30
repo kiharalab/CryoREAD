@@ -309,10 +309,32 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
                         ldp_size,overall_dict,cur_collision_path,params['rule_soft'])
 
     #4.5 build assemble from pre-defined collision table
-
+    time_use = 3600*(len(sugar_point.merged_cd_dens)/1000)
     if not os.path.exists(cur_final_assemble_path):
 
-        solve_frag_combine_list = solve_assignment(collision_table,order_key_index,order_chain_index,overall_dict)
+        solve_frag_combine_list = solve_assignment(collision_table,order_key_index,
+                                                   order_chain_index,overall_dict,time_use=time_use)
+        if len(solve_frag_combine_list)==0 and params['rule_soft']==1:
+            print("no possible solution for assembling")
+            print("please make contact with the developer for further help!")
+            return
+        if len(solve_frag_combine_list)==0 and params['rule_soft']==0:
+            print("no possible solution for assembling with soft rules")
+            print("we will try to reassign for those overlapped regions")
+            frag_save_path = os.path.join(save_path,"AssembleFactory_"+str(ldp_size)+"_"+str(checking_stride)+"_"+str(top_select))
+            mkdir(frag_save_path)
+            params['rule_soft']=1
+            cur_final_assemble_path = os.path.join(frag_save_path,"assemble_frag_%d_%d_%d_soft%d.txt"%(ldp_size,checking_stride,top_select,params['rule_soft']))
+
+            cur_collision_path = os.path.join(frag_save_path,"Collision_Table_%d_%d_%d_soft_%d.npy"%(ldp_size,checking_stride,top_select,params['rule_soft']))
+            collision_table,order_key_index,order_chain_index,key_order_index=build_collision_table(All_Base_Path_List_sugar, checking_stride,
+                        ldp_size,overall_dict,cur_collision_path,params['rule_soft'])
+            solve_frag_combine_list = solve_assignment(collision_table,order_key_index,
+                                                       order_chain_index,overall_dict,time_use=time_use)
+        if len(solve_frag_combine_list)==0:
+            print("no possible solution for assembling after trying strict rules and soft rules")
+            print("please make contact with the developer for further help!")
+            return
         np.savetxt(cur_final_assemble_path,np.array(solve_frag_combine_list))
     else:
         solve_frag_combine_list = np.loadtxt(cur_final_assemble_path)
