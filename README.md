@@ -58,6 +58,7 @@ Full code is available here and it is easier for user to modify to develop their
 ### Project website: https://kiharalab.org/emsuites
 ### Detailed pipeline instructions can be found https://kiharalab.org/emsuites/cryoread.php
 ### CryoREAD algorithm video (20 minutes): https://www.youtube.com/watch?v=p7Bpou2vL6o
+### For benchmark purpose, please check the [eval_code](https://github.com/kiharalab/CryoREAD#predicted-structure-evaluation) for predicted structure evaluation.
 
 ## Introduction
 <details>
@@ -161,6 +162,7 @@ If it can print out the help information of this function, then the refinemnt st
 
 # Usage
 
+### Command 
 <details>
 <summary>Command Parameters</summary>
    
@@ -210,11 +212,10 @@ optional arguments:
 
 
 
-
+### Build an atomic structure without sequence information
 <details>
    <summary> DNA/RNA structure modeling without FASTA sequence</summary>
    
-### Build atomic structure without sequence information
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --resolution=[Map_Resolution] --no_seqinfo --refine
 ```
@@ -236,11 +237,11 @@ python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=
 
 </details>
 
+### Build an atomic structure with sequence information
 <details>
 
-<summary> DNA/RNA structure modeling with FASTA sequence</summary>
 
-### Build atomic structure with sequence information
+<summary> DNA/RNA structure modeling with FASTA sequence</summary>
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --rule_soft=[assignment_rule] --resolution=[Map_Resolution] --refine --thread=[num_threads]
 ```
@@ -267,11 +268,10 @@ The automatically build atomic structure is saved in [Predict_Result/(map-name)/
 
 </details>
 
+### Structure Information Detection by CryoREAD
 <details>
 
 <summary>CryoREAD detection (if you only want to check detection by deep learning)</summary>
-
-### Structure Information Predictions by CryoREAD.
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --prediction_only 
 ```
@@ -289,11 +289,12 @@ python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=
 ```
 </details>
 
+### Structure refinement
 <details>
 
 <summary>Structure Refinement Pipeline in CryoREAD (if you only want to refine your structure)</summary>
 
-### Structure refinement
+
 The full refinement pipeline involving Phenix and coot is also available for refinement-only purposes. 
 ```
 python3 main.py --mode=1 -F=[input_structure_pdb] -M=[input_map_path] -P=[output_dir] --resolution=[resolution]
@@ -312,11 +313,11 @@ This will refine the input structure according to density and output the refined
 
 </details>
 
+### Predicted Structure Evaluation
 <details>
 
 <summary>Structure Evaluation in CryoREAD (if you only want to compare your predicted structure with native structure)</summary>
 
-### Predicted Structure Evaluation
 We provided the evaluation pipeline used in CryoREAD, use 5Å as a cutoff. Different from Phenix, we matched the nucleotides based on the average distance of the backbone atoms of nucleotides instead of only using P atoms, which is not so stable and accurate. 
 
 To use our evaluation pipeline, please use
