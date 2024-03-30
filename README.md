@@ -165,7 +165,7 @@ If it can print out the help information of this function, then the refinemnt st
 ### Command 
 <details>
 <summary>Command Parameters</summary>
-   
+
 ```
 usage: main.py [-h] [-F F] [-M M] [-P P] --mode MODE [--contour CONTOUR] [--stride STRIDE] [--box_size BOX_SIZE] [--gpu GPU] [--batch_size BATCH_SIZE] [-f F] [-m M]
                [-g G] [-k K] [-R R] [--rule_soft RULE_SOFT] [--frag_size FRAG_SIZE] [--frag_stride FRAG_STRIDE] [--top_select TOP_SELECT] [--resolution RESOLUTION]
@@ -240,8 +240,8 @@ python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=
 ### Build an atomic structure with sequence information
 <details>
 
-
 <summary> DNA/RNA structure modeling with FASTA sequence</summary>
+
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] -P=[Fasta_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --rule_soft=[assignment_rule] --resolution=[Map_Resolution] --refine --thread=[num_threads]
 ```
@@ -272,6 +272,7 @@ The automatically build atomic structure is saved in [Predict_Result/(map-name)/
 <details>
 
 <summary>CryoREAD detection (if you only want to check detection by deep learning)</summary>
+
 ```
 python3 main.py --mode=0 -F=[Map_Path] -M=[Model_Path] --contour=[half_contour_level] --gpu=[GPU_ID] --batch_size=[batch_size] --prediction_only 
 ```
@@ -293,7 +294,6 @@ python3 main.py --mode=0 -F=example/21051.mrc -M=best_model --contour=0.3 --gpu=
 <details>
 
 <summary>Structure Refinement Pipeline in CryoREAD (if you only want to refine your structure)</summary>
-
 
 The full refinement pipeline involving Phenix and coot is also available for refinement-only purposes. 
 ```
