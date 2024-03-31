@@ -268,6 +268,28 @@ def solve_assignment(collision_table,order_key_index,order_chain_index,overall_d
     solution_printer = cp_model.ObjectiveSolutionPrinter()
 
     status = solver.SolveWithSolutionCallback(model, solution_printer)
+    """
+    %unignore operations_research::MPSolver::ResultStatus;
+    %unignore operations_research::MPSolver::OPTIMAL;
+    %unignore operations_research::MPSolver::FEASIBLE;  // No unit test
+    %unignore operations_research::MPSolver::INFEASIBLE;
+    %unignore operations_research::MPSolver::UNBOUNDED;  // No unit test
+    %unignore operations_research::MPSolver::ABNORMAL;
+    %unignore operations_research::MPSolver::NOT_SOLVED;  // No unit test
+
+    OPTIMAL = _pywraplp.Solver_OPTIMAL
+    r optimal
+    FEASIBLE = _pywraplp.Solver_FEASIBLE
+    r feasible, or stopped by limit.
+    INFEASIBLE = _pywraplp.Solver_INFEASIBLE
+    r proven infeasible.
+    UNBOUNDED = _pywraplp.Solver_UNBOUNDED
+    r proven unbounded.
+    ABNORMAL = _pywraplp.Solver_ABNORMAL
+    r abnormal, i.e., error of some kind.
+    NOT_SOLVED = _pywraplp.Solver_NOT_SOLVED
+    r not been solved yet.
+    """
     results=[]
     if status == pywraplp.Solver.OPTIMAL or status==pywraplp.Solver.FEASIBLE:
         for i in range(len(collision_table)):
@@ -276,6 +298,7 @@ def solve_assignment(collision_table,order_key_index,order_chain_index,overall_d
                 results.append(i)
     else:
         print("*"*100)
+        print("current status:",status)
         print('No solution found for assembling, please make contact the developer! You can also check the CryoREAD_noseq.pdb as temporary results.')
         print("*"*100)
     return results

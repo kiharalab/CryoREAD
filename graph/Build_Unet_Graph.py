@@ -319,8 +319,8 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
             print("please make contact with the developer for further help!")
             return
         if len(solve_frag_combine_list)==0 and params['rule_soft']==0:
-            print("no possible solution for assembling with soft rules")
-            print("we will try to reassign for those overlapped regions")
+            print("no possible solution for assembling with hard rules")
+            print("we will try to reassign for via soft rules")
             frag_save_path = os.path.join(save_path,"AssembleFactory_"+str(ldp_size)+"_"+str(checking_stride)+"_"+str(top_select))
             mkdir(frag_save_path)
             params['rule_soft']=1
