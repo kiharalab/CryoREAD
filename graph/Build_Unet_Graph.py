@@ -317,7 +317,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
         if len(solve_frag_combine_list)==0 and params['rule_soft']==1:
             print("no possible solution for assembling")
             print("please make contact with the developer for further help!")
-            return
+            #return
         if len(solve_frag_combine_list)==0 and params['rule_soft']==0:
             print("no possible solution for assembling with hard rules")
             print("we will try to reassign for via soft rules")
@@ -339,6 +339,36 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
     else:
         solve_frag_combine_list = np.loadtxt(cur_final_assemble_path)
     print("loading solved possible fragment combination finished")
+
+    #if we do not find any possible solution, we will directly call refine for the CryoREAD_noseq.pdb
+    if len(solve_frag_combine_list)==0:
+        print("*"*100)
+        print("no solution find, use the noseq version as final output!")
+        print("*"*100)
+        final_pdb_path =  os.path.join(root_save_path,"CryoREAD.pdb")
+        if not params['refine']:
+            
+            with open(final_pdb_path,"w") as f:
+                f.write("#CryoREAD no_seq pdb, sequence information is not used because of unsolvable assembling!\n")
+                with open(nonrefined_pdb_path,"r") as f2:
+                    for line in f2:
+                        f.write(line)
+        else:
+            from graph.refine_structure import refine_structure
+            output_dir = os.path.join(root_save_path,"Output")
+            os.makedirs(output_dir,exist_ok=True)
+            refine_structure(nonrefined_pdb_path,origin_map_path,output_dir,params)
+            from ops.os_operation import collect_refine_pdb
+            refined_pdb_path =  os.path.join(root_save_path,"CryoREAD_tmp.pdb")
+            collect_refine_pdb(output_dir,refined_pdb_path,final_pdb_path)
+            with open(final_pdb_path,"w") as f:
+                f.write("#CryoREAD no_seq pdb, sequence information is not used because of unsolvable assembling!\n")
+                with open(refined_pdb_path,"r") as f2:
+                    for line in f2:
+                        f.write(line)
+        
+        return
+
     # 7.3 reassign for those overlapped regions
     frag_collect_dir = os.path.join(frag_save_path,"atomic_reassign_%d_%d_%d"%(ldp_size,checking_stride,top_select))
     mkdir(frag_collect_dir)
