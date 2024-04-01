@@ -310,6 +310,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
 
     #4.5 build assemble from pre-defined collision table
     time_use = 3600*(len(sugar_point.merged_cd_dens)/1000)
+    time_use = min(time_use,3600*10)
     if not os.path.exists(cur_final_assemble_path):
 
         solve_frag_combine_list = solve_assignment(collision_table,order_key_index,
@@ -360,7 +361,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
             refine_structure(nonrefined_pdb_path,origin_map_path,output_dir,params)
             from ops.os_operation import collect_refine_pdb
             refined_pdb_path =  os.path.join(root_save_path,"CryoREAD_tmp.pdb")
-            collect_refine_pdb(output_dir,refined_pdb_path,final_pdb_path)
+            collect_refine_pdb(output_dir,nonrefined_pdb_path,refined_pdb_path)
             with open(final_pdb_path,"w") as f:
                 f.write("#CryoREAD no_seq pdb, sequence information is not used because of unsolvable assembling!\n")
                 with open(refined_pdb_path,"r") as f2:

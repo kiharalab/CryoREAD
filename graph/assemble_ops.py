@@ -296,16 +296,16 @@ def solve_assignment(collision_table,order_key_index,order_chain_index,overall_d
             if solver.BooleanValue(x[i]):
                 #print(i,'ID=',idtbl[i]) #order->ID
                 results.append(i)
-    elif status == pywraplp.Solver.INFEASIBLE  or status == pywraplp.Solver.UNBOUNDED:
-        print("current status:",status)
-        print("no optimal or feasible solution found for assembling, use temporary solution for final results.")
-        try:
-            for i in range(len(collision_table)):
-                if solver.BooleanValue(x[i]):
-                    #print(i,'ID=',idtbl[i]) #order->ID
-                    results.append(i)
-        except:
-            return []#indicate falure
+    # elif status == pywraplp.Solver.INFEASIBLE  or status == pywraplp.Solver.UNBOUNDED:
+    #     print("current status:",status)
+    #     print("no optimal or feasible solution found for assembling, use temporary solution for final results.")
+    #     try:
+    #         for i in range(len(collision_table)):
+    #             if solver.BooleanValue(x[i]):
+    #                 #print(i,'ID=',idtbl[i]) #order->ID
+    #                 results.append(i)
+    #     except:
+    #         return []#indicate falure
     else:
         print("*"*100)
         print("current status:",status)
