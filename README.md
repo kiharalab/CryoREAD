@@ -335,6 +335,21 @@ RMSD: 3.010
 ```
 All the reported metrics in our paper can be calculated. 
 
+Atom Coverage is computed as the fraction of sugar atoms (C1′, C2′, O2′ for RNA, C3′, O3′, C4′, O4′, C5′) and phosphate atoms (P, OP1, OP2, O5′, OP3′) that were closer than 5 Å to a matched sugar or phosphate node for each nucleotide, which were then averaged over all the nucleotides in the map.
+Atom Precision is computed as the fraction of nodes within 5 Å to the corresponding atoms of its closest nucleotides. 
+
+A cutoff of 5 Å was used because it is shorter than the average distance between adjacent phosphate atoms, which is 6.0 Å.
+
+Sequence recall is computed by identifying a nucleotide in the model that corresponds to each nucleotide in the reference structure. This identification is done by assigning the nucleotide in the model that has the closest average atom distance to each nucleotide in the reference structure. Then, it is determined whether the bases are identical. Finally, the fraction of identical bases over all the bases in the reference structure is computed.
+
+Sequence recall (match) only considers nucleotides in the reference structure that have a corresponding nucleotide in the model (an average atom pair distance of less than 5 Å). 
+
+Sequence precision is defined as the fraction of the identical bases over all the bases in the model.
+
+Sequence precision (match) only considers nucleotides in the model structure that have a corresponding nucleotide in the reference (an average atom pair distance of less than 5 Å). 
+
+For a comprehensive assessment, it is important to use multiple metrics to evaluate the accuracy of DNA/RNA structure modeling. Each metric provides different aspects of the modeling performance.
+
 </details>
 
 ## Example
