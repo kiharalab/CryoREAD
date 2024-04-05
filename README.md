@@ -348,6 +348,8 @@ Sequence precision is defined as the fraction of the identical bases over all th
 
 Sequence precision (match) only considers nucleotides in the model structure that have a corresponding nucleotide in the reference (an average atom pair distance of less than 5 Å). 
 
+RMSD is calculated between backbone atoms of nucleotides in the model structure that have a corresponding nucleotide in the reference.
+
 For a comprehensive assessment, it is important to use multiple metrics to evaluate the accuracy of DNA/RNA structure modeling. Each metric provides different aspects of the modeling performance.
 
 </details>
