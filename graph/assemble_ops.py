@@ -290,6 +290,7 @@ def solve_assignment(collision_table,order_key_index,order_chain_index,overall_d
     NOT_SOLVED = _pywraplp.Solver_NOT_SOLVED
     r not been solved yet.
     """
+    print("current status:",status)
     results=[]
     if status == pywraplp.Solver.OPTIMAL or status==pywraplp.Solver.FEASIBLE:
         for i in range(len(collision_table)):
