@@ -234,7 +234,7 @@ def prepare_score_array(N_order, order_key_index,order_chain_index,overall_dict)
         score_array[k]=int(current_score*100)#keep 0.01 precision
     return score_array
 
-
+import time 
 def solve_assignment(collision_table,order_key_index,order_chain_index,overall_dict,time_use=3600):
     model = cp_model.CpModel()
 
@@ -266,8 +266,10 @@ def solve_assignment(collision_table,order_key_index,order_chain_index,overall_d
     solver.parameters.num_search_workers = 8
     solver.parameters.log_search_progress = True
     solution_printer = cp_model.ObjectiveSolutionPrinter()
-
+    time1 = time.time()
     status = solver.SolveWithSolutionCallback(model, solution_printer)
+    time2 = time.time()
+    print("Time used for solving:",time2-time1)
     """
     %unignore operations_research::MPSolver::ResultStatus;
     %unignore operations_research::MPSolver::OPTIMAL;
@@ -293,10 +295,15 @@ def solve_assignment(collision_table,order_key_index,order_chain_index,overall_d
     print("current status:",status)
     results=[]
     if status == pywraplp.Solver.OPTIMAL or status==pywraplp.Solver.FEASIBLE:
-        for i in range(len(collision_table)):
-            if solver.BooleanValue(x[i]):
-                #print(i,'ID=',idtbl[i]) #order->ID
-                results.append(i)
+        try:
+            for i in range(len(collision_table)):
+                if solver.BooleanValue(x[i]):
+                    #print(i,'ID=',idtbl[i]) #order->ID
+                    results.append(i)
+        except:
+            print("solution status is optimal or feasible, but error raised. ",results)
+            results=[]
+            
     # elif status == pywraplp.Solver.INFEASIBLE  or status == pywraplp.Solver.UNBOUNDED:
     #     print("current status:",status)
     #     print("no optimal or feasible solution found for assembling, use temporary solution for final results.")
