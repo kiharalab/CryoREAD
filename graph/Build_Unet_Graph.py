@@ -335,8 +335,9 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
         if len(solve_frag_combine_list)==0:
             print("no possible solution for assembling after trying strict rules and soft rules")
             print("please make contact with the developer for further help!")
-            return
-        np.savetxt(cur_final_assemble_path,np.array(solve_frag_combine_list))
+            #return
+        else:
+            np.savetxt(cur_final_assemble_path,np.array(solve_frag_combine_list))
     else:
         solve_frag_combine_list = np.loadtxt(cur_final_assemble_path)
     print("loading solved possible fragment combination finished")

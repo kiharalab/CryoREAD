@@ -272,12 +272,12 @@ def solve_assignment(collision_table,order_key_index,order_chain_index,overall_d
     print("Time used for solving:",time2-time1)
     """
     %unignore operations_research::MPSolver::ResultStatus;
-    %unignore operations_research::MPSolver::OPTIMAL;
-    %unignore operations_research::MPSolver::FEASIBLE;  // No unit test
-    %unignore operations_research::MPSolver::INFEASIBLE;
-    %unignore operations_research::MPSolver::UNBOUNDED;  // No unit test
-    %unignore operations_research::MPSolver::ABNORMAL;
-    %unignore operations_research::MPSolver::NOT_SOLVED;  // No unit test
+    %unignore operations_research::MPSolver::OPTIMAL; value 0
+    %unignore operations_research::MPSolver::FEASIBLE;  value 1 // No unit test
+    %unignore operations_research::MPSolver::INFEASIBLE; value 2
+    %unignore operations_research::MPSolver::UNBOUNDED; value 3 // No unit test
+    %unignore operations_research::MPSolver::ABNORMAL; value 4
+    %unignore operations_research::MPSolver::NOT_SOLVED; value 5 // No unit test
 
     OPTIMAL = _pywraplp.Solver_OPTIMAL
     r optimal
