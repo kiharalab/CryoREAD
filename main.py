@@ -31,6 +31,20 @@ if __name__ == "__main__":
             from ops.os_operation import unzip_gz
             cur_map_path = unzip_gz(cur_map_path)
         model_dir = os.path.abspath(params['M'])
+        if params['resolution']<3 or params['resolution']>5:
+            if params['resolution']<3:
+                model_dir_candidate = os.path.join(running_dir,"best_model_0_3A")
+            else:
+                model_dir_candidate = os.path.join(running_dir,"best_model_5_10A")
+            model_1st_stage_path = os.path.join(model_dir_candidate,"stage1_network.pth")
+            model_2nd_stage_path = os.path.join(model_dir_candidate,"stage2_network.pth")
+            if os.path.exists(model_1st_stage_path) and os.path.exists(model_2nd_stage_path):
+                model_dir = model_dir_candidate
+                print("with resolution %f"%params['resolution'])
+                print("use resolution model in %s"%model_dir)
+        if params['resolution']>10:
+            print("!!!Warning!!!Please provide map at resolution lower than 10A to run!")
+            exit()
         if params['prediction_only'] or params['no_seqinfo']:
             fasta_path = None
         else:
