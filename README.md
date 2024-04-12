@@ -31,6 +31,8 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nuclei
 }   
 ```
 
+## News
+Apr 2024: CryoREAD includes a new model to support DNA/RNA structure modeling for input maps from 5-10A.
 
 # Online Platform:
 
