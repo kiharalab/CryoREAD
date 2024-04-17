@@ -22,9 +22,8 @@ from graph.reassign_ops import reassign_basedonfrag,merge_assign_geo_seq
 from data_processing.format_pdb import format_pdb,remove_op3_pdb
 from data_processing.Gen_MaskDRNA_map import Gen_MaskDRNA_map,Gen_MaskProtein_map
 from graph.geo_structure_modeling import Build_Atomic_Structure
-from graph.refine_structure import refine_structure
 
-def refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
+def refine_structure_global(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
                      chain_prob,origin_map_path,refined_pdb_path,params,DNA_label=False):
     try:
         #remove this to remove dependencies of pymol
@@ -256,7 +255,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
              print("!!!parsing fasta input failed, we can not output structures considering sequence assignment!!!")
         # 5.3 reformat pdb for phenix to do refinement (including the last column in pdb file indicate atom type)
         if params['refine']:
-            refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
+            refine_structure_global(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
                      chain_prob,origin_map_path,refined_pdb_path,params,DNA_label=DNA_Label)
             final_pdb_path =  os.path.join(root_save_path,"CryoREAD.pdb")
             from ops.os_operation import collect_refine_pdb
@@ -357,7 +356,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
                     for line in f2:
                         f.write(line)
         else:
-            
+            from graph.refine_structure import refine_structure
             output_dir = os.path.join(root_save_path,"Output")
             os.makedirs(output_dir,exist_ok=True)
             refine_structure(nonrefined_pdb_path,origin_map_path,output_dir,params)
@@ -413,7 +412,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
     format_pdb_path = os.path.join(frag_collect_dir,"Final_Assemble_seq_formated.pdb")
     refined_pdb_path = os.path.join(save_path,"Final_Refinedseq.pdb")
     if params['refine']:
-        refine_structure(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
+        refine_structure_global(init_pdb_path,format_pdb_path,root_save_path,frag_collect_dir,
                  chain_prob,origin_map_path,refined_pdb_path,params,DNA_label=DNA_Label)
         final_pdb_path =  os.path.join(root_save_path,"CryoREAD.pdb")
         from ops.os_operation import collect_refine_pdb
