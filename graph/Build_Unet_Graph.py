@@ -311,6 +311,7 @@ def Build_Unet_Graph(origin_map_path,chain_prob_path,fasta_path,save_path,
     #4.5 build assemble from pre-defined collision table
     time_use = 3600*(len(sugar_point.merged_cd_dens)/1000)
     time_use = min(time_use,3600*10)
+    time_use = max(time_use,600)
     if not os.path.exists(cur_final_assemble_path):
 
         solve_frag_combine_list = solve_assignment(collision_table,order_key_index,
