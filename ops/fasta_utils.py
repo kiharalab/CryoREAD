@@ -31,6 +31,8 @@ def read_fasta(input_fasta_path,dna_check=False):
                             break
 
                 line=line.strip("\n").replace(" ","").replace("N","").replace("X","")
+
+                line = line.upper()
                 #quick check to see if it includes protein fasta
                 dna_seq_flag=True
                 count_porition=0
