@@ -55,10 +55,10 @@ def write_res_info(wfile,current_atom_info,atomid,nucid):
     elif "CA" in current_atom_info:
         res_name = current_atom_info["CA"][3]
     else:
-        return
+        return atomid,nucid
     if res_name not in residue_atoms_order:
         print("unrecognized info: ",current_atom_info)
-        return
+        return atomid,nucid
     # res_name=residue.get_resname().replace(" ","")
     # current_atom_info={} #[atom_name]:[information]
     # for atom in residue.get_list():
