@@ -31,6 +31,13 @@ Xiao Wang, Genki Terashi & Daisuke Kihara. De novo structure modeling for nuclei
 }   
 ```
 
+## Notice
+The newer version of Intel MKL will cause pytorch to give the following error due to a symbol being removed: ImportError undefined symbol: `iJIT_NotifyEvent` is encountered.
+
+We have updated the environment.yml and requirements.txt to fix the version to an older version. Any previous installation should work just fine.
+
+If you have ever encountered this issue, please activate the conda env first and run `conda install mkl==2024.0`.
+
 ## News
 Apr 2024: CryoREAD includes a new model to support DNA/RNA structure modeling for input maps from 5-10A. The model is trained with maps at resolution 5-10A, and it will be used in CryoREAD once the input resolution is 5-10A.
 
