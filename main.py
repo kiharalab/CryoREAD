@@ -53,7 +53,7 @@ if __name__ == "__main__":
             save_path,map_name = init_save_path(cur_map_path)
         else:
             save_path=params['output']
-            map_name="input"
+            map_name="input_cryoread"
             mkdir(save_path)
         os.chdir(running_dir)
         from data_processing.Unify_Map import Unify_Map
