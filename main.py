@@ -68,7 +68,7 @@ if __name__ == "__main__":
         #segment map to remove those useless regions
         from data_processing.map_utils import segment_map
         cur_new_map_path = os.path.join(save_path,map_name+"_segment.mrc")
-        cur_map_path = segment_map(cur_map_path,cur_new_map_path,contour=0) #save the final prediction prob array space
+        cur_map_path = segment_map(cur_map_path,cur_new_map_path,contour=1e-6) #save the final prediction prob array space
 
         #do a pre check to notify user errors for contour
         with mrcfile.open(cur_map_path,permissive=True) as mrc:

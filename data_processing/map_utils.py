@@ -184,6 +184,8 @@ def segment_map(input_map,output_map,contour=0):
     :return:
     generate a new small size map
     """
+    if os.path.exists(output_map) and os.path.getsize(output_map)>1000:
+        return output_map
     with mrcfile.open(input_map, permissive=True) as mrc:
         prev_voxel_size = mrc.voxel_size
         prev_voxel_size_x = float(prev_voxel_size['x'])
