@@ -12,7 +12,7 @@ def my_reform_1a(input_mrc, output_mrc, use_gpu=False):
 
             orig_voxel_size = np.array([orig_map.voxel_size.x, orig_map.voxel_size.y, orig_map.voxel_size.z])
 
-            orig_data = torch.from_numpy(orig_map.data.copy()).unsqueeze(0).unsqueeze(0)
+            orig_data = torch.from_numpy(orig_map.data.copy().astype(np.float32)).unsqueeze(0).unsqueeze(0)
 
             orig_data = orig_data.cuda() if use_gpu else orig_data
 
